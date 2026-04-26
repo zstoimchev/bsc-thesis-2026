@@ -1,0 +1,6 @@
+- **Network Intrusion Traffic**: this refers to data packets through a network that are associated with malicious or unauthorized activity. Examples of this traffic are:
+	- Unauthorized access attempts
+	- Exploitation attempts
+	- Malware communication
+	- Denial-of-Service (DoS / DDoS)
+	- Port scanning / reconnaissance
