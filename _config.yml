@@ -1,6 +1,6 @@
+title: Thesis Zhivko 2026
 defaults:
   - scope:
       path: "Thesis Zhivko 2026.md"
     values:
       permalink: /
-      title: Thesis Zhivko 2026
