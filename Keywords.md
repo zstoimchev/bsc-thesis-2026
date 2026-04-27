@@ -4,3 +4,9 @@
 	- Malware communication
 	- Denial-of-Service (DoS / DDoS)
 	- Port scanning / reconnaissance
+
+
+### Binary classification
+
+### Multiclass classification
+

@@ -1,9 +1,0 @@
-# Introduction
-
-
-# Methodology
-
-
-# Conclusion
-
-
