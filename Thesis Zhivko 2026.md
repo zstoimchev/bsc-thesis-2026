@@ -18,7 +18,8 @@
 | [14]                                                                                                                                                       |                                                                                                          |                   |                |           |
 | [15]                                                                                                                                                       |                                                                                                          |                   |                |           |
 | [16]                                                                                                                                                       |                                                                                                          |                   |                |           |
-%% ## Report for paper [01](reports/01%20-%20Towards%20Detecting%20and%20Classifying%20Network%20Intrusion%20Traffic%20Using%20Deep%20Learning%20Frameworks) %%
+
+
 # Report of paper #1
 ## **Introduction**
 
