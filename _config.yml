@@ -1,0 +1,5 @@
+defaults:
+  - scope:
+      path: "Thesis Zhivko 2026.md"
+    values:
+      permalink: /
