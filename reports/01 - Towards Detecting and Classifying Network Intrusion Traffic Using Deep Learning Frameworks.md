@@ -1,3 +1,4 @@
+# 01 - Towards Detecting and Classifying Network Intrusion Traffic Using Deep Learning Frameworks
 ## **Introduction**
 
 The paper focuses on the growing problem of cybersecurity threats, specifically network intrusions such as brute force attacks, denial-of-service (DoS), and other malicious traffic. As digital systems expand, traditional rule-based intrusion detection systems (IDS) struggle to keep up with new and evolving attack patterns. This creates a need for smarter, adaptive solutions.

@@ -1,3 +1,4 @@
+# 02 - A Deep Learning Approach for Network Intrusion DetectionSystem
 ## **Introduction**
 
 The paper “A Deep Learning Approach for Network Intrusion Detection System” focuses on improving how computer networks detect cyberattacks. A Network Intrusion Detection System (NIDS) is responsible for monitoring traffic entering and leaving a network and identifying suspicious behavior. Traditionally, two main approaches are used. Signature-based systems rely on predefined rules to detect known attacks, which makes them accurate but unable to recognize new threats. Anomaly-based systems, on the other hand, attempt to detect unusual behavior and can identify unknown attacks, but they often generate a high number of false alarms.
