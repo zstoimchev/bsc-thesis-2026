@@ -1,11 +1,10 @@
-[Back to main article](../Thesis%20Zhivko%202026)
 ## **Introduction**
 
 The paper “A Deep Learning Approach for Network Intrusion Detection System” focuses on improving how computer networks detect cyberattacks. A Network Intrusion Detection System (NIDS) is responsible for monitoring traffic entering and leaving a network and identifying suspicious behavior. Traditionally, two main approaches are used. Signature-based systems rely on predefined rules to detect known attacks, which makes them accurate but unable to recognize new threats. Anomaly-based systems, on the other hand, attempt to detect unusual behavior and can identify unknown attacks, but they often generate a high number of false alarms.
 
 The authors argue that modern cyber threats are constantly evolving, making traditional methods insufficient. They highlight two major challenges in building effective intrusion detection systems: selecting the right features from network traffic data and the lack of large, high-quality labeled datasets. Labeling network data is time-consuming and often impractical due to privacy concerns. To address these issues, the paper proposes a deep learning approach that can learn useful patterns from unlabeled data and then apply this knowledge to classify labeled data. The goal is to create a more flexible and adaptive system capable of detecting both known and unknown attacks more effectively.
 
-## Methodology
+## **Methodology**
 
 The core of the proposed approach is a deep learning technique called Self-Taught Learning (STL). This method separates the learning process into two stages. In the first stage, the model learns feature representations from a large amount of unlabeled data. In the second stage, these learned features are used to train a classifier on a smaller labeled dataset. This approach is particularly useful in cybersecurity, where labeled data is limited but unlabeled data is abundant.
 
@@ -16,15 +15,11 @@ The dataset used in this study is NSL-KDD, which is an improved version of the w
 Before training, the data undergoes preprocessing. Categorical features are converted into numerical form using one-hot encoding, unnecessary features are removed, and all values are normalized to ensure consistency during training. The system is evaluated using three classification scenarios: binary classification (normal vs attack), five-class classification (normal plus four attack categories), and twenty-three-class classification (normal plus individual attack types). Performance is measured using accuracy, precision, recall, and F-measure.
 
 The most important methodological contributions can be summarized as follows:
-
 - The use of unlabeled data allows the model to overcome the limitation of scarce labeled datasets. By learning patterns from raw traffic, the system becomes more adaptable to new attack types.
-    
 - The two-stage learning process separates feature extraction from classification, which improves generalization and flexibility compared to traditional single-stage models.
-    
 - The emphasis on evaluating performance using separate training and test datasets provides a more realistic assessment of how the system would perform in real-world scenarios.
-    
 
-## Results
+## **Results**
 
 The results show that the proposed deep learning approach performs very well, particularly when compared to traditional methods. When evaluated using cross-validation on the training data, the model achieves accuracy above 98% across all classification types. This indicates that the model is highly effective at learning patterns within the dataset.
 
@@ -33,15 +28,12 @@ More importantly, when evaluated on separate test data, which represents unseen 
 A key observation is the trade-off between precision and recall. The model achieves higher recall, meaning it successfully detects a larger proportion of actual attacks. However, this comes at the cost of slightly lower precision, indicating a higher number of false positives. In the context of cybersecurity, this trade-off is often acceptable, as missing an attack can be more dangerous than incorrectly flagging normal traffic.
 
 The most important findings from the results are:
-
 - The model demonstrates strong generalization ability, maintaining good performance even on unseen test data, which is crucial for real-world deployment.
-    
 - Higher recall rates indicate that the system is effective at detecting attacks, reducing the risk of undetected threats.
-    
 - The improvement over baseline methods confirms that feature learning through deep learning provides a clear advantage compared to traditional approaches.
     
 
-## Conclusion and Future Work
+## **Conclusion and Future Work**
 
 The paper concludes that deep learning, and specifically self-taught learning, is a promising approach for building effective and flexible intrusion detection systems. By combining sparse autoencoders for feature learning with softmax regression for classification, the system can automatically extract meaningful patterns from network traffic and use them to detect attacks with high accuracy.
 
