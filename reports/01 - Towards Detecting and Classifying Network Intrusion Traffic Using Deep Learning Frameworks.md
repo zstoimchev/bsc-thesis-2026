@@ -1,3 +1,4 @@
+[Back to main article](../Thesis%20Zhivko%202026)
 ## **Introduction**
 
 The paper focuses on the growing problem of cybersecurity threats, specifically network intrusions such as brute force attacks, denial-of-service (DoS), and other malicious traffic. As digital systems expand, traditional rule-based intrusion detection systems (IDS) struggle to keep up with new and evolving attack patterns. This creates a need for smarter, adaptive solutions.
@@ -24,14 +25,13 @@ The models are trained to perform two main tasks:
 Before training, the dataset undergoes preprocessing steps such as normalization and formatting into suitable input structures for neural networks. The models are evaluated using standard metrics like accuracy, false positive rate, and false negative rate, which are critical in security contexts.
 
 To highlight the most impactful aspects of the methodology:
-
 - **Dataset choice matters**  
 	The use of CSE-CIC-IDS2018 is a major strength because it includes modern attack types and realistic traffic patterns. This directly improves the reliability of the results compared to outdated datasets like KDD99.
 - **Framework comparison is central**  
 	Instead of proposing a new algorithm, the study compares implementations across frameworks. This is useful because performance differences may come from optimization, usability, and training efficiency rather than model design alone.
 - **Focus on both detection and classification**  
 	Many works focus only on detecting attacks, but this paper also classifies them. This adds practical value since knowing the type of attack is essential for response strategies.
-
+	
 ## **Results**
 
 The results show that deep learning models perform extremely well in both detecting and classifying network intrusions. Among all tested frameworks, **fast.ai achieved the best performance**, reaching around **99% accuracy** with low false positives and false negatives.
@@ -64,7 +64,3 @@ Some areas that could be improved or expanded:
     While the focus is on deep learning frameworks, comparing against traditional machine learning models would provide more context on the actual improvement gained.
 
 For future work, research could explore lightweight models for real-time intrusion detection, hybrid systems combining deep learning with rule-based approaches, and explainable AI techniques to make decisions more transparent.
-
-## **Overall Insight**
-
-This paper is a solid demonstration that modern deep learning frameworks can achieve near-perfect performance on realistic intrusion detection tasks. The most important takeaway is not just that deep learning works, but that tooling and framework choice can significantly influence results.
