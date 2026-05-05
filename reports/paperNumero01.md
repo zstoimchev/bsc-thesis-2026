@@ -9,6 +9,8 @@ This paper uses deep learning algorithms to detect network intrusion. The author
 - **SNIDS (signature-based NIDS)**: they look for patterns in network traffic and compares them to preinstalled rules. They are good for detecting already known attacks, meaning they fail to detect new, previously unrecognized attacks. 
 - **ANIDS (anomaly-based NIDS)**: they rely on various statistical machine learning models to automatically learn patterns and create rules that distinguish normal traffic from malicious attacks. 
 
+**ANIDS** are well suited for detecting new or previously unknown attacks, but they are limited by the dataset used to train its model.
+
 
 
 
