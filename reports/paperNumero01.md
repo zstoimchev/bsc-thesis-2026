@@ -1,11 +1,68 @@
 # 01 - Towards Detecting and Classifying Network Intrusion Traffic Using Deep Learning Frameworks
-## **Introduction**
 
-The paper focuses on the growing problem of cybersecurity threats, specifically network intrusions such as brute force attacks, denial-of-service (DoS), and other malicious traffic. As digital systems expand, traditional rule-based intrusion detection systems (IDS) struggle to keep up with new and evolving attack patterns. This creates a need for smarter, adaptive solutions.
+> NIDS = Network Intrusion Detection System
 
-The authors explore how deep learning, a subset of machine learning known for handling complex patterns, can improve intrusion detection. Instead of relying on manually defined rules, deep learning models can learn patterns directly from network traffic data. The core idea is to test whether modern deep learning frameworks can accurately detect whether traffic is malicious and also classify the type of attack.
+This paper uses deep learning algorithms to detect network intrusion. The authors used various state-of-the-art deep learning frameworks like **Keras**, **TensorFlow**, **Theano**, **fast\.ai**, and **PyTorch**. They reported accuracy of about 99% using **fast\.ai** with low false positive and negative rates in both detecting and classifying various intrusion types. 
 
-A key motivation behind the study is not just accuracy, but also comparing multiple deep learning frameworks to see which performs best in real-world scenarios.
+> NIDS differs from firewall, since it monitors the incoming traffic and alarms if a thread is detected, whereas a firewall only allows/blocks traffic from trusted/unknown devices.
+### Two types of NIDS presented
+- **SNIDS (signature-based NIDS)**: they look for patterns in network traffic and compares them to preinstalled rules. They are good for detecting already known attacks, meaning they fail to detect new, previously unrecognized attacks. 
+- **ANIDS (anomaly-based NIDS)**: they rely on various statistical machine learning models to automatically learn patterns and create rules that distinguish normal traffic from malicious attacks. 
+
+
+
+
+
+
+
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+
+
+
+
+
+
 
 ## **Methodology**
 
