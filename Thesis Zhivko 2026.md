@@ -31,25 +31,44 @@
 
 ## Keywords
 > **DNN** = Deep Neural Network
+> 
 > **CNN** = Convolutional Neural Network
+> 
 > **RNN** = Recurrent Neural Network
+> 
 > **LSTM** = Long Short-Term Memory network
+> 
 > **GRU** = Gated Recurrent Unit
+> 
 > **BGRU** = Bidirectional Gated Recurrent Unit
+> 
 > **BLSTM** = Bidirectional Long Short-Term Memory
+> 
 > **MLP** = Multi-Layer Perceptron
+> 
 > **DBN** = Deep Belief Network
+> 
 > **RBM** = Restricted Boltzmann Machine
+> 
 > **STL** = Self-Taught Learning
+> 
 > **RF** = Random Forest
+> 
 > **KNN** = K-Nearest Neighbors
+> 
 > **LDA** = Linear Discriminant Analysis
+> 
 > **GNB** = Gaussian Naive Bayes
+> 
 > **SVM** = Support Vector Machine
+> 
 > **RFE** = Recursive Feature Elimination
+> 
 > **LOF** = Local Outlier Factor
+> 
 > **ACO** = Ant Colony Optimization
-> **FIRE** = Fuzzy Inference Rule-based Engine
+> 
+> **FIRE** = Fuzzy Inference Rule-based Engine 
 
 
 | Architecture / Algorithm | P1  | P2  | P4  | P5  | P6  | P7  | P8  | P9  | P10 | P11 | P12 | P13 | P14 | P15 | P16 |
