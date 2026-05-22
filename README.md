@@ -1,0 +1,3 @@
+# Analyzing modern IDS algorithms
+
+More info coming soon, stay tuned...
