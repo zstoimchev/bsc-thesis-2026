@@ -20,87 +20,43 @@
 | [16]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | **[nsl_kdd_classification](https://github.com/PradeepThapa/nsl_kdd_classification)**                                                                           | NSL-KDD                  | **Neural Network IDS** (general feed-forward neural network architecture)       |                                  |
 
 ## Objective
-1. Read all the papers
-2. Understand all the papers
-3. Learn which architecture was used in each paper
-4. Find the code on GitHub (if available)
-5. Find the two-best implementations (explained in the papers)
-6. Implement the chosen architecture
-7. Train the implemented model on the super-set provided by Danilo
-8. Compare results
+- [ ] Read all the papers, understand them, write short report pointing out what and how was done
+- [ ] Learn which architecture was used in each paper, as well as the models trained/tested on
+- [ ] Find the code on GitHub (if available), choose the best implementations of each architecture
+- [ ] Re-implement the chosen architectures, train the models on the super-set provided by Danilo
+- [ ] Compare results of the re-trained model with the available data in each of the papers
 
 ## Keywords
-> **DNN** = Deep Neural Network
-> 
-> **CNN** = Convolutional Neural Network
-> 
-> **RNN** = Recurrent Neural Network
-> 
-> **LSTM** = Long Short-Term Memory network
-> 
-> **GRU** = Gated Recurrent Unit
-> 
-> **BGRU** = Bidirectional Gated Recurrent Unit
-> 
-> **BLSTM** = Bidirectional Long Short-Term Memory
-> 
-> **MLP** = Multi-Layer Perceptron
-> 
-> **DBN** = Deep Belief Network
-> 
-> **RBM** = Restricted Boltzmann Machine
-> 
-> **STL** = Self-Taught Learning
-> 
+
 > **RF** = Random Forest
-> 
-> **KNN** = K-Nearest Neighbors
-> 
-> **LDA** = Linear Discriminant Analysis
-> 
-> **GNB** = Gaussian Naive Bayes
-> 
-> **SVM** = Support Vector Machine
-> 
-> **RFE** = Recursive Feature Elimination
-> 
-> **LOF** = Local Outlier Factor
-> 
-> **ACO** = Ant Colony Optimization
-> 
-> **FIRE** = Fuzzy Inference Rule-based Engine 
 
-
-| Architecture / Algorithm | P1  | P2  | P4  | P5  | P6  | P7  | P8  | P9  | P10 | P11 | P12 | P13 | P14 | P15 | P16 |
-| ------------------------ | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DNN                      | ✓   | ✓   |     |     | ✓   |     |     |     |     |     |     |     | ✓   |     | ✓   |
-| CNN                      |     |     |     |     | ✓   | ✓   |     |     |     |     |     |     |     |     |     |
-| RNN                      |     |     |     |     |     | ✓   |     | ✓   |     |     |     |     |     |     |     |
-| LSTM                     |     |     | ✓   |     | ✓   | ✓   |     | ✓   |     |     |     |     |     |     |     |
-| GRU                      |     |     | ✓   |     | ✓   | ✓   |     | ✓   |     |     |     |     |     |     |     |
-| BGRU                     |     |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |
-| BLSTM                    |     |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |
-| MLP                      |     |     | ✓   |     |     |     | ✓   |     |     |     |     |     |     |     |     |
-| DBN                      |     |     |     |     |     |     | ✓   |     |     |     |     |     |     |     |     |
-| RBM                      |     |     |     |     |     |     | ✓   |     |     |     |     |     |     |     |     |
-| STL                      |     |     |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |
-| Softmax                  |     |     | ✓   | ✓   |     |     |     |     |     |     |     |     |     |     |     |
-| Random Forest (RF)       |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| KNN                      |     | ✓   |     |     | ✓   |     |     |     |     |     |     |     |     |     |     |
-| LightGBM                 |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| XGBoost                  |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| AdaBoost                 |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| LDA                      |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| GNB                      |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| SVM                      |     | ✓   |     |     | ✓   |     |     |     |     |     |     |     |     |     |     |
-| Decision Tree            |     |     |     |     |     |     |     |     |     | ✓   |     | ✓   |     |     |     |
-| RFE                      |     |     |     |     |     |     |     |     |     | ✓   |     |     |     |     |     |
-| K-Means                  |     |     |     |     |     |     |     |     | ✓   |     | ✓   |     |     |     |     |
-| DBSCAN                   |     |     |     |     |     |     |     |     |     |     | ✓   |     |     |     |     |
-| Isolation Forest         |     |     |     |     |     |     |     |     |     |     | ✓   |     |     |     |     |
-| LOF                      |     |     |     |     |     |     |     |     |     |     | ✓   |     |     |     |     |
-| ACO                      |     |     |     |     |     |     |     |     |     |     |     | ✓   |     |     |     |
-| Fuzzy Logic (FIRE)       |     |     |     |     |     |     |     |     |     |     |     |     |     | ✓   |     |
-
-
+| Architecture / Algorithm                         | P1  | P2  | P4  | P5  | P6  | P7  | P8  | P9  | P10 | P11 | P12 | P13 | P14 | P15 | P16 |
+| ------------------------------------------------ | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **DNN** - Deep Neural Network                    | ✓   | ✓   |     |     | ✓   |     |     |     |     |     |     |     | ✓   |     | ✓   |
+| **CNN** - Convolutional Neural Network           |     |     |     |     | ✓   | ✓   |     |     |     |     |     |     |     |     |     |
+| **RNN** - Recurrent Neural Network               |     |     |     |     |     | ✓   |     | ✓   |     |     |     |     |     |     |     |
+| **LSTM** - Long Short-Term Memory network        |     |     | ✓   |     | ✓   | ✓   |     | ✓   |     |     |     |     |     |     |     |
+| **GRU** - Gated Recurrent Unit                   |     |     | ✓   |     | ✓   | ✓   |     | ✓   |     |     |     |     |     |     |     |
+| **BGRU** - Bidirectional Gated Recurrent Unit    |     |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |
+| **BLSTM** - Bidirectional Long Short-Term Memory |     |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |
+| **MLP** - Multi-Layer Perceptron                 |     |     | ✓   |     |     |     | ✓   |     |     |     |     |     |     |     |     |
+| **DBN** - Deep Belief Network                    |     |     |     |     |     |     | ✓   |     |     |     |     |     |     |     |     |
+| **RBM** - Restricted Boltzmann Machine           |     |     |     |     |     |     | ✓   |     |     |     |     |     |     |     |     |
+| **STL** - Self-Taught Learning                   |     |     |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |
+| Softmax                                          |     |     | ✓   | ✓   |     |     |     |     |     |     |     |     |     |     |     |
+| Random Forest (RF)                               |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| **KNN** - K-Nearest Neighbors                    |     | ✓   |     |     | ✓   |     |     |     |     |     |     |     |     |     |     |
+| LightGBM                                         |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| XGBoost                                          |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| AdaBoost                                         |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| **LDA** - Linear Discriminant Analysis           |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| **GNB** - Gaussian Naive Bayes                   |     | ✓   |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| **SVM** - Support Vector Machine                 |     | ✓   |     |     | ✓   |     |     |     |     |     |     |     |     |     |     |
+| Decision Tree                                    |     |     |     |     |     |     |     |     |     | ✓   |     | ✓   |     |     |     |
+| **RFE** - Recursive Feature Elimination          |     |     |     |     |     |     |     |     |     | ✓   |     |     |     |     |     |
+| K-Means                                          |     |     |     |     |     |     |     |     | ✓   |     | ✓   |     |     |     |     |
+| DBSCAN                                           |     |     |     |     |     |     |     |     |     |     | ✓   |     |     |     |     |
+| Isolation Forest                                 |     |     |     |     |     |     |     |     |     |     | ✓   |     |     |     |     |
+| **LOF** - Local Outlier Factor                   |     |     |     |     |     |     |     |     |     |     | ✓   |     |     |     |     |
+| **ACO** - Ant Colony Optimization                |     |     |     |     |     |     |     |     |     |     |     | ✓   |     |     |     |
 
