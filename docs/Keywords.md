@@ -10,3 +10,6 @@
 
 ### Multiclass classification
 
+> **RF** = Random Forest
+
+
