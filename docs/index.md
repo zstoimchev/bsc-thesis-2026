@@ -22,9 +22,9 @@
 #### Hypothesis: There is no such thing as 99% accuracy. A lot of over-fitting of the data is present in all researches...
 
 ## Objective
-- [ ] Read all the papers, understand them, write short report pointing out what and how was done
-- [ ] Learn which architecture was used in each paper, as well as the models trained/tested on
-- [ ] Group the papers in groups based on the Architecture that was used. Choose 2/3 groups to continue with
+- [x] Read all the papers, understand them, write short report pointing out what and how was done
+- [x] Learn which architecture was used in each paper, as well as the models trained/tested on
+- [x] Group the papers in groups based on the Architecture that was used. Choose 2/3 groups to continue with
 - [ ] Find the code on GitHub (if available), choose the best implementations of each architecture
 - [ ] Re-implement the chosen architectures, train the models on the super-set provided by Danilo
 - [ ] Compare results of the re-trained model with the available data in each of the papers
@@ -50,3 +50,12 @@
 | **[14]** | NSL-KDD                 | Deep Learning                     | Feedforward Neural Network IDS                                   | PyTorch                                     |
 | **[15]** | Multiple datasets       | Fuzzy Logic / Hybrid IDS          | FIRE fuzzy logic-based IDS                                       | Custom Python implementation                |
 | **[16]** | NSL-KDD                 | Deep Learning                     | Feedforward Neural Network (MLP)                                 | TensorFlow/Keras                            |
+
+## Papers grouped by architecture
+| Group                        | Papers                |
+| ---------------------------- | --------------------- |
+| DNN / MLP / Feedforward      | 1, 14, 16             |
+| CNN-based                    | 3, 7                  |
+| RNN / LSTM / GRU-based       | 4, 6, 9               |
+| DBN / Autoencoder / Ensemble | 5, 8                  |
+| Classical ML / Hybrid ML     | 2, 10, 11, 12, 13, 15 |
