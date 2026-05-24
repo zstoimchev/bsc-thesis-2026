@@ -30,8 +30,8 @@
 - [ ] Compare results of the re-trained model with the available data in each of the papers
 
 
-## Architecture overview
-	
+# Architecture overview
+
 | **#**    | Dataset                 | Method                            | Architecture / Model                                             | Framework / Library                         |
 | -------- | ----------------------- | --------------------------------- | ---------------------------------------------------------------- | ------------------------------------------- |
 | **[1]**  | CSE-CIC-IDS2018         | Deep Learning                     | DNN / MLP (Feedforward Neural Network)                           | fast.ai, Keras, TensorFlow, Theano, PyTorch |
@@ -52,6 +52,7 @@
 | **[16]** | NSL-KDD                 | Deep Learning                     | Feedforward Neural Network (MLP)                                 | TensorFlow/Keras                            |
 
 ## Papers grouped by architecture
+
 | Group                        | Papers                |
 | ---------------------------- | --------------------- |
 | DNN / MLP / Feedforward      | 1, 14, 16             |
