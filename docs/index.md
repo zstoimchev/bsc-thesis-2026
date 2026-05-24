@@ -60,3 +60,6 @@
 | RNN / LSTM / GRU-based       | 4, 6, 9               |
 | DBN / Autoencoder / Ensemble | 5, 8                  |
 | Classical ML / Hybrid ML     | 2, 10, 11, 12, 13, 15 |
+
+### TODO:
+As next step, group the papers based on architecture and method. For the two approaches, choose one model (recent one) with good (read best) performance and continue the work using those models.
