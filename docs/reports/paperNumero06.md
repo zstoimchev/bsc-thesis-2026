@@ -1,4 +1,4 @@
-# A GRU deep learning system against attacks in software defined networks
+# 06 - A GRU deep learning system against attacks in software defined networks
 
 This paper proposes an SDN defense system that detects DDoS and intrusion attacks from individual IP flow records using a GRU deep learning model, then immediately applies a directed mitigation action to block the attacker’s traffic. Its main contribution is showing that **single-flow analysis** can give fast detection and practical mitigation with good accuracy and feasible processing speed.
 

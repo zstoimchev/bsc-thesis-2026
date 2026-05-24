@@ -1,4 +1,4 @@
-# Applying Convolutional Neural Network for Network Intrusion Detection
+# 07.1 - Applying Convolutional Neural Network for Network Intrusion Detection
 
 This paper studies whether CNN and CNN-based hybrid models can improve network intrusion detection, and the main result is that CNNs perform very well, often better than classical machine learning methods, especially for the KDDCup ’99 dataset. The strongest conclusion is that modeling network traffic as a time series and learning hierarchical features with CNNs is effective for both binary and multi-class intrusion detection.
 
@@ -33,7 +33,7 @@ The main conclusion is that CNN and CNN-based hybrid networks are suitable for i
 They further note that deep learning is promising for IDS, but training complex models is expensive and requires substantial computation. Another limitation is that the benchmark datasets are old, so future work should evaluate these methods on newer, real-world traffic such as UNSW-NB15 or live network data.
 
 ---
-# Evaluating Effectiveness of Shallow and Deep Networks to Intrusion Detection System
+# 07.2 - Evaluating Effectiveness of Shallow and Deep Networks to Intrusion Detection System
 
 This paper evaluates how well shallow and deep neural networks work for network intrusion detection, and its main conclusion is that deeper models usually perform better, especially on the harder NSL-KDD dataset. The key takeaway is that deep networks capture more complex attack patterns than classical shallow classifiers, but they also need more careful tuning and longer training.
 

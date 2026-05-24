@@ -1,4 +1,4 @@
-# 05 - A Subset Feature Elimination Mechanism for Intrusion Detection System
+# 09 - A Subset Feature Elimination Mechanism for Intrusion Detection System
 
 This paper focuses on improving intrusion detection systems by selecting only the most relevant features from network traffic data. The authors argue that using all available features is inefficient, since many of them are redundant or irrelevant and may decrease classifier performance while increasing computation time.
 
