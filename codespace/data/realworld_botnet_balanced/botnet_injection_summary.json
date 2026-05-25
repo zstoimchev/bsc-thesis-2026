@@ -1,0 +1,16 @@
+{
+  "created": "Botnet injection for balanced evaluation",
+  "method": "Synthetic C2 botnet traffic (80 minions \u2192 1 C2 server)",
+  "botnet_stats": {
+    "minion_count": 80,
+    "flows_generated": 400000,
+    "total_packets": 101875997
+  },
+  "output_dir": "C:\\Users\\dnllz\\Desktop\\Random\\Thesis Paper\\models\\parquets\\realworld_botnet_balanced",
+  "datasets_created": [
+    "realworld_cic_like_botnet_balanced.parquet",
+    "realworld_nsl_like_botnet_balanced.parquet"
+  ],
+  "purpose": "Evaluate pre-trained models on balanced dataset (20% malicious) with realistic attack patterns",
+  "expected_results": "Lower accuracy than original realworld due to class balance; precision/recall/F1 now meaningful"
+}
