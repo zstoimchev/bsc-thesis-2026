@@ -1,0 +1,92 @@
+{
+  "generated_utc": "2026-04-21T15:22:38.050613Z",
+  "pcap_dir": "C:\\Users\\dnllz\\Desktop\\Random\\Thesis Paper\\models\\realworlddata",
+  "malicious_ratio": 0.05,
+  "capture_filter_ports": [
+    8101,
+    80,
+    443,
+    25,
+    22,
+    9292,
+    5000,
+    25565,
+    25566,
+    3389,
+    8080,
+    8081,
+    23,
+    587,
+    465,
+    993,
+    995,
+    53,
+    67,
+    68,
+    123,
+    3306,
+    5432,
+    1433,
+    445
+  ],
+  "capture_filter_services_context": {
+    "22": "ssh",
+    "23": "telnet",
+    "25": "smtp",
+    "53": "dns",
+    "67": "dhcp",
+    "68": "dhcp",
+    "80": "http",
+    "123": "ntp",
+    "443": "https",
+    "445": "smb",
+    "465": "smtps",
+    "587": "smtp_submission",
+    "993": "imaps",
+    "995": "pop3s",
+    "1433": "mssql",
+    "3306": "mysql",
+    "3389": "rdp",
+    "5000": "webapp_custom",
+    "5432": "postgres",
+    "8080": "webapp_alt",
+    "8081": "ssh_custom",
+    "8101": "app_custom",
+    "9292": "webapp_custom",
+    "25565": "minecraft",
+    "25566": "minecraft_alt"
+  },
+  "captures": [
+    {
+      "file": "out_14042026.pcap",
+      "packets": 9863195,
+      "flows": 1121088,
+      "first_packet_utc": "2026-04-06T14:44:15.291882Z",
+      "last_packet_utc": "2026-04-15T08:35:42.377298Z"
+    },
+    {
+      "file": "out_17042026.pcap",
+      "packets": 854057,
+      "flows": 165944,
+      "first_packet_utc": "2026-04-17T15:43:51.386909Z",
+      "last_packet_utc": "2026-04-18T08:45:49.794323Z"
+    },
+    {
+      "file": "out_18042026.pcap",
+      "packets": 442,
+      "flows": 17,
+      "first_packet_utc": "2026-04-18T08:50:16.260897Z",
+      "last_packet_utc": "2026-04-18T08:51:35.949058Z"
+    }
+  ],
+  "outputs": {
+    "cic_like": "C:\\Users\\dnllz\\Desktop\\Random\\Thesis Paper\\models\\parquets\\realworld\\realworld_cic_like.parquet",
+    "nsl_like": "C:\\Users\\dnllz\\Desktop\\Random\\Thesis Paper\\models\\parquets\\realworld\\realworld_nsl_like.parquet",
+    "rows_cic_like": 1287049,
+    "rows_nsl_like": 1287049,
+    "label_distribution": {
+      "benign": 1222342,
+      "malicious_heuristic": 64707
+    }
+  }
+}
