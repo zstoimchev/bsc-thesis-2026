@@ -63,3 +63,23 @@
 
 ### TODO:
 As next step, group the papers based on architecture and method. For the two approaches, choose one model (recent one) with good (read best) performance and continue the work using those models.
+
+
+## Groupings by architecture
+
+| Group                        | Papers                | **Chosen representative** |
+| ---------------------------- | --------------------- | ------------------------- |
+| DNN / MLP / Feedforward      | 1, 14, 16             |                           |
+| CNN-based                    | 3, 7                  |                           |
+| RNN / LSTM / GRU-based       | 4, 6, 9               |                           |
+| DBN / Autoencoder / Ensemble | 5, 8                  |                           |
+| Classical ML / Hybrid ML     | 2, 10, 11, 12, 13, 15 |                           |
+
+## Groupings by method
+
+| Group                        | Papers                      | **Chosen representative** |
+| ---------------------------- | --------------------------- | ------------------------- |
+| Deep Learning                | 1, 3, 4, 5, 6, 7, 8, 14, 16 |                           |
+| Machine Learning             | 2, 11                       |                           |
+| Unsupervised / Clustering    | 10, 12                      |                           |
+| Hybrid / Combined approaches | 3, 4, 7, 8, 13, 15          |                           |
