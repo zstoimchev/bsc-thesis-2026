@@ -6,15 +6,15 @@ Reported 99% IDS accuracy often depends heavily on dataset choice, preprocessing
 
 ## Objective
 
-- [x] Read the selected papers and write short reports, outlining what and how was done.
-- [x] Identify the architecture and method used in each paper, alongside the dataset(s) used.
-- [x] Group the papers by architecture and by method.
-- [x] Decide which papers are useful as main representatives and which are only background.
-- [ ] Audit the available GitHub repositories.
-- [ ] Select 2–3 representative implementations.
-- [ ] Re-implement the chosen models in one clean codebase.
-- [ ] Train the selected models on Danilo’s DDoS superset.
-- [ ] Compare the results with the original papers using common metrics.
+- [x]  Read the selected papers and write short reports, outlining what and how was done.
+- [x]  Identify the architecture and method used in each paper, alongside the dataset(s) used.
+- [x]  Group the papers by architecture and by method.
+- [x]  Decide which papers are useful as main representatives and which are only background.
+- [ ]  Audit the available GitHub repositories.
+- [ ]  Select 2–3 representative implementations.
+- [ ]  Re-implement the chosen models in one clean codebase.
+- [ ]  Train the selected models on Danilo’s DDoS superset.
+- [ ]  Compare the results with the original papers using common metrics.
 
 ---
 
