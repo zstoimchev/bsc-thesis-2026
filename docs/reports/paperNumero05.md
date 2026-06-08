@@ -1,49 +1,29 @@
 # 05 - A Deep Learning Approach for Network Intrusion Detection System
 
-This paper proposes a **deep learning-based approach** for detecting network intrusions using a method called **Self-taught Learning (STL)**. The idea is to improve anomaly-based intrusion detection by automatically learning useful features from data instead of manually selecting them.
+> NIDS = Network Intrusion Detection System  
+> STL = Self-Taught Learning  
+> SAE = Sparse Autoencoder  
+> SMR = Softmax Regression
 
-> The main advantage of this approach is that it can use large amounts of **unlabeled data**, which is easier to obtain than labeled data.
 
-As in previous work, the focus is on **ANIDS (anomaly-based systems)**, since they are capable of detecting **unknown and new attacks**, unlike signature-based systems.
+This paper proposes a deep learning-based approach for network intrusion detection using Self-Taught Learning. The main idea is to improve anomaly-based intrusion detection by automatically learning useful feature representations instead of relying only on manually selected features.
 
-The core of the paper is the **Self-taught Learning approach**, which works in two stages.
+The proposed method uses a two-stage process. In the first stage, unsupervised feature learning is performed using a sparse autoencoder. The autoencoder learns a compressed representation of the input data and extracts useful patterns from the network traffic features. In the second stage, the learned representation is used for supervised classification using softmax regression.
 
-First, the model performs **unsupervised feature learning** using a **sparse auto-encoder**. In this stage, the network learns to represent input data in a compressed way, extracting important patterns automatically. Then, in the second stage, these learned features are used for **classification** using **softmax regression**. This means that instead of training directly on raw features, the model first transforms the data into a better representation, which improves classification performance.
+The authors focus on anomaly-based NIDS because signature-based systems are effective for known attacks but cannot reliably detect new or unknown attacks. Anomaly-based systems are more flexible because they learn patterns from data, although they can also produce higher false positives.
 
-The authors use the **NSL-KDD dataset**, which is an improved version of the older KDD’99 dataset. It contains labeled network traffic with both normal and attack records, grouped into categories such as:
-- **DoS**
-- **Probe**
-- **R2L**
-- **U2R**
-- and **normal traffic**
+The paper uses the NSL-KDD dataset, which is an improved version of KDD’99. The dataset contains normal traffic and attack traffic grouped into DoS, Probe, R2L, and U2R categories. Each record originally contains 41 features. Three nominal features are converted using 1-to-n encoding, one feature that always has value zero is removed, and after preprocessing the dataset has 121 attributes. The values are then normalized using min-max normalization.
 
-The models are trained to perform three types of classification:
-- **Binary classification** (normal vs attack)
-- **5-class classification** (normal + 4 attack categories)
-- **23-class classification** (normal + all attack types)
+The models are evaluated on three classification tasks. The first is 2-class classification, where traffic is classified as normal or attack. The second is 5-class classification, where the classes are normal, DoS, Probe, R2L, and U2R. The third is 23-class classification, where the model predicts normal traffic or one of the individual attack types.
 
-The evaluation is done in two ways, but the important one is using **separate training and test data**, since the test set contains **previously unseen attacks**, making the evaluation more realistic.
+The authors evaluate the model in two ways. First, they use 10-fold cross-validation on the training data for 2-class, 5-class, and 23-class classification. In this setting, STL achieves more than 98% accuracy for all classification tasks. However, this result is less realistic because it uses only the training data.
 
-The models are evaluated using standard metrics like *accuracy*, *precision*, *recall*, and *F-measure*.
+The more important evaluation uses separate training and test data. In this setting, the paper reports results for 2-class and 5-class classification. For 2-class classification, STL achieves 88.39% accuracy, compared with 78.06% for softmax regression without feature learning. For 5-class classification, STL achieves 79.10% accuracy, compared with 75.23% for softmax regression.
 
-The results show that the deep learning approach performs very well, especially for **binary classification**.
+An important observation is the tradeoff between precision and recall. For 2-class classification, STL has lower precision than softmax regression, but much higher recall. This means that STL detects more attacks, although it may also produce more false positives. For intrusion detection, this can still be useful because missing attacks is often more dangerous than raising extra alarms.
 
-For **2-class classification (normal vs attack)**:
-- Accuracy is around **88% on test data**
-- This is significantly better than basic classifiers like softmax without feature learning (~78%)
+The main contribution of the paper is showing that automatic feature learning with a sparse autoencoder can improve intrusion detection performance compared with directly applying softmax regression to the raw features.
 
-For **5-class classification**:
-- Accuracy is around **79%**
-- Performance is lower than binary classification, as expected
+However, the paper has limitations. Although Self-Taught Learning can theoretically use large amounts of unlabeled data, this experiment uses the same NSL-KDD training data as unlabeled data during the feature-learning phase. The paper also relies on NSL-KDD, which is an older benchmark dataset and may not represent modern DDoS traffic well. The paper is therefore more useful as an autoencoder/representation-learning IDS study than as a direct DDoS detection representative.
 
-On training data (cross-validation), accuracy exceeds **98%**, but this is less realistic.
-
-An important observation is the tradeoff between **precision and recall**.
-
-The STL model achieves:
-- **Higher recall** → detects more attacks  
-- Slightly **lower precision** → more false positives  
-
-Because of this, the overall **F-measure is better**, meaning the model is more effective at detecting intrusions even if it raises more alarms.
-
-The authors conclude that **automatic feature learning using deep learning** significantly improves intrusion detection. The model is especially effective when labeled data is limited, since it can learn from unlabeled data first.
+For my research, Paper 05 should be grouped under Autoencoder / Representation Learning. It is useful background for understanding feature learning, but it is probably not one of the main papers unless an autoencoder-based model is selected for implementation.

@@ -1,41 +1,27 @@
 # 09 - A Subset Feature Elimination Mechanism for Intrusion Detection System
 
-This paper focuses on improving intrusion detection systems by selecting only the most relevant features from network traffic data. The authors argue that using all available features is inefficient, since many of them are redundant or irrelevant and may decrease classifier performance while increasing computation time.
+This paper focuses on improving intrusion detection by selecting only the most relevant network traffic features. The authors argue that using all available features can increase computation time and may reduce classifier performance because some features are redundant, irrelevant, or noisy.
 
-The proposed approach combines a **Decision Tree classifier** with **Recursive Feature Elimination (RFE)** and feature ranking techniques based on information gain. The goal is to improve both detection accuracy and execution speed by removing unnecessary features from the dataset.
+The proposed approach combines univariate feature selection, Recursive Feature Elimination, and a Decision Tree classifier. The goal is to reduce the number of features while improving accuracy and reducing execution time.
 
-The experiments are performed using the **NSL-KDD dataset**, which is an improved version of the older KDD’99 dataset. The dataset contains 41 traffic features and includes multiple attack categories such as DoS, Probe, R2L, U2R, and normal traffic.
+The experiments are performed on the NSL-KDD dataset, which is an improved version of the older KDD’99 dataset. The dataset contains normal traffic and four main attack categories: DoS, Probe, R2L, and U2R. Each record originally contains 41 traffic features grouped into basic features, time-based traffic features, content features, and host-based traffic features.
 
-> Instead of training the classifier on all 41 features, the authors attempt to identify a smaller subset of features that best represents each attack class.
+The methodology starts with preprocessing. Since scikit-learn requires numerical input, categorical features are converted using one-hot encoding. The features are then scaled so that large-value features do not dominate the model.
 
-The feature selection process starts with feature scoring using an **ANOVA F-test**. After that, **Recursive Feature Elimination** is applied.
+Feature selection is performed in two stages. First, univariate feature selection is applied using the ANOVA F-test and SelectPercentile to score individual features. After that, Recursive Feature Elimination is applied using a Decision Tree classifier. RFE repeatedly trains the classifier, ranks the features, removes the least important ones, and repeats the process until a smaller relevant feature subset is found.
 
-The RFE process repeatedly trains the classifier, ranks the features according to importance, removes the least important feature, and retrains the model again. This process continues until the most relevant subset of features is found.
+The Decision Tree classifier uses information gain / entropy-style splitting. Since decision trees naturally produce feature importance scores based on how much each feature reduces the splitting criterion, they are suitable for this feature selection approach.
 
-The classification itself is performed using a **Decision Tree**, since decision trees naturally rank features using entropy and information gain.
+An important result of the paper is that different attack classes depend on different features. This means that one universal feature subset may not be optimal for all attack categories. The most relevant feature for DoS is `same_srv_rate`, for Probe it is `src_bytes`, for R2L it is `dst_host_srv_count`, and for U2R it is `root_shell`.
 
-An important observation in the paper is that different attacks depend on different features. For example, the most relevant features for DoS, Probe, R2L, and U2R attacks are different, meaning that no single subset works equally well for every attack category.
+After feature selection, the number of features is reduced significantly. The proposed method selects 12 features for DoS, 15 for Probe, 13 for R2L, and 11 for U2R.
 
-After the elimination process, the final feature subsets are much smaller than the original dataset. Depending on the attack category, the classifier uses only around 11–15 features instead of all 41.
+The model is evaluated using accuracy, precision, recall, F-measure, confusion matrices, and 10-fold cross-validation. The paper also evaluates execution time.
 
-The models are evaluated using metrics such as *accuracy*, *precision*, *recall*, *F-measure*, and confusion matrices. A 10-fold cross-validation is also performed during evaluation.
+The results show that feature selection improves performance. The proposed method achieves approximately 99.90% accuracy for DoS, 99.80% for Probe, 99.88% for R2L, and 99.95% for U2R. The paper also shows that execution time is reduced. For example, building the DoS decision tree classifier after feature selection takes only about 0.956 seconds, which is much faster than using all 41 features.
 
-The results show that feature elimination significantly improves performance.
+The main contribution of this paper is showing that feature selection can make an IDS model simpler, faster, and more accurate. It also shows that feature importance differs between attack categories.
 
-For example:
-- DoS accuracy reaches ~99.90%
-- Probe reaches ~99.80%
-- R2L improves from ~97% to ~99.88%
-- U2R achieves ~99.95%
+However, the paper has limitations. It uses NSL-KDD, which is an older benchmark dataset and may not represent modern DDoS traffic. The method is based on classical machine learning, not deep learning. The reported accuracies are very high, so they should be interpreted carefully, especially because decision trees can overfit and because the results may depend strongly on the dataset and evaluation setup.
 
-The paper especially highlights the improvement for **R2L attacks**, since they are usually difficult to classify correctly.
-
-Another important result is the reduction in execution time. After feature selection, training becomes much faster because the classifier processes far fewer attributes.
-
-For example, the DoS classifier training time decreases from about 15.5 seconds to less than 1 second after feature reduction.
-
-This demonstrates that removing irrelevant features improves both efficiency and classifier quality.
-
-The authors compare their method with several previous feature selection approaches and show that their recursive feature elimination approach achieves some of the best overall accuracies among the compared methods.
-
-The paper concludes that feature selection plays a major role in intrusion detection systems. Removing redundant and irrelevant features makes IDS models faster, simpler, and more accurate.
+For my research, Paper 09 is useful as a feature-selection and classical machine learning background paper. It should be grouped under Classical ML / Feature Selection, not under deep learning or RNN/LSTM/GRU models. It is useful for explaining why careful feature selection matters, but it is probably not one of the main DDoS representative papers.

@@ -1,67 +1,25 @@
 # 02 - Detection and Characterization of DDoS Attacks Using Time-Based Features
 
-This paper focuses on detecting and classifying **DDoS attacks** using machine learning and deep learning models. The main idea is that instead of using all available network traffic features, it is possible to use only a **small subset of time-based features** and still achieve very high performance, while significantly reducing training time.
+This paper focuses on detecting and classifying Distributed Denial-of-Service (DDoS) attacks using machine learning and deep learning models. The main idea is that DDoS attacks have strong temporal patterns, so a reduced set of time-based flow features may be enough to detect attacks efficiently.
 
-DDoS attacks are designed to overwhelm a target system using a large number of requests coming from multiple machines (botnets), effectively denying service to legitimate users.
+The authors use the CICDDoS2019 dataset, which contains benign traffic and multiple modern DDoS attack types. Although the original dataset contains more than 70 million samples, it is highly imbalanced, with a very small amount of benign traffic compared to attack traffic. Because of this, the authors clean, down-sample, and balance the data before training.
 
-The authors are interested in whether **time-related statistics in network traffic flows** (such as packet timing and frequency) are sufficient for detecting and classifying attacks.
+The preprocessing includes removing unnecessary or problematic features, such as features containing only zero values, identifier features that could cause overfitting, duplicate/unlabeled features, and samples with missing or infinite values. Normalization is applied after the train-test split to avoid introducing bias.
 
-> **Goal: show that a reduced feature set (only time-based features) can achieve comparable accuracy to full feature sets, while improving efficiency and training speed.**
+The paper compares two feature sets. The first is the control feature set, which contains 70 cleaned features. The second is the reduced time-based feature set, which contains only 25 features. These features include timing-related flow statistics such as flow duration, forward and backward inter-arrival times, flow bytes per second, and flow packets per second.
 
-### Dataset used
-The dataset used is **CICDDoS2019**, which contains both benign traffic and 12 types of DDoS attacks. It originally includes ~70 millions of samples, so the authors **downsampled and balanced the data** to make training feasible and avoid bias.
-#### Types of attacks included:
-- **SYN Flood**
-- **UDP Flood**
-- **LDAP**
-- **DNS**
-- **NetBIOS**
-- **SNMP**
-- **NTP**
-- **SSDP**
-- **MSSQL**
-- **TFTP**
-- **Portmap**
-- **UDP-Lag**
+The experiments are divided into two scenarios. Scenario A is binary classification, where the model predicts whether traffic is benign or DDoS. Scenario B is multi-class classification, where the model identifies the specific DDoS attack type. Scenario B does not include benign traffic; it only classifies among DDoS attack types such as SYN Flood, UDP Flood, LDAP, DNS, NetBIOS, SNMP, NTP, SSDP, MSSQL, TFTP, Portmap, and UDP-Lag.
 
-The authors focus on **time-based features**, which are statistics computed over network traffic flows within a time window. These include things like packet arrival times, flow duration, and packet rate statistics (mean, min, max, standard deviation).
+The authors compare nine classifiers. These include Random Forest, K-Nearest Neighbors, Support Vector Machine, Gaussian Naive Bayes, Linear Discriminant, LightGBM, XGBoost, AdaBoost, and a deep neural network implemented with fast.ai.
 
-These features are important because DDoS attacks typically generate **large volumes of traffic in short time intervals**, meaning their temporal patterns differ from normal traffic.
+The models are evaluated using accuracy, precision, F1-score, AUC, and training time. Training time is especially important because the paper focuses on whether reduced time-based features can support near-real-time or continuous learning systems.
 
-Compared to the full feature set (~70 features), the time-based subset contains only **25 features**, which:
-- reduces dimensionality
-- reduces noise
-- speeds up training
-- makes real-time applications more feasible
+The results show that time-based features are very effective for binary DDoS detection. In Scenario A, the best models achieve more than 99% accuracy using all 70 features and more than 98% accuracy using only the 25 time-based features. The accuracy drop is small, while the median training time is reduced by around 36%.
 
-The models are trained to perform two main tasks:
-1. **Binary classification** (benign vs DDoS traffic): The model learns to distinguish normal traffic from attack traffic.
-2. **Multi-class classification** (specific attack type): The model identifies which of the 12 DDoS attacks is occurring.
+For multi-class DDoS attack characterization, the task is harder. In Scenario B, XGBoost achieves the best result, with around 74% accuracy using all features and around 69% accuracy using only time-based features. This shows that the reduced feature set is still useful, but identifying the exact DDoS attack type is more difficult than detecting whether traffic is benign or malicious.
 
-The authors compare **9 different classifiers**, including traditional machine learning, boosting methods, and one deep learning model:
-- **Traditional ML:**  
-	- Random Forest (RF)  
-	- K-Nearest Neighbors (KNN)  
-	- Support Vector Machine (SVM)  
-	- Gaussian Naive Bayes (GNB)  
-	- Linear Discriminant (LD)  
-- **Boosting methods:**  
-	- LightGBM (LGBM)  
-	- XGBoost (XGB)  
-	- AdaBoost (ADA)  
-- **Deep Learning:**  
-	- Deep Neural Network (DNN, using fast.ai)
+The most important conclusion is that time-based features provide a good tradeoff between accuracy and efficiency. XGBoost gives the best overall accuracy, while LightGBM and Linear Discriminant provide a strong speed-performance balance. For binary DDoS detection, time-based features are especially promising because they reduce training time while keeping high accuracy.
 
-The models are evaluated using standard metrics such as ***accuracy***, ***precision***, ***F1-score***, ***AUC***, and also **training time**, which is important for practical deployment.
+The paper also has limitations. The dataset was heavily downsampled, some attack types such as low-rate DDoS were not tested, the original flow interval settings of CICDDoS2019 were not fully clear, and only limited hyperparameter tuning was performed. Because of this, the results should be interpreted carefully and re-evaluated on a common dataset.
 
-The results show that models perform extremely well for **binary classification**. Using all features, accuracy is around **99%**, and when using only time-based features, the accuracy remains almost the same (~98–99%), with only a very small drop.
-
-For **multi-class classification**, the task is harder. The best models achieve around **70–74% accuracy** with all features, and slightly lower (~65–70%) when using only time-based features.
-
-However, the key result is that **training time is significantly reduced** when using time-based features:
-- about **36% faster** for binary classification
-- about **25% faster** for multi-class classification
-
-Among the models, **XGBoost achieved the best overall accuracy**, while **LightGBM and Linear Discriminant** provided a very good balance between speed and performance. Random Forest also performed consistently well, while some models like Naive Bayes and SVM performed worse, especially with reduced features.
-
-The authors conclude that **time-based features alone are sufficient** for effective DDoS detection and classification. Even though there is a small drop in accuracy, the improvement in efficiency makes this approach very useful for real-world systems, especially those requiring **near real-time detection or continuous learning**.
+For my research, this paper is highly relevant. It should be used as a strong representative of classical machine learning and boosting-based DDoS detection. It is especially useful as a baseline for comparing deep learning models against XGBoost, LightGBM, or Random Forest on the same prepared DDoS superset.

@@ -1,54 +1,30 @@
 # 04 - An Intrusion Detection System Using a Deep Neural Network With Gated Recurrent Units
 
 > IDS = Intrusion Detection System  
+> RNN = Recurrent Neural Network  
 > GRU = Gated Recurrent Unit  
-> RNN = Recurrent Neural Network
+> BGRU = Bidirectional Gated Recurrent Unit  
+> MLP = Multilayer Perceptron
 
-This paper proposes a **deep learning-based IDS** that uses **Recurrent Neural Networks (RNNs)** with **Gated Recurrent Units (GRUs)** for detecting network intrusions.
 
-This paper proposes a **deep learning-based IDS** using **Recurrent Neural Networks (RNNs)** with **Gated Recurrent Units (GRUs)**. The main idea is that network traffic has **temporal behavior** (time-related patterns), meaning that previous events and packet sequences are important for detecting attacks. Because of this, the authors use **RNNs**, since they can remember information from previous time steps.
+This paper proposes a deep learning-based intrusion detection system using Recurrent Neural Networks with Gated Recurrent Units. The main idea is that some network attacks have temporal behavior, meaning that previous network events can help classify later traffic. Because of this, the authors use GRU-based recurrent networks, which are able to keep information from previous time steps.
 
-> Traditional machine learning models usually treat records independently, while RNNs can “remember” previous information and use it for future predictions (can process sequential/time-series data).
+The proposed system is composed of four main parts: a preprocessing module, a GRU or bidirectional GRU module, an MLP module, and a softmax output layer. The preprocessing module transforms and normalizes the input data. The GRU module extracts temporal features from the traffic records. The MLP performs nonlinear classification based on the GRU output, and the softmax layer produces the final class probabilities.
 
-The authors aim to improve intrusion detection performance while also reducing the need for **manual feature engineering**.
+The authors choose GRU because it is simpler than LSTM. GRU has fewer gates and fewer parameters, while still being able to learn sequential dependencies. This makes GRU potentially faster and easier to train than LSTM, which is important for intrusion detection systems.
 
-The proposed IDS consists of three main components:
-- **GRU module**: which extracts and stores temporal features from network traffic
-- **MLP (Multilayer Perceptron)**: performs non-linear classification using the GRU output
-- **Softmax layer**: outputs final class probabilities
-> The GRU is the core part of the system.
+The paper also evaluates Bidirectional GRU. A bidirectional recurrent model processes the sequence in both forward and backward directions, allowing the model to use both previous and later context when learning patterns.
 
-Compared to **LSTM**, GRU has *fewer parameters*, *simpler structure*, *faster convergence* and *lower computational cost*.
+The experiments are performed on the KDD 99 and NSL-KDD datasets. The model performs multi-class classification using the high-level categories Normal, DoS, Probe, R2L, and U2R. The evaluation uses metrics such as accuracy, detection rate, false positive rate, precision, and F-measure.
 
-The authors also experiment with **Bidirectional GRU (BGRU)**, which processes sequences both forward and backward in time.
+The authors compare several architectures, including LSTM, GRU, Bidirectional GRU, MLP alone, and combinations of recurrent networks with MLP. The best results are achieved by the BGRU + MLP model.
 
-> The experiments later show that GRU also achieves better performance for intrusion detection.
+The reported results are very strong. The proposed system achieves a detection rate of around 99.42% on KDD 99 and 99.31% on NSL-KDD, with false positive rates of 0.05% and 0.84%. The detection of DoS attacks is especially strong, reaching almost 100% detection rate.
 
-The authors evaluate the system using the **KDD99** and **NSL-KDD** datasets, which contain both normal traffic and attack traffic. The attacks belong to four main categories: **DoS**, **Probe**, **R2L**, **U2R**.
+The experiments show three important findings. First, GRU performs better than LSTM in this setting. Second, Bidirectional GRU performs better than normal GRU. Third, combining GRU/BGRU with MLP performs better than using either recurrent layers or MLP alone.
 
-The datasets also include attack types that appear only in the test set, which helps evaluate how well the model generalizes to unseen attacks.
+However, the results are not equally strong for all attack categories. DoS and Probe attacks are detected much better than R2L and U2R attacks. The main reasons are that R2L and U2R have very few samples in the datasets and their behavior is less clearly time-based than DoS and Probe attacks.
 
-The IDS is trained as a **multi-class classifier**, meaning that it predicts the exact traffic category instead of only determining whether traffic is malicious or benign.  
+The paper also has limitations. KDD 99 and NSL-KDD are old benchmark datasets and may not represent modern real network traffic. The authors also state that the system still needs more engineering work before it can be applied to real network environments.
 
-The evaluation uses metrics such as ***accuracy***, ***detection rate***, ***false positive rate***, ***precision***, and ***F-measure***. The authors place strong emphasis on **Detection Rate** and **False Positive Rate**, since intrusion detection systems must detect attacks while minimizing false alarms.
-
-The results show that the proposed model performs extremely well on both datasets.
-
-- On **KDD99**, the model achieved overall detection rate of **99.42%**, and false positive rate of **0.05%**
-- On **NSL-KDD**, the model achieved overall detection rate of **99.31%**, and false positive rate of **0.84%**
-- The performance for **DoS attacks** is especially strong, with detection rates close to **100%** on both datasets.
-
-The experiments also compares several architectures, including, *LSTM*, *GRU*, *Bidirectional GRU*, *MLP alone*, *combinations of RNN + MLP*.
-
-The best results are achieved using **Bidirectional GRU combined with MLP (BGRU + MLP)**.
-
-#### The experiments show that:
-- GRU performs better than LSTM
-- Bidirectional GRU performs better than normal GRU
-- Combining RNN with MLP performs better than using either individually
-
-The models also converge quickly, requiring only around **20 epochs**.
-
-The system performs much better on **DoS** and **Probe** attacks than on **R2L** and **U2R** attacks. The authors explain this by saying that DoS and Probe attacks have clearer **time-series behavior**, making them easier for RNNs to learn. R2L and U2R attacks are also underrepresented in the datasets, which reduces learning quality.
-
-The authors conclude that **GRU-based deep neural networks are highly effective for intrusion detection**, especially for attacks with temporal patterns. The proposed system achieves very high detection rates with very low false positives, while also being simpler and faster than LSTM-based systems.
+For my research, Paper 04 is useful as a representative of the RNN / GRU-based architecture group. It is especially useful for understanding why GRU can be applied to intrusion detection. However, because the datasets are old and the paper is not focused specifically on modern DDoS detection, it should probably be used as background for GRU-based IDS rather than as the main DDoS representative.
