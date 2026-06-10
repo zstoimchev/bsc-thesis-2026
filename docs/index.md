@@ -115,14 +115,6 @@ The first audit phase focuses only on the most relevant repositories: papers wit
 
 For starters, choose only the repositories from all papers that were marked as important or that have high relevance with DDoS detection, namely papers number: \[2\], \[1\], \[14\], \[6\], \[7.1\]
 
-| Paper | Repository link                                                                                                                                                     | Framework                           | Dataset used            | Runnable | Usable | Decision                        | Notes                         |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------------------- | -------- | ------ | ------------------------------- | ----------------------------- |
-| 02    | [DDoS_Traffic_Research](https://github.com/Colorado-Mesa-University-Cybersecurity/DDoS_Traffic_Research)                                                            | scikit-learn, LightGBM, XGBoost     | CICDDoS2019             | TBD      | TBD    | Audit first                     | Main classical ML candidate   |
-| 01    | [DeepLearning-IDS](https://github.com/Colorado-Mesa-University-Cybersecurity/DeepLearning-IDS)                                                                      | fast.ai, Keras, TensorFlow, PyTorch | CSE-CIC-IDS2018         | TBD      | TBD    | Possible MLP reference          | Simple neural baseline        |
-| 14    | [NSL-KDD-Neural-Networks-Pytorch](https://github.com/NabilMoukafih/NSL-KDD-Neural-Networks-Pytorch)                                                                 | PyTorch                             | NSL-KDD                 | TBD      | TBD    | Possible MLP/ensemble reference | Lightweight NN baseline       |
-| 06    | [CIC-DDoS2019-DeepLearning](https://github.com/mvoassis/CIC-DDoS2019-DeepLearning)                                                                                  | Keras/TensorFlow                    | CICDDoS2019, CICIDS2018 | TBD      | TBD    | Audit first                     | Main GRU candidate            |
-| 07    | [A-Novel-Approach-for-IDS](https://github.com/shubhamnarkhede/A-Novel-Approach-for-Network-Intrusion-Detection-using-Probability-parameter-to-ensemble-Machine-Lea) | Keras/TensorFlow                    | KDDCup99                | TBD      | TBD    | Optional                        | CNN/CNN-hybrid only if needed |
-
 ### For each repository:
 
 - [ ] Is the repository public and accessible?
@@ -138,9 +130,60 @@ For starters, choose only the repositories from all papers that were marked as i
 - [ ] Is the license suitable for reuse or adaptation?
 - [ ] Final decision: Use, reference only, optional, or ignore.
 
-## Final implementation goal
+**Final implementation goal**: After the repository auditselect 2-3 representative implementations in total.
 
-After the repository audit, select 2–3 representative implementations in total.
+## Overview
+
+| Paper | Repository link                                                                                                                                                     | Runnable   | Usable | Decision |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------ | -------- |
+| 01    | [DDoS_Traffic_Research](https://github.com/Colorado-Mesa-University-Cybersecurity/DDoS_Traffic_Research)                                                            | Not tested | TBD    | TBD      |
+| 02    | [DeepLearning-IDS](https://github.com/Colorado-Mesa-University-Cybersecurity/DeepLearning-IDS)                                                                      | Not tested | TBD    | TBD      |
+| 04    | [NSL-KDD-Neural-Networks-Pytorch](https://github.com/NabilMoukafih/NSL-KDD-Neural-Networks-Pytorch)                                                                 | Not tested | TBD    | TBD      |
+| 05    | [CIC-DDoS2019-DeepLearning](https://github.com/mvoassis/CIC-DDoS2019-DeepLearning)                                                                                  | Not tested | TBD    | TBD      |
+| 06    | [A-Novel-Approach-for-IDS](https://github.com/shubhamnarkhede/A-Novel-Approach-for-Network-Intrusion-Detection-using-Probability-parameter-to-ensemble-Machine-Lea) | Not tested | TBD    | TBD      |
+| 07    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
+| 09    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
+| 10    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
+| 11    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
+| 12    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
+| 14    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
+| 15    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
+
+> Repositories \[3\] and \[8\] are excluded because their papers are not available, hence I can not reference them to anything
+> Repository \[13\] is excluded because the GitHub link shows repository not found (hence only the paper is available)
+
+
+### 01 - `DeepLearning-IDS`
+
+### 02 - `DDoS_Traffic_Research`
+
+Looks the most promising one, has everything included
+
+### 03 - Excluded
+### 04 - `Intrusion-Detection-on-NSL-KDD`
+
+### 05 - `Intrusion_detection_system`
+
+### 06 - `CIC-DDoS2019-DeepLearning`
+
+### 07 - `A-Novel-Approach-for-IDS`
+
+### 08 - Excluded
+
+### 09 - `Network-Intrusion-Detection`
+
+### 10 - `clustering-based-anomaly-detection`
+
+### 11 - `Network-Intrusion-Detection-System`
+
+### 12 - `NSLKDD-Dataset`
+
+### 14 - `NSL-KDD-Neural-Networks-Pytorch`
+
+### 15 - `NSL-KDD-ADS`
+
+## Final decision:
+
+After careful overview of all repositories, I decided to move forward with: TBD
 
 ---
-
