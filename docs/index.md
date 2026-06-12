@@ -63,7 +63,7 @@ Reported 99% IDS accuracy often depends heavily on dataset choice, preprocessing
 | [\[14\]](https://onlinelibrary.wiley.com/doi/epdf/10.1155/2020/3512737)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | [Neural Network Voting IDS](https://github.com/NabilMoukafih/NSL-KDD-Neural-Networks-Pytorch)                                                                                  | NSL-KDD                               | Low-medium     | Small feedforward NNs + reliability voting     | Deep learning, ensemble learning          | Lightweight MLP/ensemble background      |
 | [\[15\]](https://arxiv.org/pdf/1605.07717)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | [Deep Structured Energy Based Models](https://github.com/kabbi159/NSL-KDD-ADS)                                                                                                 | Multiple datasets, includes KDD99 10% | Low            | DSEBM: fully connected, RNN, CNN energy models | Deep unsupervised anomaly detection       | Theoretical anomaly detection background |
 
-# Architecture grouping
+## Architecture grouping
 
 | Architecture group                          | Papers           | Representative decision                                                         |
 | ------------------------------------------- | ---------------- | ------------------------------------------------------------------------------- |
@@ -77,7 +77,7 @@ Reported 99% IDS accuracy often depends heavily on dataset choice, preprocessing
 | Bio-inspired decision trees                 | 12               | Background only                                                                 |
 | Energy-based anomaly detection              | 15               | Background only                                                                 |
 
-# Method grouping
+## Method grouping
 
 |Method group|Papers|Notes|
 |---|---|---|
@@ -87,7 +87,7 @@ Reported 99% IDS accuracy often depends heavily on dataset choice, preprocessing
 |Ensemble / hybrid approaches|7.1, 7.2, 11.1, 11.2, 12, 14|Good for discussion, but not a single clean implementation direction|
 |Fuzzy / rule-based approaches|13.1, 13.2|Historical/background IDS approaches|
 
-# Final representative candidates
+## Final representative candidates
 
 | Role in thesis               | Representative                                  | Why                                                                                                       |
 | ---------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
@@ -96,45 +96,13 @@ Reported 99% IDS accuracy often depends heavily on dataset choice, preprocessing
 | Advanced deep learning model | **Paper 6: GRU-based IDS**                      | Directly connected to DDoS/IDS, uses CICDDoS2019 and CICIDS2018, practical flow-based binary detection    |
 | Optional fourth model        | **Paper 7.1: CNN / CNN-LSTM / CNN-GRU**         | Only include if there is enough time and if CNN is needed as a separate architecture family               |
 
-# Skipped / excluded papers
+## Skipped / excluded papers
 
 - \[03\] - Paper not available; repository only
 - \[08\] - No public paper found
 - \[16\] - Not part of the reviewed final corpus; keep as backlog if needed
 
 ---
-# Repository audit
-
-Objective: inspect the relevant GitHub repositories and decide which implementations are useful for the next phase (implementation).
-
-Note: we are not trying to run and reproduce every repository, since it will take too much time, and is redundant. The goal is to check whether the code is available, understandable, runnable, and adaptable to Danilo’s DDoS superset. The repositories will be evaluated mainly as references for architecture, preprocessing, hyperparameters, training scripts, and evaluation methodology.
-
-The final implementation will not copy all repositories directly. Instead, the selected models will be re-implemented in one clean codebase and trained on the same prepared superset, using a shared preprocessing and evaluation pipeline.
-
-The first audit phase focuses only on the most relevant repositories: papers with high DDoS relevance, important role, or useful baseline architecture.
-
-For starters, choose only the repositories from all papers that were marked as important or that have high relevance with DDoS detection, namely papers number: \[2\], \[1\], \[14\], \[6\], \[7.1\]
-
-## What is already done
-
-Danilo implemented the missing models, and evaluated the architectures
-
-## Overview
-
-## Final decision:
-
-After careful overview of all repositories, I decided to move forward with: TBD
-
----
-
-
----
----
----
----
----
----
-
 # Repository audit & next implementation phase
 
 ## Objective
