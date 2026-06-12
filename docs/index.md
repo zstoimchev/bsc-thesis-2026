@@ -115,75 +115,150 @@ The first audit phase focuses only on the most relevant repositories: papers wit
 
 For starters, choose only the repositories from all papers that were marked as important or that have high relevance with DDoS detection, namely papers number: \[2\], \[1\], \[14\], \[6\], \[7.1\]
 
-### For each repository:
+## What is already done
 
-- [ ] Is the repository public and accessible?
-- [ ] Is it clearly connected to the paper?
-- [ ] Does it contain a README or usage instructions?
-- [ ] Does it provide requirements, environment files, or dependency versions?
-- [ ] Does it include preprocessing code?
-- [ ] Does it include model/training code?
-- [ ] Does it include evaluation code and metrics?
-- [ ] Does it expect the original dataset in hardcoded paths?
-- [ ] Can the dataset loader be replaced with Danilo’s superset?
-- [ ] Is the code simple enough to understand and reimplement?
-- [ ] Is the license suitable for reuse or adaptation?
-- [ ] Final decision: Use, reference only, optional, or ignore.
-
-**Final implementation goal**: After the repository auditselect 2-3 representative implementations in total.
+Danilo implemented the missing models, and evaluated the architectures
 
 ## Overview
-
-| Paper | Repository link                                                                                                                                                     | Runnable   | Usable | Decision |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------ | -------- |
-| 01    | [DDoS_Traffic_Research](https://github.com/Colorado-Mesa-University-Cybersecurity/DDoS_Traffic_Research)                                                            | Not tested | TBD    | TBD      |
-| 02    | [DeepLearning-IDS](https://github.com/Colorado-Mesa-University-Cybersecurity/DeepLearning-IDS)                                                                      | Not tested | TBD    | TBD      |
-| 04    | [NSL-KDD-Neural-Networks-Pytorch](https://github.com/NabilMoukafih/NSL-KDD-Neural-Networks-Pytorch)                                                                 | Not tested | TBD    | TBD      |
-| 05    | [CIC-DDoS2019-DeepLearning](https://github.com/mvoassis/CIC-DDoS2019-DeepLearning)                                                                                  | Not tested | TBD    | TBD      |
-| 06    | [A-Novel-Approach-for-IDS](https://github.com/shubhamnarkhede/A-Novel-Approach-for-Network-Intrusion-Detection-using-Probability-parameter-to-ensemble-Machine-Lea) | Not tested | TBD    | TBD      |
-| 07    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
-| 09    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
-| 10    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
-| 11    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
-| 12    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
-| 14    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
-| 15    |                                                                                                                                                                     | Not tested | TBD    | TBD      |
-
-> Repositories \[3\] and \[8\] are excluded because their papers are not available, hence I can not reference them to anything
-> Repository \[13\] is excluded because the GitHub link shows repository not found (hence only the paper is available)
-
-
-### 01 - `DeepLearning-IDS`
-
-### 02 - `DDoS_Traffic_Research`
-
-Looks the most promising one, has everything included
-
-### 03 - Excluded
-### 04 - `Intrusion-Detection-on-NSL-KDD`
-
-### 05 - `Intrusion_detection_system`
-
-### 06 - `CIC-DDoS2019-DeepLearning`
-
-### 07 - `A-Novel-Approach-for-IDS`
-
-### 08 - Excluded
-
-### 09 - `Network-Intrusion-Detection`
-
-### 10 - `clustering-based-anomaly-detection`
-
-### 11 - `Network-Intrusion-Detection-System`
-
-### 12 - `NSLKDD-Dataset`
-
-### 14 - `NSL-KDD-Neural-Networks-Pytorch`
-
-### 15 - `NSL-KDD-ADS`
 
 ## Final decision:
 
 After careful overview of all repositories, I decided to move forward with: TBD
 
 ---
+
+
+---
+---
+---
+---
+---
+---
+
+# Repository audit & next implementation phase
+
+## Objective
+
+The goal of this phase is to inspect the most relevant GitHub repositories and decide which implementations should be used as references for the experiment.
+
+The purpose is **not** to run and reproduce every repository. That would take too much time and would not add enough value, because many repositories overlap in architecture, dataset, or method. Instead, the goal is to identify which repositories are understandable, relevant to DDoS detection, compatible with Danilo’s DDoS/CIC superset, and useful for re-implementation.
+
+The final implementation will not directly copy the original repositories. The selected models will be re-implemented in one clean codebase and trained using the same preprocessing, train/test strategy, and evaluation metrics.
+
+## What Danilo already did
+
+Danilo prepared the broader systematic analysis of IDS/IPS research papers and their implementations. His work includes:
+
+- collection of papers and their related GitHub repositories;
+- summary of datasets used across the reviewed papers;
+- categorization of papers by architecture and method;
+- extraction of reported results from the papers;
+- analysis of dataset compatibility between KDD/NSL-style datasets and CIC-style datasets;
+- construction and discussion of CIC-based and reduced cross-dataset supersets;
+- implementation or adaptation of missing models where needed;
+- evaluation of multiple architectures on native datasets, real-world datasets, botnet-injected datasets, and CIC-style evaluation targets;
+- identification of evaluation problems such as feature-space mismatch, class imbalance, misleading accuracy, and weak real-world labels.
+
+The important conclusion from Danilo’s work is that many IDS papers report very high accuracy, often close to 99%, but these results are strongly influenced by the dataset, preprocessing, split strategy, feature compatibility, and class distribution. Therefore, accuracy alone is not enough for a fair comparison.
+
+## What remains to be done in this thesis
+
+The continuation of Danilo’s work will focus on the experimental retraining phase.
+
+The selected representative architectures will be:
+
+1. audited from their original repositories;
+2. re-implemented in one clean and unified codebase;
+3. trained directly on Danilo’s DDoS/CIC superset;
+4. evaluated using the same preprocessing and metrics;
+5. compared against:
+    - the original paper results;
+    - Danilo’s reported/evaluated results;
+    - the new results obtained after training on the superset.
+
+The main research question becomes:
+
+> If the strongest reported IDS/DDoS architectures are trained under the same unified setup on Danilo’s DDoS superset, do they still achieve very high performance, and can their accuracy/generalization be improved?
+
+
+## Highest reported and most relevant architectures
+
+The top-accuracy architectures were reported as follows:
+
+| Paper   | Architecture                                     |                                     Highest reported result |
+| ------- | ------------------------------------------------ | ----------------------------------------------------------: |
+| Paper 1 | **DNN / MLP feedforward** on CIC-IDS2018         |                 up to **100%** on one CIC-IDS2018 day split |
+| Paper 2 | **LightGBM / LDA / XGBoost / RF** on CICDDoS2019 |                      around **0.9997–0.9999** in Scenario A |
+| Paper 4 | **BGRU + MLP** on KDD99 / NSL-KDD                |                  **99.84%** on KDD99, **99.24%** on NSL-KDD |
+| Paper 6 | **GRU** on CICDDoS2019 / CICIDS2018              | **99.94%** average on CICDDoS2019; **97.10%** on CICIDS2018 |
+| Paper 7 | **CNN / CNN-hybrid** on KDDCup99                 |             **0.999** for 1-layer CNN binary classification |
+
+## Selected repositories for detailed audit
+
+The detailed audit will focus on the repositories most suitable for the final implementation:
+
+1. **Paper 2 — `DDoS_Traffic_Research`**
+	It has classical machine learning baseline, Random Forest, XGBoost, LightGBM, SVM and DNN models. It focuses on DDoS directly and is highly compatible with the CIC/DDoS data.
+2. **Paper 1 — `DeepLearning-IDS`**
+	This is a simple neural baseline, with DNN / MLP models. It reported high accuracy on CIC-IDS2018 and is useful as a simple neural comparison.
+3. **Paper 6 — `CIC-DDoS2019-DeepLearning`**
+	This is an advanced deep learning model, with GRU-based IDS model. This is one of the most relevant DDoS deep learning candidates and is directly connected to CICDDoS2019/CICIDS2018.
+4. (OPTIONAL) **Paper 7.1 — CNN/CNN-hybrid repository**
+	This will be an optional fourth model, if time allows and results require. It is useful if a CNN-based architecture is needed, but it is not the main priority since it is based on KDDCup99 rather than the DDoS/CIC superset.
+
+## Planned implementation approach
+
+The selected models will be re-implemented in a unified codebase instead of being run as a separate project repository.
+
+Planned structure:
+
+```text
+src/
+  data/
+    load_superset.py
+    preprocessing.py
+  models/
+    classical_ml.py
+    mlp.py
+    gru.py
+  training/
+    train.py
+    evaluate.py
+  results/
+    metrics.csv
+    confusion_matrices/
+```
+
+The same dataset preparation and evaluation pipeline will be used for every model. This makes the comparison fairer than comparing results reported in separate papers with different preprocessing, splits, and metrics.
+
+## Planned experiments
+
+| Experiment | Train data                              | Test data                                    | Purpose                                                         |
+| ---------- | --------------------------------------- | -------------------------------------------- | --------------------------------------------------------------- |
+| EXP1       | Original dataset / original-style split | Original-style test set                      | Check whether the implementation behaves similarly to the paper |
+| EXP2       | Danilo’s DDoS/CIC superset              | Superset test split                          | Fair comparison between selected architectures                  |
+| EXP3       | Danilo’s DDoS/CIC superset              | Separate CIC/DDoS dataset if available       | Test generalization                                             |
+| EXP4       | Danilo’s DDoS/CIC superset              | Real-world or botnet-balanced evaluation set | Test robustness/domain shift                                    |
+
+The main comparison will not rely only on accuracy. The reported metrics will include:
+- accuracy;
+- precision;
+- recall;
+- F1-score;
+- macro F1;
+- confusion matrix;
+- class distribution/support;
+- training time and prediction time where possible.
+
+## Final decision
+
+After the audit, the following representatives were taken to move forward with:
+
+| Role                         | Paper   | Repository                  | Architecture                       |
+| ---------------------------- | ------- | --------------------------- | ---------------------------------- |
+| Classical ML baseline        | Paper 2 | `DDoS_Traffic_Research`     | XGBoost / LightGBM / Random Forest |
+| Simple neural baseline       | Paper 1 | `DeepLearning-IDS`          | DNN / MLP                          |
+| Advanced deep learning model | Paper 6 | `CIC-DDoS2019-DeepLearning` | GRU                                |
+
+The CNN/CNN-hybrid repository from Paper 7.1 will remain optional and will only be included if there is enough time after the three main models are implemented and evaluated.
+
