@@ -1,0 +1,140 @@
+datasets:
+  # ---------------------------------------------------------------------------
+  # Tiny smoke-test dataset
+  # Used only to verify that runners and orchestrate.py work.
+  # ---------------------------------------------------------------------------
+  - id: _runner_core_test
+    name: "Tiny runner smoke-test dataset"
+    path: "results/_runner_core_test.csv"
+    split_type: "generated"
+    label_col: "label"
+    problem_type: "binary"
+    enabled: true
+    smoke_test: true
+    drop_columns: []
+
+  # ---------------------------------------------------------------------------
+  # Main thesis dataset
+  # Danilo / prepared CIC DDoS superset.
+  # This should become the main dataset for final thesis comparison.
+  # ---------------------------------------------------------------------------
+  - id: cic_superset
+    name: "Prepared CIC DDoS superset"
+    path: "data/parquets/cic_superset.parquet"
+    split_type: "generated"
+    label_col: null
+    problem_type: "binary"
+    enabled: true
+    smoke_test: false
+    drop_columns:
+      - "Flow ID"
+      - "Src IP"
+      - "Dst IP"
+      - "Source IP"
+      - "Destination IP"
+      - "Timestamp"
+      - "SimillarHTTP"
+      - "Unnamed: 0"
+
+  # ---------------------------------------------------------------------------
+  # CIC-DDoS2019 predefined train/test files
+  # Useful because some repositories originally used CIC-DDoS2019.
+  # ---------------------------------------------------------------------------
+  - id: cic_ddos2019_predefined
+    name: "CIC-DDoS2019 predefined train/test"
+    train_path: "data/original_datasets/CIC-DDoS-2019/cic_ddos2019_train.csv"
+    test_path: "data/original_datasets/CIC-DDoS-2019/cic_ddos2019_test.csv"
+    split_type: "predefined"
+    label_col: null
+    problem_type: "binary"
+    enabled: true
+    smoke_test: false
+    drop_columns:
+      - "Flow ID"
+      - "Src IP"
+      - "Dst IP"
+      - "Source IP"
+      - "Destination IP"
+      - "Timestamp"
+      - "SimillarHTTP"
+      - "Unnamed: 0"
+
+  # ---------------------------------------------------------------------------
+  # Optional reference datasets
+  # These are useful for audit/reference only. They are not the main thesis target.
+  # ---------------------------------------------------------------------------
+  - id: cic_ids2017_reference
+    name: "CIC-IDS2017 reference dataset"
+    path: "data/original_datasets/CIC-IDS-2017"
+    split_type: "generated"
+    label_col: null
+    problem_type: "binary"
+    enabled: false
+    smoke_test: false
+    note: "Directory reference only. Enable only after creating a single merged CSV/parquet."
+    drop_columns:
+      - "Flow ID"
+      - "Src IP"
+      - "Dst IP"
+      - "Source IP"
+      - "Destination IP"
+      - "Timestamp"
+      - "Unnamed: 0"
+
+  - id: cic_ids2018_reference
+    name: "CIC-IDS2018 reference dataset"
+    path: "data/original_datasets/CIC-IDS2018"
+    split_type: "generated"
+    label_col: null
+    problem_type: "binary"
+    enabled: false
+    smoke_test: false
+    note: "Directory reference only. Enable only after creating a single merged CSV/parquet."
+    drop_columns:
+      - "Flow ID"
+      - "Src IP"
+      - "Dst IP"
+      - "Source IP"
+      - "Destination IP"
+      - "Timestamp"
+      - "Unnamed: 0"
+
+  - id: cic_ids2018_normalized_reference
+    name: "CIC-IDS2018 normalized reference dataset"
+    path: "data/original_datasets/CIC-IDS2018-normalized"
+    split_type: "generated"
+    label_col: null
+    problem_type: "binary"
+    enabled: false
+    smoke_test: false
+    note: "Directory reference only. Enable only after creating a single merged CSV/parquet."
+    drop_columns:
+      - "Flow ID"
+      - "Src IP"
+      - "Dst IP"
+      - "Source IP"
+      - "Destination IP"
+      - "Timestamp"
+      - "Unnamed: 0"
+
+  - id: nsl_kdd_reference
+    name: "NSL-KDD reference dataset"
+    path: "data/original_datasets/NSL-KDD"
+    split_type: "generated"
+    label_col: null
+    problem_type: "binary"
+    enabled: false
+    smoke_test: false
+    note: "Directory reference only. NSL-KDD uses different features, so it is not directly comparable with CIC/DDoS flow datasets."
+    drop_columns: []
+
+  - id: unsw_nb15_reference
+    name: "UNSW-NB15 reference dataset"
+    path: "data/original_datasets/UNSW-NB15"
+    split_type: "generated"
+    label_col: null
+    problem_type: "binary"
+    enabled: false
+    smoke_test: false
+    note: "Directory reference only. UNSW-NB15 uses different features, so it is not directly comparable with CIC/DDoS flow datasets."
+    drop_columns: []

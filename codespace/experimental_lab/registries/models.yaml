@@ -1,0 +1,441 @@
+models:
+  # ---------------------------------------------------------------------------
+  # Paper 01 - DeepLearning-IDS
+  # ---------------------------------------------------------------------------
+  - id: model01_deeplearning_ids_fastai_mlp
+    paper: "01"
+    name: "DeepLearning-IDS FastAI MLP"
+    runner: "runners.model01_deeplearning_ids_fastai_mlp"
+    family: "dnn_mlp"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model01_deeplearning_ids_keras_tf_mlp
+    paper: "01"
+    name: "DeepLearning-IDS Keras TensorFlow MLP"
+    runner: "runners.model01_deeplearning_ids_keras_tf_mlp"
+    family: "dnn_mlp"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model01_deeplearning_ids_keras_theano_mlp_audit
+    paper: "01"
+    name: "DeepLearning-IDS Keras Theano MLP audit"
+    runner: "runners.model01_deeplearning_ids_keras_theano_mlp_audit"
+    family: "dnn_mlp"
+    stage: "audit"
+    enabled: true
+    trainable: false
+
+  # ---------------------------------------------------------------------------
+  # Paper 02 - DDoS_Traffic_Research
+  # ---------------------------------------------------------------------------
+  - id: model02_ddos_traffic_research_random_forest
+    paper: "02"
+    name: "DDoS Traffic Research Random Forest"
+    runner: "runners.model02_ddos_traffic_research_random_forest"
+    family: "classical_ml"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model02_ddos_traffic_research_xgboost
+    paper: "02"
+    name: "DDoS Traffic Research XGBoost"
+    runner: "runners.model02_ddos_traffic_research_xgboost"
+    family: "classical_ml"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model02_ddos_traffic_research_lightgbm
+    paper: "02"
+    name: "DDoS Traffic Research LightGBM"
+    runner: "runners.model02_ddos_traffic_research_lightgbm"
+    family: "classical_ml"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model02_ddos_traffic_research_knn
+    paper: "02"
+    name: "DDoS Traffic Research KNN"
+    runner: "runners.model02_ddos_traffic_research_knn"
+    family: "classical_ml"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model02_ddos_traffic_research_svm
+    paper: "02"
+    name: "DDoS Traffic Research SVM"
+    runner: "runners.model02_ddos_traffic_research_svm"
+    family: "classical_ml"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model02_ddos_traffic_research_adaboost
+    paper: "02"
+    name: "DDoS Traffic Research AdaBoost"
+    runner: "runners.model02_ddos_traffic_research_adaboost"
+    family: "classical_ml"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model02_ddos_traffic_research_lda
+    paper: "02"
+    name: "DDoS Traffic Research LDA"
+    runner: "runners.model02_ddos_traffic_research_lda"
+    family: "classical_ml"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model02_ddos_traffic_research_gnb
+    paper: "02"
+    name: "DDoS Traffic Research Gaussian Naive Bayes"
+    runner: "runners.model02_ddos_traffic_research_gnb"
+    family: "classical_ml"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model02_ddos_traffic_research_dnn
+    paper: "02"
+    name: "DDoS Traffic Research DNN"
+    runner: "runners.model02_ddos_traffic_research_dnn"
+    family: "dnn_mlp"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  # ---------------------------------------------------------------------------
+  # Paper 03 - Repository-only / skipped
+  # ---------------------------------------------------------------------------
+  - id: model03_repository_only_audit
+    paper: "03"
+    name: "Paper 03 repository-only audit"
+    runner: "runners.model03_repository_only_audit"
+    family: "audit_only"
+    stage: "audit"
+    enabled: true
+    trainable: false
+
+  # ---------------------------------------------------------------------------
+  # Paper 04 - Intrusion-Detection-on-NSL-KDD
+  # ---------------------------------------------------------------------------
+  - id: model04_intrusion_detection_nsl_kdd_bigru_mlp
+    paper: "04"
+    name: "NSL-KDD BiGRU MLP"
+    runner: "runners.model04_intrusion_detection_nsl_kdd_bigru_mlp"
+    family: "rnn_gru"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model04_intrusion_detection_nsl_kdd_gru_mlp
+    paper: "04"
+    name: "NSL-KDD GRU MLP"
+    runner: "runners.model04_intrusion_detection_nsl_kdd_gru_mlp"
+    family: "rnn_gru"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model04_intrusion_detection_nsl_kdd_blstm_mlp
+    paper: "04"
+    name: "NSL-KDD BLSTM MLP"
+    runner: "runners.model04_intrusion_detection_nsl_kdd_blstm_mlp"
+    family: "rnn_lstm"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model04_intrusion_detection_nsl_kdd_lstm_mlp
+    paper: "04"
+    name: "NSL-KDD LSTM MLP"
+    runner: "runners.model04_intrusion_detection_nsl_kdd_lstm_mlp"
+    family: "rnn_lstm"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model04_intrusion_detection_nsl_kdd_rnn_variants_audit
+    paper: "04"
+    name: "NSL-KDD remaining RNN variants audit"
+    runner: "runners.model04_intrusion_detection_nsl_kdd_rnn_variants_audit"
+    family: "rnn_audit"
+    stage: "audit"
+    enabled: true
+    trainable: false
+
+  # ---------------------------------------------------------------------------
+  # Paper 05 - Self-Taught Learning
+  # ---------------------------------------------------------------------------
+  - id: model05_self_taught_learning_softmax_regression
+    paper: "05"
+    name: "Self-Taught Learning Autoencoder Softmax Regression"
+    runner: "runners.model05_self_taught_learning_softmax_regression"
+    family: "autoencoder_softmax"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  # ---------------------------------------------------------------------------
+  # Paper 06 - CIC-DDoS2019 Deep Learning
+  # ---------------------------------------------------------------------------
+  - id: model06_cic_ddos2019_deeplearning_gru
+    paper: "06"
+    name: "CIC-DDoS2019 GRU"
+    runner: "runners.model06_cic_ddos2019_deeplearning_gru"
+    family: "rnn_gru"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model06_cic_ddos2019_deeplearning_lstm
+    paper: "06"
+    name: "CIC-DDoS2019 LSTM"
+    runner: "runners.model06_cic_ddos2019_deeplearning_lstm"
+    family: "rnn_lstm"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model06_cic_ddos2019_deeplearning_cnn_lstm
+    paper: "06"
+    name: "CIC-DDoS2019 CNN-LSTM"
+    runner: "runners.model06_cic_ddos2019_deeplearning_cnn_lstm"
+    family: "cnn_rnn"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model06_cic_ddos2019_deeplearning_variants_audit
+    paper: "06"
+    name: "CIC-DDoS2019 remaining deep-learning variants audit"
+    runner: "runners.model06_cic_ddos2019_deeplearning_variants_audit"
+    family: "deep_learning_audit"
+    stage: "audit"
+    enabled: true
+    trainable: false
+
+  # ---------------------------------------------------------------------------
+  # Paper 07 - CNN IDS group
+  # ---------------------------------------------------------------------------
+  - id: model07_cnn_ids_1d_cnn
+    paper: "07"
+    name: "CNN IDS 1D CNN"
+    runner: "runners.model07_cnn_ids_1d_cnn"
+    family: "cnn"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model07_cnn_ids_cnn_gru
+    paper: "07"
+    name: "CNN IDS CNN-GRU"
+    runner: "runners.model07_cnn_ids_cnn_gru"
+    family: "cnn_rnn"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model07_cnn_ids_cnn_lstm
+    paper: "07"
+    name: "CNN IDS CNN-LSTM"
+    runner: "runners.model07_cnn_ids_cnn_lstm"
+    family: "cnn_rnn"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model07_cnn_ids_variants_audit
+    paper: "07"
+    name: "CNN IDS remaining variants audit"
+    runner: "runners.model07_cnn_ids_variants_audit"
+    family: "cnn_audit"
+    stage: "audit"
+    enabled: true
+    trainable: false
+
+  # ---------------------------------------------------------------------------
+  # Paper 08 - DBN / Autoencoder / Deep-Shallow
+  # ---------------------------------------------------------------------------
+  - id: model08_deep_shallow_networks_stacked_autoencoder_mlp
+    paper: "08"
+    name: "Deep-Shallow stacked autoencoder MLP"
+    runner: "runners.model08_deep_shallow_networks_stacked_autoencoder_mlp"
+    family: "autoencoder_mlp"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model08_deep_shallow_networks_variants_audit
+    paper: "08"
+    name: "Deep-Shallow remaining variants audit"
+    runner: "runners.model08_deep_shallow_networks_variants_audit"
+    family: "autoencoder_audit"
+    stage: "audit"
+    enabled: true
+    trainable: false
+
+  # ---------------------------------------------------------------------------
+  # Paper 09 - Subset Feature Elimination
+  # ---------------------------------------------------------------------------
+  - id: model09_subset_feature_elimination_decision_tree
+    paper: "09"
+    name: "Subset Feature Elimination Decision Tree"
+    runner: "runners.model09_subset_feature_elimination_decision_tree"
+    family: "feature_selection_tree"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model09_subset_feature_elimination_variants_audit
+    paper: "09"
+    name: "Subset Feature Elimination variants audit"
+    runner: "runners.model09_subset_feature_elimination_variants_audit"
+    family: "feature_selection_audit"
+    stage: "audit"
+    enabled: true
+    trainable: false
+
+  # ---------------------------------------------------------------------------
+  # Paper 10 - Clustering Anomaly Detection
+  # ---------------------------------------------------------------------------
+  - id: model10_clustering_anomaly_detection_kmeans
+    paper: "10"
+    name: "Clustering anomaly detection K-Means"
+    runner: "runners.model10_clustering_anomaly_detection_kmeans"
+    family: "clustering"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model10_clustering_anomaly_detection_variants_audit
+    paper: "10"
+    name: "Clustering anomaly detection variants audit"
+    runner: "runners.model10_clustering_anomaly_detection_variants_audit"
+    family: "clustering_audit"
+    stage: "audit"
+    enabled: true
+    trainable: false
+
+  # ---------------------------------------------------------------------------
+  # Paper 11 - Network-Intrusion-Detection-System
+  # ---------------------------------------------------------------------------
+  - id: model11_network_intrusion_detection_system_xgboost
+    paper: "11"
+    name: "Network IDS System XGBoost"
+    runner: "runners.model11_network_intrusion_detection_system_xgboost"
+    family: "classical_ml"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model11_network_intrusion_detection_system_random_forest
+    paper: "11"
+    name: "Network IDS System Random Forest"
+    runner: "runners.model11_network_intrusion_detection_system_random_forest"
+    family: "classical_ml"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model11_network_intrusion_detection_system_svm
+    paper: "11"
+    name: "Network IDS System SVM"
+    runner: "runners.model11_network_intrusion_detection_system_svm"
+    family: "classical_ml"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model11_network_intrusion_detection_system_variants_audit
+    paper: "11"
+    name: "Network IDS System variants audit"
+    runner: "runners.model11_network_intrusion_detection_system_variants_audit"
+    family: "classical_ml_audit"
+    stage: "audit"
+    enabled: true
+    trainable: false
+
+  # ---------------------------------------------------------------------------
+  # Paper 12 - Ant Colony Induced Decision Trees
+  # ---------------------------------------------------------------------------
+  - id: model12_ant_colony_induced_decision_tree
+    paper: "12"
+    name: "Ant Colony Induced Decision Tree surrogate"
+    runner: "runners.model12_ant_colony_induced_decision_tree"
+    family: "decision_tree"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model12_ant_colony_induced_decision_tree_audit
+    paper: "12"
+    name: "Exact ATMa ant-colony decision tree audit"
+    runner: "runners.model12_ant_colony_induced_decision_tree_audit"
+    family: "decision_tree_audit"
+    stage: "audit"
+    enabled: true
+    trainable: false
+
+  # ---------------------------------------------------------------------------
+  # Paper 13 - Deleted repository
+  # ---------------------------------------------------------------------------
+  - id: model13_deleted_repository_audit
+    paper: "13"
+    name: "Deleted repository audit"
+    runner: "runners.model13_deleted_repository_audit"
+    family: "unavailable"
+    stage: "audit"
+    enabled: true
+    trainable: false
+
+  # ---------------------------------------------------------------------------
+  # Paper 14 - DNN IDS
+  # ---------------------------------------------------------------------------
+  - id: model14_dnn_ids_mlp
+    paper: "14"
+    name: "DNN IDS MLP"
+    runner: "runners.model14_dnn_ids_mlp"
+    family: "dnn_mlp"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model14_dnn_ids_variants_audit
+    paper: "14"
+    name: "DNN IDS variants audit"
+    runner: "runners.model14_dnn_ids_variants_audit"
+    family: "dnn_mlp_audit"
+    stage: "audit"
+    enabled: true
+    trainable: false
+
+  # ---------------------------------------------------------------------------
+  # Paper 15 - Deep Structured Energy-Based Models
+  # ---------------------------------------------------------------------------
+  - id: model15_deep_energy_anomaly_detector
+    paper: "15"
+    name: "Deep energy-style anomaly detector"
+    runner: "runners.model15_deep_energy_anomaly_detector"
+    family: "energy_anomaly_detection"
+    stage: "unified"
+    enabled: true
+    trainable: true
+
+  - id: model15_deep_energy_anomaly_detector_audit
+    paper: "15"
+    name: "Exact DSEBM audit"
+    runner: "runners.model15_deep_energy_anomaly_detector_audit"
+    family: "energy_anomaly_audit"
+    stage: "audit"
+    enabled: true
+    trainable: false

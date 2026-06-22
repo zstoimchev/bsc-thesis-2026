@@ -1,1 +1,21 @@
-pandas
+# Core
+numpy>=1.24
+pandas>=2.0
+pyarrow>=14.0
+scikit-learn>=1.3
+joblib>=1.3
+PyYAML>=6.0
+
+# Classical ML models
+xgboost>=2.0
+lightgbm>=4.0
+
+# Optional but useful for reports / confusion matrices
+matplotlib>=3.8
+
+# Optional deep learning dependencies.
+# Install these only when you start testing neural runners.
+# tensorflow>=2.15
+# torch>=2.0
+# torchvision>=0.15
+# fastai>=2.7
