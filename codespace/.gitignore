@@ -1,3 +1,4 @@
+```gitignore id="r9bkts"
 # ---------------------------------------------------------------------------
 # Python / cache
 # ---------------------------------------------------------------------------
@@ -21,7 +22,7 @@ env/
 *.local
 
 # ---------------------------------------------------------------------------
-# Large datasets / archives / packet captures
+# Dataset / archive / packet-capture file formats
 # ---------------------------------------------------------------------------
 *.csv
 *.parquet
@@ -34,33 +35,52 @@ env/
 *.pcap
 *.pcapng
 *.arff
+*.npy
+*.npz
 
 # ---------------------------------------------------------------------------
-# Data directories anywhere in the repo
-# Keep README.md and .gitkeep only.
+# Root data directory
+# Keep only README.md and .gitkeep files.
 # ---------------------------------------------------------------------------
-**/data/**
-!**/data/
-!**/data/README.md
-!**/data/.gitkeep
+data/**
+!data/
+!data/**/
+!data/**/README.md
+!data/**/.gitkeep
 
 # ---------------------------------------------------------------------------
-# External repositories anywhere in the repo
-# Keep README.md and .gitkeep only.
+# Experimental lab local data
+# Keep only README.md and .gitkeep.
+# Symlinks to ../../data can be recreated locally.
 # ---------------------------------------------------------------------------
-**/external/**
-!**/external/
-!**/external/README.md
-!**/external/.gitkeep
+experimental_lab/data/**
+!experimental_lab/data/
+!experimental_lab/data/README.md
+!experimental_lab/data/.gitkeep
 
 # ---------------------------------------------------------------------------
-# Generated experiment results anywhere in the repo
-# Keep README.md and .gitkeep only.
+# External repositories
+# Keep only README.md and .gitkeep.
 # ---------------------------------------------------------------------------
-**/results/**
-!**/results/
-!**/results/README.md
-!**/results/.gitkeep
+experimental_lab/external/**
+!experimental_lab/external/
+!experimental_lab/external/README.md
+!experimental_lab/external/.gitkeep
+
+# ---------------------------------------------------------------------------
+# Generated experiment results
+# Keep only README.md and .gitkeep.
+# ---------------------------------------------------------------------------
+results/**
+!results/
+!results/**/
+!results/**/README.md
+!results/**/.gitkeep
+
+experimental_lab/results/**
+!experimental_lab/results/
+!experimental_lab/results/README.md
+!experimental_lab/results/.gitkeep
 
 # ---------------------------------------------------------------------------
 # Trained model artifacts / binary ML outputs
@@ -98,6 +118,7 @@ Thumbs.db
 *.swo
 
 # ---------------------------------------------------------------------------
-# Custom entries
+# Previous work archive / local copied repositories
 # ---------------------------------------------------------------------------
 previous_work/*
+```
