@@ -31,7 +31,7 @@ splits:
 
   # ---------------------------------------------------------------------------
   # Optional alternative split
-  # Keep disabled for now. Useful later if you need a second robustness check.
+  # Keep disabled for now. Useful later if a second robustness check is needed.
   # ---------------------------------------------------------------------------
   - id: cic_superset_split_v2_seed123
     dataset_id: cic_superset
@@ -42,4 +42,40 @@ splits:
     train_indices: "results/splits/cic_superset_split_v2_seed123/train_idx.npy"
     test_indices: "results/splits/cic_superset_split_v2_seed123/test_idx.npy"
     enabled: false
+    smoke_test: false
+
+  # ---------------------------------------------------------------------------
+  # Danilo trusted botnet-balanced CIC-like dataset splits
+  # ---------------------------------------------------------------------------
+  - id: realworld_botnet_balanced_cic_100k_split_v1
+    dataset_id: realworld_botnet_balanced_cic_100k
+    name: "Real-world botnet-balanced CIC-like 100k stratified 80/20 split"
+    method: stratified
+    test_size: 0.2
+    seed: 42
+    train_indices: "results/splits/realworld_botnet_balanced_cic_100k_split_v1/train_idx.npy"
+    test_indices: "results/splits/realworld_botnet_balanced_cic_100k_split_v1/test_idx.npy"
+    enabled: true
+    smoke_test: false
+
+  - id: realworld_botnet_balanced_cic_full_split_v1
+    dataset_id: realworld_botnet_balanced_cic_full
+    name: "Real-world botnet-balanced CIC-like full stratified 80/20 split"
+    method: stratified
+    test_size: 0.2
+    seed: 42
+    train_indices: "results/splits/realworld_botnet_balanced_cic_full_split_v1/train_idx.npy"
+    test_indices: "results/splits/realworld_botnet_balanced_cic_full_split_v1/test_idx.npy"
+    enabled: true
+    smoke_test: false
+
+  - id: realworld_botnet_balanced_cic_100k_strict_split_v1
+    dataset_id: realworld_botnet_balanced_cic_100k_strict
+    name: "Real-world botnet-balanced CIC-like 100k strict stratified 80/20 split"
+    method: stratified
+    test_size: 0.2
+    seed: 42
+    train_indices: "results/splits/realworld_botnet_balanced_cic_100k_strict_split_v1/train_idx.npy"
+    test_indices: "results/splits/realworld_botnet_balanced_cic_100k_strict_split_v1/test_idx.npy"
+    enabled: true
     smoke_test: false

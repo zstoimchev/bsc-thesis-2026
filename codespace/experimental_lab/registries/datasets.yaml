@@ -138,3 +138,68 @@ datasets:
     smoke_test: false
     note: "Directory reference only. UNSW-NB15 uses different features, so it is not directly comparable with CIC/DDoS flow datasets."
     drop_columns: []
+
+  # ---------------------------------------------------------------------------
+  # Danilo trusted botnet-balanced dataset
+  # Main dataset candidate for thesis model comparison.
+  # ---------------------------------------------------------------------------
+  - id: realworld_botnet_balanced_cic_100k
+    name: "Real-world botnet-balanced CIC-like dataset 100k sample"
+    path: "data/prepared/realworld_botnet_balanced_cic_100k.parquet"
+    split_type: "generated"
+    label_col: "label"
+    problem_type: "binary"
+    enabled: true
+    smoke_test: false
+    note: "Balanced 100k debug sample from Danilo trusted botnet-balanced CIC-like dataset."
+    drop_columns:
+      - "src_ip"
+      - "dst_ip"
+      - "flow_start_ts"
+      - "flow_end_ts"
+      - "capture_file"
+      - "capture_start_utc"
+      - "capture_end_utc"
+      - "label_source"
+
+  - id: realworld_botnet_balanced_cic_full
+    name: "Real-world botnet-balanced CIC-like dataset full"
+    path: "data/parquets/realworld_botnet_balanced/realworld_cic_like_botnet_balanced.parquet"
+    split_type: "generated"
+    label_col: "label"
+    problem_type: "binary"
+    enabled: true
+    smoke_test: false
+    note: "Full Danilo trusted botnet-balanced CIC-like dataset."
+    drop_columns:
+      - "src_ip"
+      - "dst_ip"
+      - "flow_start_ts"
+      - "flow_end_ts"
+      - "capture_file"
+      - "capture_start_utc"
+      - "capture_end_utc"
+      - "label_source"
+
+  - id: realworld_botnet_balanced_cic_100k_strict
+    name: "Real-world botnet-balanced CIC-like dataset 100k strict"
+    path: "data/prepared/realworld_botnet_balanced_cic_100k.parquet"
+    split_type: "generated"
+    label_col: "label"
+    problem_type: "binary"
+    enabled: true
+    smoke_test: false
+    note: "Strict 100k evaluation dataset with metadata, ports, protocol, and obvious shortcut columns removed."
+    drop_columns:
+      - "src_ip"
+      - "dst_ip"
+      - "src_port"
+      - "dst_port"
+      - "protocol"
+      - "flow_start_ts"
+      - "flow_end_ts"
+      - "capture_file"
+      - "capture_start_utc"
+      - "capture_end_utc"
+      - "captured_port_in_scope"
+      - "label_source"
