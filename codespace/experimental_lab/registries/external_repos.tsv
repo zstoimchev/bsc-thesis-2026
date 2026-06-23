@@ -1,0 +1,16 @@
+# paper_id	folder	url	ref	notes
+01	01_DeepLearning-IDS	https://github.com/Colorado-Mesa-University-Cybersecurity/DeepLearning-IDS	-	DeepLearning-IDS reference repository
+02	02_DDoS_Traffic_Research	https://github.com/Colorado-Mesa-University-Cybersecurity/DDoS_Traffic_Research	-	DDoS Traffic Research reference repository
+03	03_Anomaly-Detection-KDD99-CNNLSTM	https://github.com/perriDplatypus/Anomaly-Detection-KDD99-CNNLSTM	-	Repository-only audit reference
+04	04_Intrusion-Detection-on-NSL-KDD	https://github.com/hymoe/Intrusion-Detection-on-NSL-KDD	-	NSL-KDD RNN/GRU/LSTM reference repository
+05	05_Intrusion_detection_system	https://github.com/Soonmok/Intrusion_detection_system	-	Self-taught learning / softmax reference repository
+06	06_CIC-DDoS2019-DeepLearning	https://github.com/mvoassis/CIC-DDoS2019-DeepLearning	-	CIC-DDoS2019 GRU/deep-learning reference repository
+07	07_A-Novel-Approach-for-IDS	https://github.com/shubhamnarkhede/A-Novel-Approach-for-Network-Intrusion-Detection-using-Probability-parameter-to-ensemble-Machine-Lea	-	CNN / CNN-RNN / CNN-LSTM / CNN-GRU reference repository
+08	08_Network-Intrusion-Detection	https://github.com/vinayakumarr/Network-Intrusion-Detection	-	Deep/shallow network reference repository
+09	09_Network-Intrusion-Detection	https://github.com/CynthiaKoopman/Network-Intrusion-Detection	-	Subset feature elimination / decision-tree reference repository
+10	10_clustering-based-anomaly-detection	https://github.com/jeremy191/clustering-based-anomaly-detection	-	Clustering-based anomaly detection reference repository
+11	11_Network-Intrusion-Detection-System	https://github.com/marksniper/Network-Intrusion-Detection-System	-	XGBoost/RF/SVM IDS reference repository
+12	12_NSLKDD-Dataset	https://github.com/InitRoot/NSLKDD-Dataset	-	Ant-colony / decision-tree reference repository
+13	13_python-fire	UNAVAILABLE	-	Repository deleted or unavailable
+14	14_NSL-KDD-Neural-Networks-Pytorch	https://github.com/NabilMoukafih/NSL-KDD-Neural-Networks-Pytorch	-	DNN IDS reference repository
+15	15_NSL-KDD-ADS	https://github.com/kabbi159/NSL-KDD-ADS	-	Deep energy anomaly detection reference repository

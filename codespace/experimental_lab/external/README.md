@@ -31,7 +31,7 @@ The following repositories were used as references for architecture, preprocessi
 | 10    | `10_clustering-based-anomaly-detection` | TODO: add original GitHub URL     | K-means / clustering anomaly detection reference     |
 | 11    | `11_Network-Intrusion-Detection-System` | TODO: add original GitHub URL     | XGBoost / RF / SVM reference                         |
 | 12    | `12_NSLKDD-Dataset`                     | TODO: add original GitHub URL     | Ant-colony / decision-tree-related NSL-KDD reference |
-| 13    | not available                           | Repository deleted or unavailable | Recorded as audit-only                               |
+| 13    | `13_python-fire`                        | Repository deleted or unavailable | Recorded as audit-only                               |
 | 14    | `14_NSL-KDD-Neural-Networks-Pytorch`    | TODO: add original GitHub URL     | Neural-network IDS reference                         |
 | 15    | `15_NSL-KDD-ADS`                        | TODO: add original GitHub URL     | Deep energy / anomaly detection reference            |
 
