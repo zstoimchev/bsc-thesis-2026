@@ -1,205 +1,244 @@
 datasets:
-  # ---------------------------------------------------------------------------
-  # Tiny smoke-test dataset
-  # Used only to verify that runners and orchestrate.py work.
-  # ---------------------------------------------------------------------------
-  - id: _runner_core_test
-    name: "Tiny runner smoke-test dataset"
-    path: "results/_runner_core_test.csv"
-    split_type: "generated"
-    label_col: "label"
-    problem_type: "binary"
-    enabled: true
-    smoke_test: true
-    drop_columns: []
-
-  # ---------------------------------------------------------------------------
-  # Main thesis dataset
-  # Danilo / prepared CIC DDoS superset.
-  # This should become the main dataset for final thesis comparison.
-  # ---------------------------------------------------------------------------
-  - id: cic_superset
-    name: "Prepared CIC DDoS superset"
-    path: "data/parquets/cic_superset.parquet"
-    split_type: "generated"
-    label_col: null
-    problem_type: "binary"
-    enabled: true
-    smoke_test: false
-    drop_columns:
-      - "Flow ID"
-      - "Src IP"
-      - "Dst IP"
-      - "Source IP"
-      - "Destination IP"
-      - "Timestamp"
-      - "SimillarHTTP"
-      - "Unnamed: 0"
-
-  # ---------------------------------------------------------------------------
-  # CIC-DDoS2019 predefined train/test files
-  # Useful because some repositories originally used CIC-DDoS2019.
-  # ---------------------------------------------------------------------------
-  - id: cic_ddos2019_predefined
-    name: "CIC-DDoS2019 predefined train/test"
-    train_path: "data/original_datasets/CIC-DDoS-2019/cic_ddos2019_train.csv"
-    test_path: "data/original_datasets/CIC-DDoS-2019/cic_ddos2019_test.csv"
-    split_type: "predefined"
-    label_col: null
-    problem_type: "binary"
-    enabled: true
-    smoke_test: false
-    drop_columns:
-      - "Flow ID"
-      - "Src IP"
-      - "Dst IP"
-      - "Source IP"
-      - "Destination IP"
-      - "Timestamp"
-      - "SimillarHTTP"
-      - "Unnamed: 0"
-
-  # ---------------------------------------------------------------------------
-  # Optional reference datasets
-  # These are useful for audit/reference only. They are not the main thesis target.
-  # ---------------------------------------------------------------------------
-  - id: cic_ids2017_reference
-    name: "CIC-IDS2017 reference dataset"
-    path: "data/original_datasets/CIC-IDS-2017"
-    split_type: "generated"
-    label_col: null
-    problem_type: "binary"
-    enabled: false
-    smoke_test: false
-    note: "Directory reference only. Enable only after creating a single merged CSV/parquet."
-    drop_columns:
-      - "Flow ID"
-      - "Src IP"
-      - "Dst IP"
-      - "Source IP"
-      - "Destination IP"
-      - "Timestamp"
-      - "Unnamed: 0"
-
-  - id: cic_ids2018_reference
-    name: "CIC-IDS2018 reference dataset"
-    path: "data/original_datasets/CIC-IDS2018"
-    split_type: "generated"
-    label_col: null
-    problem_type: "binary"
-    enabled: false
-    smoke_test: false
-    note: "Directory reference only. Enable only after creating a single merged CSV/parquet."
-    drop_columns:
-      - "Flow ID"
-      - "Src IP"
-      - "Dst IP"
-      - "Source IP"
-      - "Destination IP"
-      - "Timestamp"
-      - "Unnamed: 0"
-
-  - id: cic_ids2018_normalized_reference
-    name: "CIC-IDS2018 normalized reference dataset"
-    path: "data/original_datasets/CIC-IDS2018-normalized"
-    split_type: "generated"
-    label_col: null
-    problem_type: "binary"
-    enabled: false
-    smoke_test: false
-    note: "Directory reference only. Enable only after creating a single merged CSV/parquet."
-    drop_columns:
-      - "Flow ID"
-      - "Src IP"
-      - "Dst IP"
-      - "Source IP"
-      - "Destination IP"
-      - "Timestamp"
-      - "Unnamed: 0"
-
-  - id: nsl_kdd_reference
-    name: "NSL-KDD reference dataset"
-    path: "data/original_datasets/NSL-KDD"
-    split_type: "generated"
-    label_col: null
-    problem_type: "binary"
-    enabled: false
-    smoke_test: false
-    note: "Directory reference only. NSL-KDD uses different features, so it is not directly comparable with CIC/DDoS flow datasets."
-    drop_columns: []
-
-  - id: unsw_nb15_reference
-    name: "UNSW-NB15 reference dataset"
-    path: "data/original_datasets/UNSW-NB15"
-    split_type: "generated"
-    label_col: null
-    problem_type: "binary"
-    enabled: false
-    smoke_test: false
-    note: "Directory reference only. UNSW-NB15 uses different features, so it is not directly comparable with CIC/DDoS flow datasets."
-    drop_columns: []
-
-  # ---------------------------------------------------------------------------
-  # Danilo trusted botnet-balanced dataset
-  # Main dataset candidate for thesis model comparison.
-  # ---------------------------------------------------------------------------
-  - id: realworld_botnet_balanced_cic_100k
-    name: "Real-world botnet-balanced CIC-like dataset 100k sample"
-    path: "data/prepared/realworld_botnet_balanced_cic_100k.parquet"
-    split_type: "generated"
-    label_col: "label"
-    problem_type: "binary"
-    enabled: true
-    smoke_test: false
-    note: "Balanced 100k debug sample from Danilo trusted botnet-balanced CIC-like dataset."
-    drop_columns:
-      - "src_ip"
-      - "dst_ip"
-      - "flow_start_ts"
-      - "flow_end_ts"
-      - "capture_file"
-      - "capture_start_utc"
-      - "capture_end_utc"
-      - "label_source"
-
-  - id: realworld_botnet_balanced_cic_full
-    name: "Real-world botnet-balanced CIC-like dataset full"
-    path: "data/parquets/realworld_botnet_balanced/realworld_cic_like_botnet_balanced.parquet"
-    split_type: "generated"
-    label_col: "label"
-    problem_type: "binary"
-    enabled: true
-    smoke_test: false
-    note: "Full Danilo trusted botnet-balanced CIC-like dataset."
-    drop_columns:
-      - "src_ip"
-      - "dst_ip"
-      - "flow_start_ts"
-      - "flow_end_ts"
-      - "capture_file"
-      - "capture_start_utc"
-      - "capture_end_utc"
-      - "label_source"
-
-  - id: realworld_botnet_balanced_cic_100k_strict
-    name: "Real-world botnet-balanced CIC-like dataset 100k strict"
-    path: "data/prepared/realworld_botnet_balanced_cic_100k.parquet"
-    split_type: "generated"
-    label_col: "label"
-    problem_type: "binary"
-    enabled: true
-    smoke_test: false
-    note: "Strict 100k evaluation dataset with metadata, ports, protocol, and obvious shortcut columns removed."
-    drop_columns:
-      - "src_ip"
-      - "dst_ip"
-      - "src_port"
-      - "dst_port"
-      - "protocol"
-      - "flow_start_ts"
-      - "flow_end_ts"
-      - "capture_file"
-      - "capture_start_utc"
-      - "capture_end_utc"
-      - "captured_port_in_scope"
-      - "label_source"
+- id: _runner_core_test
+  name: Tiny runner smoke-test dataset
+  path: results/_runner_core_test.csv
+  split_type: generated
+  label_col: label
+  problem_type: binary
+  enabled: true
+  smoke_test: true
+  drop_columns: []
+- id: cic_superset
+  name: Prepared CIC DDoS superset
+  path: data/parquets/cic_superset.parquet
+  split_type: generated
+  label_col: null
+  problem_type: binary
+  enabled: true
+  smoke_test: false
+  drop_columns:
+  - Flow ID
+  - Src IP
+  - Dst IP
+  - Source IP
+  - Destination IP
+  - Timestamp
+  - SimillarHTTP
+  - 'Unnamed: 0'
+- id: cic_ddos2019_predefined
+  name: CIC-DDoS2019 predefined train/test
+  train_path: data/original_datasets/CIC-DDoS-2019/cic_ddos2019_train.csv
+  test_path: data/original_datasets/CIC-DDoS-2019/cic_ddos2019_test.csv
+  split_type: predefined
+  label_col: null
+  problem_type: binary
+  enabled: true
+  smoke_test: false
+  drop_columns:
+  - Flow ID
+  - Src IP
+  - Dst IP
+  - Source IP
+  - Destination IP
+  - Timestamp
+  - SimillarHTTP
+  - 'Unnamed: 0'
+- id: cic_ids2017_reference
+  name: CIC-IDS2017 reference dataset
+  path: data/original_datasets/CIC-IDS-2017
+  split_type: generated
+  label_col: null
+  problem_type: binary
+  enabled: false
+  smoke_test: false
+  note: Directory reference only. Enable only after creating a single merged CSV/parquet.
+  drop_columns:
+  - Flow ID
+  - Src IP
+  - Dst IP
+  - Source IP
+  - Destination IP
+  - Timestamp
+  - 'Unnamed: 0'
+- id: cic_ids2018_reference
+  name: CIC-IDS2018 reference dataset
+  path: data/original_datasets/CIC-IDS2018
+  split_type: generated
+  label_col: null
+  problem_type: binary
+  enabled: false
+  smoke_test: false
+  note: Directory reference only. Enable only after creating a single merged CSV/parquet.
+  drop_columns:
+  - Flow ID
+  - Src IP
+  - Dst IP
+  - Source IP
+  - Destination IP
+  - Timestamp
+  - 'Unnamed: 0'
+- id: cic_ids2018_normalized_reference
+  name: CIC-IDS2018 normalized reference dataset
+  path: data/original_datasets/CIC-IDS2018-normalized
+  split_type: generated
+  label_col: null
+  problem_type: binary
+  enabled: false
+  smoke_test: false
+  note: Directory reference only. Enable only after creating a single merged CSV/parquet.
+  drop_columns:
+  - Flow ID
+  - Src IP
+  - Dst IP
+  - Source IP
+  - Destination IP
+  - Timestamp
+  - 'Unnamed: 0'
+- id: nsl_kdd_reference
+  name: NSL-KDD reference dataset
+  path: data/original_datasets/NSL-KDD
+  split_type: generated
+  label_col: null
+  problem_type: binary
+  enabled: false
+  smoke_test: false
+  note: Directory reference only. NSL-KDD uses different features, so it is not directly
+    comparable with CIC/DDoS flow datasets.
+  drop_columns: []
+- id: unsw_nb15_reference
+  name: UNSW-NB15 reference dataset
+  path: data/original_datasets/UNSW-NB15
+  split_type: generated
+  label_col: null
+  problem_type: binary
+  enabled: false
+  smoke_test: false
+  note: Directory reference only. UNSW-NB15 uses different features, so it is not
+    directly comparable with CIC/DDoS flow datasets.
+  drop_columns: []
+- id: realworld_botnet_balanced_cic_100k
+  name: Real-world botnet-balanced CIC-like dataset 100k sample
+  path: data/prepared/realworld_botnet_balanced_cic_100k.parquet
+  split_type: generated
+  label_col: label
+  problem_type: binary
+  enabled: true
+  smoke_test: false
+  note: Balanced 100k debug sample from Danilo trusted botnet-balanced CIC-like dataset.
+  drop_columns:
+  - src_ip
+  - dst_ip
+  - flow_start_ts
+  - flow_end_ts
+  - capture_file
+  - capture_start_utc
+  - capture_end_utc
+  - label_source
+- id: realworld_botnet_balanced_cic_full
+  name: Real-world botnet-balanced CIC-like dataset full
+  path: data/parquets/realworld_botnet_balanced/realworld_cic_like_botnet_balanced.parquet
+  split_type: generated
+  label_col: label
+  problem_type: binary
+  enabled: true
+  smoke_test: false
+  note: Full Danilo trusted botnet-balanced CIC-like dataset.
+  drop_columns:
+  - src_ip
+  - dst_ip
+  - flow_start_ts
+  - flow_end_ts
+  - capture_file
+  - capture_start_utc
+  - capture_end_utc
+  - label_source
+- id: realworld_botnet_balanced_cic_100k_strict
+  name: Real-world botnet-balanced CIC-like dataset 100k strict
+  path: data/prepared/realworld_botnet_balanced_cic_100k.parquet
+  split_type: generated
+  label_col: label
+  problem_type: binary
+  enabled: true
+  smoke_test: false
+  note: Strict 100k evaluation dataset with metadata, ports, protocol, and obvious
+    shortcut columns removed.
+  drop_columns:
+  - src_ip
+  - dst_ip
+  - src_port
+  - dst_port
+  - protocol
+  - flow_start_ts
+  - flow_end_ts
+  - capture_file
+  - capture_start_utc
+  - capture_end_utc
+  - captured_port_in_scope
+  - label_source
+- id: transfer_cicddos2019_native_aligned
+  name: 'Transfer baseline: train CIC-DDoS2019 aligned, test CIC-DDoS2019 aligned'
+  train_path: data/prepared/transfer_cicddos2019_to_botnet_full/train_cicddos2019_original_aligned.parquet
+  test_path: data/prepared/transfer_cicddos2019_to_botnet_full/test_cicddos2019_original_aligned.parquet
+  split_type: predefined
+  label_col: label
+  problem_type: binary
+  enabled: true
+  smoke_test: false
+  note: Native baseline using the same aligned 17-feature space as the transfer experiment.
+  drop_columns: []
+- id: transfer_cicddos2019_to_botnet_balanced_full_strict
+  name: 'Transfer: train CIC-DDoS2019 aligned, test full botnet-balanced CIC-like'
+  train_path: data/prepared/transfer_cicddos2019_to_botnet_full/train_cicddos2019_original_aligned.parquet
+  test_path: data/prepared/transfer_cicddos2019_to_botnet_full/test_botnet_balanced_full_aligned.parquet
+  split_type: predefined
+  label_col: label
+  problem_type: binary
+  enabled: true
+  smoke_test: false
+  note: Cross-dataset transfer experiment. Trains on original CIC-DDoS2019 and evaluates
+    on the full Danilo botnet-balanced dataset. Botnet-balanced is external test only.
+  drop_columns: []
+- id: matrix_cic_train_cic_test
+  name: 'Matrix: train CIC-DDoS2019, test CIC-DDoS2019'
+  train_path: data/prepared/transfer_cicddos2019_to_botnet_full/train_cicddos2019_original_aligned.parquet
+  test_path: data/prepared/transfer_cicddos2019_to_botnet_full/test_cicddos2019_original_aligned.parquet
+  split_type: predefined
+  label_col: label
+  problem_type: binary
+  enabled: true
+  smoke_test: false
+  note: 'Original to original: train on CIC-DDoS2019 and test on CIC-DDoS2019.'
+  drop_columns: []
+- id: matrix_cic_train_botnet_test
+  name: 'Matrix: train CIC-DDoS2019, test botnet-balanced'
+  train_path: data/prepared/transfer_cicddos2019_to_botnet_full/train_cicddos2019_original_aligned.parquet
+  test_path: data/prepared/transfer_cicddos2019_to_botnet_full/test_botnet_balanced_aligned.parquet
+  split_type: predefined
+  label_col: label
+  problem_type: binary
+  enabled: true
+  smoke_test: false
+  note: 'Original to other: train on CIC-DDoS2019 and test on botnet-balanced.'
+  drop_columns: []
+- id: matrix_botnet_train_botnet_test
+  name: 'Matrix: train botnet-balanced, test botnet-balanced'
+  train_path: data/prepared/transfer_cicddos2019_to_botnet_full/train_botnet_balanced_aligned.parquet
+  test_path: data/prepared/transfer_cicddos2019_to_botnet_full/test_botnet_balanced_aligned.parquet
+  split_type: predefined
+  label_col: label
+  problem_type: binary
+  enabled: true
+  smoke_test: false
+  note: 'Other to other: train on botnet-balanced and test on botnet-balanced.'
+  drop_columns: []
+- id: matrix_botnet_train_cic_test
+  name: 'Matrix: train botnet-balanced, test CIC-DDoS2019'
+  train_path: data/prepared/transfer_cicddos2019_to_botnet_full/train_botnet_balanced_aligned.parquet
+  test_path: data/prepared/transfer_cicddos2019_to_botnet_full/test_cicddos2019_original_aligned.parquet
+  split_type: predefined
+  label_col: label
+  problem_type: binary
+  enabled: true
+  smoke_test: false
+  note: 'Other to original: train on botnet-balanced and test on CIC-DDoS2019.'
+  drop_columns: []
