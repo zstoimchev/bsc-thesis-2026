@@ -1,0 +1,26 @@
+{
+  "mdl01_baseline": {
+    "name": "Model 1: Baseline",
+    "type": "logistic_regression_or_decision_tree",
+    "module": "src.mdl1_baseline",
+    "description": "Simple interpretable baseline used to check whether the dataset is separable by low-complexity models."
+  },
+  "mdl02_xgboost": {
+    "name": "Model 2: XGBoost",
+    "type": "classical_ml",
+    "module": "src.mdl2_xgboost",
+    "description": "Strong tabular ML model selected from DDoS-focused literature."
+  },
+  "mdl03_mlp": {
+    "name": "Model 3: MLP",
+    "type": "neural_network",
+    "module": "src.mdl3_mlp",
+    "description": "Simple feedforward neural baseline."
+  },
+  "mdl04_gru": {
+    "name": "Model 4: GRU",
+    "type": "recurrent_neural_network",
+    "module": "src.mdl4_gru",
+    "description": "Optional temporal model used only if flow sequences or time windows are implemented."
+  }
+}
