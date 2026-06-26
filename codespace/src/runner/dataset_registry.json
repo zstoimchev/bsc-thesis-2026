@@ -1,0 +1,26 @@
+{
+  "dummy_cic": {
+    "name": "Dummy CIC-like dataset",
+    "path": "data/processed/dummy_cic.csv",
+    "format": "csv",
+    "ready": false,
+    "enabled": false,
+    "label_column": "label",
+    "task": "binary",
+    "split_type": "random",
+    "drop_columns": [],
+    "description": "Small generated CIC-like dataset used to test the pipeline."
+  },
+  "dummy_nsl": {
+    "name": "Dummy NSL-like dataset",
+    "path": "data/processed/dummy_nsl.csv",
+    "format": "csv",
+    "ready": false,
+    "enabled": false,
+    "label_column": "class",
+    "task": "binary",
+    "split_type": "random",
+    "drop_columns": [],
+    "description": "Small generated NSL-like dataset used to test the pipeline."
+  }
+}
