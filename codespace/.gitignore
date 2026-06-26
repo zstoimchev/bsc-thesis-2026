@@ -168,7 +168,7 @@ Thumbs.db
 # ---------------------------------------------------------------------------
 # Previous work archive / local copied repositories
 # ---------------------------------------------------------------------------
-previous_work/*
+previous_work/
 docs/*
 results.*
 temp/
