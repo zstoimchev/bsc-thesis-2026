@@ -1,4 +1,4 @@
-# **A Reproducible Evaluation and Deployment-Oriented Re-Implementation of Modern IDS/DDoS Detection Models Under Realistic Feature, Split, and Dataset Constraints**
+# **Evaluation and Re-implementation of Modern Machine Learning Models for Intrusion Detection**
 
 This repository contains the code for my thesis experiments on DDoS / intrusion detection using machine learning.
 
