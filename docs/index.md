@@ -232,7 +232,9 @@ After the audit, the following representatives were taken to move forward with:
 
 The CNN/CNN-hybrid repository from Paper 7.1 will remain optional and will only be included if there is enough time after the three main models are implemented and evaluated.
 
-# **A Reproducible Evaluation and Deployment-Oriented Re-Implementation of Modern IDS/DDoS Detection Models Under Realistic Feature, Split, and Dataset Constraints**
+%% # **A Reproducible Evaluation and Deployment-Oriented Re-Implementation of Modern IDS/DDoS Detection Models Under Realistic Feature, Split, and Dataset Constraints** %%
+
+# **Evaluation and Re-implementation of Modern Machine Learning Models for Intrusion Detection**
 
 ## Overview
 
@@ -285,3 +287,17 @@ I selected these models because they represent the most relevant model families 
 11. Go and drink for a week.
 12. Recover and continue
 13. :)
+
+### Dataset
+
+Danilo’s work is treated as previous evaluation and reference baseline. This thesis continues from that point by rebuilding the experimental pipeline in a reproducible structure, selecting representative models, and evaluating them under controlled feature, split, and dataset constraints.
+
+Basically, his work presented that the models and datasets used are bad. If the model is evaluated on new data - it does not perform well. Also, it proved that using more balanced dataset yields lower results that the reported ones. **I will use only the conclusion and hypothesis, and will not compare mine models with his results!**
+
+I will use the original CIC dataset(s), and process them in one big superset. The previous work and prepared datasets are used as a baseline and reference point. The dataset construction process is made reproducible by defining a dataset registry, downloading or referencing the original public CIC datasets, normalizing their labels and feature names, and generating controlled experimental dataset variants.
+
+> I reproduce, document, and extend the dataset preparation process.
+
+### Evaluation previous work (Danilo's dataset \[superset\])
+
+This will be the first phase. See the dataset. If columns are working - keep the dataset. If data is missing (too small dataset), continue using the original CIC dataset.
