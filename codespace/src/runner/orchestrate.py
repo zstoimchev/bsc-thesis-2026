@@ -1,6 +1,5 @@
 import argparse
 import importlib
-import json
 from datetime import datetime
 from pathlib import Path
 
@@ -8,25 +7,12 @@ from src.common.data_loader import load_dataset
 from src.common.metrics import save_json
 from src.common.preprocessing import prepare_xy
 from src.common.splitting import split_dataset
-
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-RUNNER_DIR = Path(__file__).resolve().parent
-
-DATASET_REGISTRY_PATH = RUNNER_DIR / "dataset_registry.json"
-MODEL_REGISTRY_PATH = RUNNER_DIR / "model_registry.json"
-
-
-def load_json(path: Path) -> dict:
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def load_registries() -> tuple[dict, dict]:
-    dataset_registry = load_json(DATASET_REGISTRY_PATH)
-    model_registry = load_json(MODEL_REGISTRY_PATH)
-    return dataset_registry, model_registry
-
+from src.runner.paths import PROJECT_ROOT
+from src.runner.registry import load_registries
+from src.runner.commands.inspect_dataset import (
+    add_inspect_dataset_parser,
+    run_inspect_dataset,
+)
 
 def list_registry_items(title: str, registry: dict) -> None:
     print(f"\n{title}")
@@ -365,6 +351,8 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("list-models")
     subparsers.add_parser("list-datasets")
 
+    add_inspect_dataset_parser(subparsers)
+
     train_parser = subparsers.add_parser("train")
     add_experiment_args(train_parser)
 
@@ -391,6 +379,10 @@ def main() -> None:
         list_registry_items("Available datasets", dataset_registry)
         return
 
+    if args.command == "inspect-dataset":
+        run_inspect_dataset(args)
+        return
+    
     if args.command in {"train", "evaluate", "train-evaluate"}:
         run_experiments(args, mode=args.command)
         return
