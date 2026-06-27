@@ -1,4 +1,4 @@
-CIC_DEPLOYABLE = [
+CIC = [
     "flow_duration",
     "total_fwd_packets",
     "total_bwd_packets",
@@ -11,22 +11,16 @@ CIC_DEPLOYABLE = [
     "rst_flag_count",
 ]
 
-CIC_COMMON = CIC_DEPLOYABLE
-
-CIC_FULL = CIC_DEPLOYABLE
-
 
 FEATURE_SETS = {
-    "cic_deployable": CIC_DEPLOYABLE,
-    "cic_common": CIC_COMMON,
-    "cic_full": CIC_FULL,
+    "all": None,
+    "common": CIC,
 }
 
 
-def get_feature_set(feature_set_id: str) -> list[str]:
+def get_feature_set(feature_set_id: str) -> list[str] | None:
     if feature_set_id not in FEATURE_SETS:
         raise ValueError(f"Unknown feature set: {feature_set_id}")
-
     return FEATURE_SETS[feature_set_id]
 
 
@@ -34,19 +28,20 @@ def resolve_feature_columns(
     available_columns: list[str],
     feature_set_id: str,
     label_column: str,
-    strict: bool = True,
+    drop_columns: list[str] | None = None,
 ) -> list[str]:
-    if feature_set_id == "all":
-        return [col for col in available_columns if col != label_column]
+    drop_columns = set(drop_columns or [])
+    drop_columns.add(label_column)
 
     requested = get_feature_set(feature_set_id)
+
+    if requested is None:
+        return [c for c in available_columns if c not in drop_columns]
+
     available = set(available_columns)
 
-    missing = [col for col in requested if col not in available]
+    missing = [c for c in requested if c not in available]
+    if missing:
+        raise ValueError(f"Missing required features for '{feature_set_id}': {missing}")
 
-    if missing and strict:
-        raise ValueError(
-            f"Missing required features for feature set '{feature_set_id}': {missing}"
-        )
-
-    return [col for col in requested if col in available]
+    return [c for c in requested if c not in drop_columns]

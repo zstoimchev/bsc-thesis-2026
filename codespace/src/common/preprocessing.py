@@ -34,13 +34,16 @@ def prepare_xy(
     if label_column not in df.columns:
         raise ValueError(f"Label column not found: {label_column}")
 
-    strict_features = dataset_cfg.get("strict_features", True)
+    drop_columns = [
+        clean_column_name(col)
+        for col in dataset_cfg.get("drop_columns", [])
+    ]
 
     feature_columns = resolve_feature_columns(
         available_columns=list(df.columns),
         feature_set_id=feature_set,
         label_column=label_column,
-        strict=strict_features,
+        drop_columns=drop_columns
     )
 
     if not feature_columns:

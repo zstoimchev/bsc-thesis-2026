@@ -5,9 +5,9 @@
     "format": "csv",
     "ready": false,
     "enabled": false,
-    "label_column": "label",
     "task": "binary",
     "split_type": "random",
+    "label_column": "label",
     "drop_columns": [],
     "description": "Small generated CIC-like dataset used to test the pipeline."
   },
@@ -17,10 +17,50 @@
     "format": "csv",
     "ready": false,
     "enabled": false,
+    "task": "binary",
+    "split_type": "random",
+    "label_column": "class",
+    "drop_columns": [],
+    "description": "Small generated NSL-like dataset used to test the pipeline."
+  },
+  "cic_collection": {
+    "name": "CIC collection dataset",
+    "path": "data/parquets/cic_collection.parquet",
+    "format": "parquet",
+    "ready": false,
+    "enabled": false,
     "label_column": "class",
     "task": "binary",
     "split_type": "random",
-    "drop_columns": [],
-    "description": "Small generated NSL-like dataset used to test the pipeline."
+    "drop_columns": [
+      "flow_id",
+      "src_ip",
+      "dst_ip",
+      "timestamp",
+      "dataset_source",
+      "capture_file"
+    ],
+    "description": "Main CIC-like dataset used for training and fair model comparison."
+  },
+  "realworld": {
+    "name": "Real-world CIC-like botnet-balanced dataset",
+    "path": "data/parquets/realworld.parquet",
+    "format": "parquet",
+    "ready": false,
+    "enabled": false,
+    "label_column": "class",
+    "task": "binary",
+    "split_type": "external_eval",
+    "drop_columns": [
+      "src_ip",
+      "dst_ip",
+      "flow_start_ts",
+      "flow_end_ts",
+      "capture_file",
+      "capture_start_utc",
+      "capture_end_utc",
+      "label_source"
+    ],
+    "description": "Real-world evaluation dataset with injected botnet traffic. Used mainly for robustness/domain-shift evaluation, not as the main training dataset."
   }
 }
