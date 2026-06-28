@@ -11,8 +11,8 @@ Reported 99% IDS accuracy often depends heavily on dataset choice, preprocessing
 - [x] Identify the architecture and method used in each paper, alongside the dataset(s) used.
 - [x] Group the papers by architecture and by method.
 - [x] Decide which papers are useful as main representatives and which are only background.
-- [ ] Audit the available GitHub repositories.
-- [ ] Select 2–3 representative implementations.
+- [x] Audit the available GitHub repositories.
+- [x] Select 2–3 representative implementations.
 - [ ] Re-implement the chosen models in one clean codebase.
 - [ ] Train the selected models on Danilo’s DDoS superset.
 - [ ] Compare the results with the original papers using common metrics.
