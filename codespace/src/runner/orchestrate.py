@@ -316,7 +316,7 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--feature-set",
         default="all",
-        choices=["nsl_all", "nsl_basic", "nsl_content", "nsl_traffic", "all"],
+        choices=["all", "common"],
     )
 
     parser.add_argument("--test-size", type=float, default=0.2)
