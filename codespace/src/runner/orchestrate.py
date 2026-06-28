@@ -1,7 +1,9 @@
 import argparse
 import importlib
+
 from datetime import datetime
 from pathlib import Path
+from collections.abc import Callable
 
 from src.common.metrics import save_json
 from src.runner.paths import PROJECT_ROOT
@@ -39,96 +41,90 @@ def get_model_modules(model_cfg: dict):
     return train_module, evaluate_module
 
 
-def resolve_models_to_run(
-    model_registry: dict,
-    selected_model: str | None,
-    selected_tags: list[str] | None,
+def resolve_registry_items(
+    registry: dict,
+    selected_item: str | None,
+    item_name: str,
     include_not_ready: bool,
     include_disabled: bool,
+    extra_filter: Callable[[dict], bool] | None = None,
 ) -> list[str]:
-    if selected_model:
-        if selected_model not in model_registry:
-            raise ValueError(f"Unknown model: {selected_model}")
+    if selected_item:
+        if selected_item not in registry:
+            raise ValueError(f"Unknown {item_name}: {selected_item}")
 
-        cfg = model_registry[selected_model]
+        cfg = registry[selected_item]
 
         if not include_not_ready and not cfg.get("ready", False):
             raise ValueError(
-                f"Model '{selected_model}' is not ready yet. "
+                f"{item_name.capitalize()} '{selected_item}' is not ready yet. "
                 "Use --include-not-ready if you really want to run it."
             )
 
         if not include_disabled and not cfg.get("enabled", True):
             raise ValueError(
-                f"Model '{selected_model}' is disabled. "
+                f"{item_name.capitalize()} '{selected_item}' is disabled. "
                 "Use --include-disabled if you really want to run it."
             )
 
-        return [selected_model]
+        return [selected_item]
 
-    models = []
+    selected = []
 
-    for model_id, cfg in model_registry.items():
+    for item_id, cfg in registry.items():
         if not include_not_ready and not cfg.get("ready", False):
             continue
 
         if not include_disabled and not cfg.get("enabled", True):
             continue
 
-        if selected_tags:
-            model_tags = set(cfg.get("tags", []))
-            if not any(tag in model_tags for tag in selected_tags):
-                continue
+        if extra_filter and not extra_filter(cfg):
+            continue
 
-        models.append(model_id)
+        selected.append(item_id)
 
-    if not models:
-        raise ValueError("No models selected. Check ready/enabled flags or selected tags.")
+    if not selected:
+        raise ValueError(
+            f"No {item_name}s selected. Check ready/enabled flags."
+        )
 
-    return models
+    return selected
+
+
+def resolve_models_to_run(
+    model_registry,
+    selected_model,
+    selected_tags,
+    include_not_ready,
+    include_disabled,
+):
+    return resolve_registry_items(
+        registry=model_registry,
+        selected_item=selected_model,
+        item_name="model",
+        include_not_ready=include_not_ready,
+        include_disabled=include_disabled,
+        extra_filter=(
+            None
+            if not selected_tags
+            else lambda cfg: bool(set(cfg.get("tags", [])) & set(selected_tags))
+        ),
+    )
 
 
 def resolve_datasets_to_run(
-    dataset_registry: dict,
-    selected_dataset: str | None,
-    include_not_ready: bool,
-    include_disabled: bool,
-) -> list[str]:
-    if selected_dataset:
-        if selected_dataset not in dataset_registry:
-            raise ValueError(f"Unknown dataset: {selected_dataset}")
-
-        cfg = dataset_registry[selected_dataset]
-
-        if not include_not_ready and not cfg.get("ready", False):
-            raise ValueError(
-                f"Dataset '{selected_dataset}' is not ready yet. "
-                "Use --include-not-ready if you really want to run it."
-            )
-
-        if not include_disabled and not cfg.get("enabled", True):
-            raise ValueError(
-                f"Dataset '{selected_dataset}' is disabled. "
-                "Use --include-disabled if you really want to run it."
-            )
-
-        return [selected_dataset]
-
-    datasets = []
-
-    for dataset_id, cfg in dataset_registry.items():
-        if not include_not_ready and not cfg.get("ready", False):
-            continue
-
-        if not include_disabled and not cfg.get("enabled", True):
-            continue
-
-        datasets.append(dataset_id)
-
-    if not datasets:
-        raise ValueError("No datasets selected. Check ready/enabled flags.")
-
-    return datasets
+    dataset_registry,
+    selected_dataset,
+    include_not_ready,
+    include_disabled,
+):
+    return resolve_registry_items(
+        registry=dataset_registry,
+        selected_item=selected_dataset,
+        item_name="dataset",
+        include_not_ready=include_not_ready,
+        include_disabled=include_disabled,
+    )
 
 
 def prepare_output_dir(
