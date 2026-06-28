@@ -7,9 +7,11 @@ from src.common.preprocessing import iter_prepared_xy_chunks
 from src.mdl01_baseline.model import MajorityClassBaseline
 
 
+LOG_EVERY_N_CHUNKS = 7
+
+
 def train(
         dataset_cfg: dict,
-        model_cfg: dict,
         output_dir: Path,
         model_path: Path,
         project_root: Path,
@@ -46,11 +48,12 @@ def train(
 
         model.partial_fit(x_chunk, y_chunk)
 
-        print(
-            f"[mdl01_baseline] trained chunk {chunk_count}: "
-            f"{len(y_chunk)} rows "
-            f"(total: {total_rows})"
-        )
+        if chunk_count == 1 or chunk_count % LOG_EVERY_N_CHUNKS == 0:
+            print(
+                f"[mdl01_baseline] trained chunk {chunk_count}: "
+                f"{len(y_chunk)} rows "
+                f"total rows so far: {total_rows}"
+            )
 
     model.finalize()
 

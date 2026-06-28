@@ -6,10 +6,11 @@ from src.common.metrics import BinaryMetricsAccumulator
 from src.common.preprocessing import iter_prepared_xy_chunks
 
 
+LOG_EVERY_N_CHUNKS = 7
+
+
 def evaluate(
         dataset_cfg: dict,
-        model_cfg: dict,
-        output_dir: Path,
         model_path: Path,
         project_root: Path,
         feature_set: str,
@@ -65,11 +66,12 @@ def evaluate(
         chunk_count += 1
         total_rows += len(y_chunk)
 
-        print(
-            f"[mdl01_baseline] evaluated chunk {chunk_count}: "
-            f"{len(y_chunk)} rows "
-            f"(total: {total_rows})"
-        )
+        if chunk_count == 1 or chunk_count % LOG_EVERY_N_CHUNKS == 0:
+            print(
+                f"[mdl01_baseline] evaluated chunk {chunk_count}: "
+                f"{len(y_chunk)} rows "
+                f"(total: {total_rows})"
+            )
 
     result = metrics.compute()
 

@@ -201,7 +201,6 @@ def run_one_experiment(
     if mode in {"train", "train-evaluate"}:
         train_module.train(
             dataset_cfg=dataset_cfg,
-            model_cfg=model_cfg,
             output_dir=output_dir,
             model_path=model_path,
             project_root=PROJECT_ROOT,
@@ -220,8 +219,6 @@ def run_one_experiment(
 
         metrics = evaluate_module.evaluate(
             dataset_cfg=dataset_cfg,
-            model_cfg=model_cfg,
-            output_dir=output_dir,
             model_path=model_path,
             project_root=PROJECT_ROOT,
             feature_set=args.feature_set,
@@ -232,6 +229,21 @@ def run_one_experiment(
         )
 
         save_json(metrics, metrics_path)
+        print("\n[orchestrate] Evaluation summary")
+        print("-" * 40)
+        print(f"Accuracy:          {metrics.get('accuracy', 0):.4f}")
+        print(f"Balanced accuracy: {metrics.get('balanced_accuracy', 0):.4f}")
+        print(f"Precision:         {metrics.get('precision', 0):.4f}")
+        print(f"Recall:            {metrics.get('recall', 0):.4f}")
+        print(f"F1:                {metrics.get('f1', 0):.4f}")
+        print(f"F1 macro:          {metrics.get('f1_macro', 0):.4f}")
+        cm = metrics.get("confusion_matrix")
+        if cm:
+            print("\nConfusion matrix:")
+            print("               predicted_0  predicted_1")
+            print(f"actual_0       {cm[0][0]:>11}  {cm[0][1]:>11}")
+            print(f"actual_1       {cm[1][0]:>11}  {cm[1][1]:>11}")
+        print("-" * 40)
         print(f"[orchestrate] Saved metrics to: {metrics_path}")
 
     print("[orchestrate] Done")
