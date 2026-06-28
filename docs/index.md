@@ -301,3 +301,169 @@ I will use the original CIC dataset(s), and process them in one big superset. Th
 ### Evaluation previous work (Danilo's dataset \[superset\])
 
 This will be the first phase. See the dataset. If columns are working - keep the dataset. If data is missing (too small dataset), continue using the original CIC dataset.
+
+Proceeded with two files, namely:
+- `cic_collection`: apparently dataset originally downloaded from Kaggle, and should contain 2017, 2018 and 2019 together. 
+- `realworld_botnet_balanced`: dataset created from Danilo using CICFlowMeter (I guess), CIC-Compatible
+
+#### CIC-Collection statistics
+
+```bash
+$ python run.py inspect-dataset --dataset cic_collection --chunk-size 250000
+================================================================================
+Dataset ID: cic_collection
+Name: CIC collection dataset
+Path: data/parquets/cic_collection.parquet
+Format: parquet
+Feature set: all
+Chunk size: 250000
+================================================================================
+
+Processed chunk 1: 250000 rows (total: 250000)
+- - -
+Processed chunk 37: 167581 rows (total: 9167581)
+
+================================================================================
+Inspection summary
+================================================================================
+
+Label column: label
+Total chunks: 37
+Total rows: 9167581
+
+Binary label distribution after normalization:
+  0: 7186189
+  1: 1981392
+
+Selected features: 57
+  - flow_duration
+  - total_fwd_packets
+  - total_bwd_packets
+  - total_fwd_bytes
+  - total_bwd_bytes
+  - fwd_packet_length_max
+  - fwd_packet_length_mean
+  - fwd_packet_length_std
+  - bwd_packet_length_max
+  - bwd_packet_length_mean
+  - bwd_packet_length_std
+  - flow_bytes_s
+  - flow_packets_s
+  - flow_iat_mean
+  - flow_iat_std
+  - flow_iat_max
+  - flow_iat_min
+  - fwd_iat_total
+  - fwd_iat_mean
+  - fwd_iat_std
+  - fwd_iat_max
+  - fwd_iat_min
+  - bwd_iat_total
+  - bwd_iat_mean
+  - bwd_iat_std
+  - bwd_iat_max
+  - bwd_iat_min
+  - fwd_psh_flags
+  - fwd_header_length
+  - bwd_header_length
+  - fwd_packets_s
+  - bwd_packets_s
+  - packet_length_max
+  - packet_length_mean
+  - packet_length_std
+  - packet_length_variance
+  - syn_flag_count
+  - urg_flag_count
+  - avg_packet_size
+  - avg_fwd_segment_size
+  - avg_bwd_segment_size
+  - subflow_fwd_packets
+  - subflow_fwd_bytes
+  - subflow_bwd_packets
+  - subflow_bwd_bytes
+  - init_fwd_win_bytes
+  - init_bwd_win_bytes
+  - fwd_act_data_packets
+  - fwd_seg_size_min
+  - active_mean
+  - active_std
+  - active_max
+  - active_min
+  - idle_mean
+  - idle_std
+  - idle_max
+  - idle_min
+
+Numeric features: 57
+Non-numeric features: 0
+
+Missing values after preprocessing: 0
+Infinite numeric values after preprocessing: 0
+
+Inspection completed successfully.
+```
+
+#### Realworld
+
+```bash
+$ python run.py inspect-dataset --dataset realworld --chunk-size 250000
+================================================================================
+Dataset ID: realworld
+Name: Real-world CIC-like botnet-balanced dataset
+Path: data/parquets/realworld.parquet
+Format: parquet
+Feature set: all
+Chunk size: 250000
+================================================================================
+
+Processed chunk 1: 250000 rows (total: 250000)
+- - - 
+Processed chunk 7: 187049 rows (total: 1687049)
+
+================================================================================
+Inspection summary
+================================================================================
+
+Label column: label
+Total chunks: 7
+Total rows: 1687049
+
+Binary label distribution after normalization:
+  0: 1287049
+  1: 400000
+
+Selected features: 21
+  - src_port
+  - dst_port
+  - protocol
+  - flow_duration
+  - total_fwd_packets
+  - total_bwd_packets
+  - total_fwd_bytes
+  - total_bwd_bytes
+  - total_packets
+  - total_bytes
+  - fwd_packet_length_mean
+  - bwd_packet_length_mean
+  - flow_bytes_s
+  - flow_packets_s
+  - syn_flag_count
+  - ack_flag_count
+  - rst_flag_count
+  - psh_flag_count
+  - fin_flag_count
+  - urg_flag_count
+  - captured_port_in_scope
+
+Numeric features: 20
+Non-numeric features: 1
+Non-numeric feature columns:
+  - protocol
+
+Missing values after preprocessing: 0
+Infinite numeric values after preprocessing: 0
+
+Inspection completed successfully.
+```
+
+
