@@ -11,8 +11,8 @@
     "name": "Model 02: XGBoost",
     "type": "classical_ml",
     "module": "src.mdl02_xgboost",
-    "ready": false,
-    "enabled": false,
+    "ready": true,
+    "enabled": true,
     "description": "Strong tabular machine learning model selected as a high-performing classical reference."
   },
   "mdl03_mlp": {
