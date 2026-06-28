@@ -3,10 +3,7 @@ import importlib
 from datetime import datetime
 from pathlib import Path
 
-from src.common.data_loader import load_dataset
 from src.common.metrics import save_json
-from src.common.preprocessing import prepare_xy
-from src.common.splitting import split_dataset
 from src.runner.paths import PROJECT_ROOT
 from src.runner.registry import load_registries
 from src.runner.commands.inspect_dataset import (
@@ -168,26 +165,11 @@ def run_one_experiment(
     print(f"[orchestrate] Model: {model_id}")
     print(f"[orchestrate] Split: {args.split}")
     print(f"[orchestrate] Feature set: {args.feature_set}")
+    print(f"[orchestrate] Chunk size: {args.chunk_size}")
 
     if args.dry_run:
         print("[orchestrate] Dry run only. Nothing will be trained or evaluated.")
         return
-
-    df = load_dataset(dataset_cfg, project_root=PROJECT_ROOT)
-
-    x, y, feature_columns = prepare_xy(
-        df=df,
-        dataset_cfg=dataset_cfg,
-        feature_set=args.feature_set,
-    )
-
-    split_data = split_dataset(
-        x=x,
-        y=y,
-        split_strategy=args.split,
-        test_size=args.test_size,
-        random_state=args.seed,
-    )
 
     output_dir = prepare_output_dir(
         dataset_id=dataset_id,
@@ -212,8 +194,8 @@ def run_one_experiment(
         "feature_set": args.feature_set,
         "test_size": args.test_size,
         "seed": args.seed,
-        "rows": int(len(df)),
-        "features": feature_columns,
+        "chunk_size": args.chunk_size,
+        "pipeline": "chunked",
     }
 
     save_json(run_info, run_info_path)
@@ -222,24 +204,35 @@ def run_one_experiment(
 
     if mode in {"train", "train-evaluate"}:
         train_module.train(
-            split_data=split_data,
+            dataset_cfg=dataset_cfg,
             model_cfg=model_cfg,
             output_dir=output_dir,
             model_path=model_path,
+            project_root=PROJECT_ROOT,
+            feature_set=args.feature_set,
+            chunk_size=args.chunk_size,
+            split=args.split,
+            test_size=args.test_size,
             seed=args.seed,
         )
 
     if mode in {"evaluate", "train-evaluate"}:
-        if mode == "evaluate" and not model_path.exists():
+        if not model_path.exists():
             raise FileNotFoundError(
                 f"Cannot evaluate because model file does not exist: {model_path}"
             )
 
         metrics = evaluate_module.evaluate(
-            split_data=split_data,
+            dataset_cfg=dataset_cfg,
             model_cfg=model_cfg,
             output_dir=output_dir,
             model_path=model_path,
+            project_root=PROJECT_ROOT,
+            feature_set=args.feature_set,
+            chunk_size=args.chunk_size,
+            split=args.split,
+            test_size=args.test_size,
+            seed=args.seed,
         )
 
         save_json(metrics, metrics_path)
@@ -298,6 +291,13 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
         required=False,
         default=None,
         help="Dataset ID. If omitted, all ready/enabled datasets are used.",
+    )
+
+    parser.add_argument(
+        "--chunk-size",
+        type=int,
+        default=250_000,
+        help="Rows processed per chunk for chunk-compatible models.",
     )
 
     parser.add_argument(

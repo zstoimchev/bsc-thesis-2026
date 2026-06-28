@@ -3,8 +3,8 @@
     "name": "Model 01: Baseline Decision Tree",
     "type": "decision_tree",
     "module": "src.mdl01_baseline",
-    "ready": false,
-    "enabled": false,
+    "ready": true,
+    "enabled": true,
     "description": "Simple baseline model used to test the full pipeline before implementing advanced models."
   },
   "mdl02_xgboost": {

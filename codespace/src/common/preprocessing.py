@@ -6,6 +6,7 @@ import pandas as pd
 
 from collections.abc import Iterator
 from pathlib import Path
+from typing import cast
 
 from src.common.feature_sets import resolve_feature_columns
 from src.common.label_mapping import normalize_binary_labels
@@ -53,16 +54,30 @@ def prepare_xy(
     if label_column not in df.columns:
         raise ValueError(f"Label column not found: {label_column}")
 
-    drop_columns = [
+    drop_columns = {
         clean_column_name(col)
         for col in dataset_cfg.get("drop_columns", [])
-    ]
+    }
+
+    target_like_columns = {
+        "label",
+        "class",
+        "target",
+        "attack",
+        "attack_label",
+        "result",
+        "label_source",
+    }
+
+    for column in target_like_columns:
+        if column != label_column:
+            drop_columns.add(column)
 
     feature_columns = resolve_feature_columns(
         available_columns=list(df.columns),
         feature_set_id=feature_set,
         label_column=label_column,
-        drop_columns=drop_columns
+        drop_columns=list(drop_columns)
     )
 
     if not feature_columns:
@@ -82,24 +97,66 @@ def prepare_xy(
     return x, y, feature_columns
 
 
+def _make_split_mask(
+        start_index: int,
+        size: int,
+        test_size: float,
+        seed: int,
+) -> bool:
+    indices = np.arange(start_index, start_index + size, dtype=np.int64)
+
+    hashed = (indices * 1103515245 + seed * 12345 + 12345) & 0x7FFFFFFF
+    values = hashed / float(0x7FFFFFFF)
+
+    return values < test_size
+
+
 def iter_prepared_xy_chunks(
         dataset_cfg: dict,
         project_root: Path,
         feature_set: str,
         chunk_size: int = 250_000,
+        split_part: str | None = None,  # "train", "test", None
+        test_size: float = 0.2,
+        seed: int = 42,
 ) -> Iterator[tuple[pd.DataFrame, pd.Series, list[str]]]:
+    row_offset = 0
+
     for chunk in iterate_dataset(
             dataset_cfg=dataset_cfg,
             project_root=project_root,
             chunk_size=chunk_size,
     ):
+        original_chunk_size = len(chunk)
+
         x, y, feature_columns = prepare_xy(
             df=chunk,
             dataset_cfg=dataset_cfg,
             feature_set=feature_set,
         )
 
-        yield x, y, feature_columns
+        if split_part is not None:
+            test_mask = _make_split_mask(
+                start_index=row_offset,
+                size=len(y),
+                test_size=test_size,
+                seed=seed,
+            )
+
+            if split_part == "train":
+                keep_mask = ~test_mask
+            elif split_part == "test":
+                keep_mask = test_mask
+            else:
+                raise ValueError(f"Unknown split_part: {split_part}")
+
+            x = cast(pd.DataFrame, x.loc[keep_mask].reset_index(drop=True))
+            y = cast(pd.Series, y.loc[keep_mask].reset_index(drop=True))
+
+        row_offset += original_chunk_size
+
+        if len(y) > 0:
+            yield x, y, feature_columns
 
         del chunk
         del x

@@ -38,10 +38,10 @@ def resolve_feature_columns(
     if requested is None:
         return [c for c in available_columns if c not in drop_columns]
 
-    available = set(available_columns)
+    available = set(available_columns) - drop_columns
 
     missing = [c for c in requested if c not in available]
     if missing:
         raise ValueError(f"Missing required features for '{feature_set_id}': {missing}")
 
-    return [c for c in requested if c not in drop_columns]
+    return [c for c in requested if c in available]
