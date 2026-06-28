@@ -240,17 +240,15 @@ The CNN/CNN-hybrid repository from Paper 7.1 will remain optional and will only 
 
 Existing IDS/DDoS models often report very high accuracy, but these results are strongly affected by dataset choice, preprocessing, feature representation, class balance, and train/test splitting. Therefore, I will evaluates whether representative top-performing IDS architectures remain reliable under a unified, reproducible, deployment-oriented evaluation pipeline. In a nutshell:
 
-## Abstract
+## Outline
 
-Intrusion Detection Systems and Distributed Denial-of-Service detection models often report very high accuracy in the literature, especially when evaluated on benchmark datasets such as CIC-IDS2018, CIC-DDoS2019, NSL-KDD, and KDD99. However, these results are frequently influenced by dataset choice, preprocessing decisions, feature representation, class imbalance, and train/test split strategy. This thesis focuses on the reproducible and deployment-oriented re-implementation of selected IDS/DDoS detection models under realistic experimental constraints.
+Intrusion Detection Systems and Distributed Denial-of-Service detection models often report very high accuracy in the literature, especially when evaluated on benchmark datasets such as CIC-IDS2018, CIC-DDoS2019, NSL-KDD, and KDD99. However, these results can be strongly influenced by dataset choice, preprocessing decisions, feature representation, class imbalance, and train/test split strategy. Therefore, my goal is to examine how selected detection models perform when they are re-implemented and evaluated under the same experimental conditions, through the design and implementation of a unified modeling and evaluation pipeline.
 
-The work begins with an analysis of existing IDS/DDoS research papers and their corresponding implementations. Based on this review, representative models are selected from different levels of complexity: a simple baseline model, a strong classical machine learning model such as XGBoost or LightGBM, and a neural network baseline such as an MLP/DNN. A GRU-based model is considered as an optional advanced architecture if a meaningful temporal flow representation is used.
+The work will begin with an analysis of existing IDS/DDoS research papers and their corresponding implementations. Based on this review, representative models with highest reported performance will be selected from different levels of complexity. The experimental setup will include a simple majority-class baseline model, used to verify the pipeline and expose the effect of class imbalance, a strong classical machine learning model such as XGBoost, and a neural network model such as an MLP/DNN. In addition, an advanced transformer-style model will be considered as a proposed modeling component for flow-based intrusion detection. A GRU-based model may also be included if a meaningful temporal or sequential flow representation is prepared.
 
-The selected models are re-implemented in a unified codebase and evaluated using consistent preprocessing, feature handling, train/test splitting, and metrics. The main focus is placed on CIC-like flow-based datasets, since they are more suitable for realistic firewall or IDS deployment than legacy NSL/KDD-style datasets. The evaluation investigates whether high reported performance remains stable when models are trained and tested under the same conditions, and whether reduced deployment-oriented feature sets affect detection performance.
+The selected models will be implemented in a unified codebase with consistent data loading, preprocessing, feature selection, train/test splitting, and evaluation metrics. The experiments will focus mainly on CIC-like flow-based datasets, since they are more suitable for realistic IDS/DDoS detection scenarios than older legacy datasets. The evaluation will use accuracy, precision, recall, F1-score, balanced accuracy, and confusion matrices, with special attention to cases where high accuracy does not correspond to effective attack detection.
 
-The goal of this thesis is not only to compare model accuracy, but also to examine reproducibility, generalization, dataset bias, and practical suitability for real-world IDS/DDoS detection.
-
-I will re-implement representative IDS/DDoS detection models from the given literature in an unified pipeline and evaluates whether their reported high accuracy remains stable under fair train/test splits, common preprocessing, feature-space constraints, and deployment-oriented CIC-like flow data. The work focuses primarily on CIC-like flow features suitable for firewall/IDS deployment, while NSL-like data is used as a secondary comparison to demonstrate feature-space incompatibility and dataset bias.
+The main aim is not only to compare model accuracy, but also to study reproducibility, generalization, dataset bias, feature dependence, and practical suitability of different IDS/DDoS detection models under a unified modeling framework.
 
 ## Objective
 
@@ -465,5 +463,4 @@ Infinite numeric values after preprocessing: 0
 
 Inspection completed successfully.
 ```
-
 
