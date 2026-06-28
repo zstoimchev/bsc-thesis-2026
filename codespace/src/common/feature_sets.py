@@ -1,20 +1,20 @@
-CIC = [
+CIC_COMMON = [
     "flow_duration",
     "total_fwd_packets",
     "total_bwd_packets",
     "total_fwd_bytes",
     "total_bwd_bytes",
+    "fwd_packet_length_mean",
+    "bwd_packet_length_mean",
     "flow_packets_s",
     "flow_bytes_s",
     "syn_flag_count",
-    "ack_flag_count",
-    "rst_flag_count",
+    "urg_flag_count",
 ]
-
 
 FEATURE_SETS = {
     "all": None,
-    "common": CIC,
+    "common": CIC_COMMON,
 }
 
 
@@ -25,10 +25,10 @@ def get_feature_set(feature_set_id: str) -> list[str] | None:
 
 
 def resolve_feature_columns(
-    available_columns: list[str],
-    feature_set_id: str,
-    label_column: str,
-    drop_columns: list[str] | None = None,
+        available_columns: list[str],
+        feature_set_id: str,
+        label_column: str,
+        drop_columns: list[str] | None = None,
 ) -> list[str]:
     drop_columns = set(drop_columns or [])
     drop_columns.add(label_column)

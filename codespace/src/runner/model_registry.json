@@ -24,7 +24,7 @@
     "description": "Feedforward neural network baseline for comparison with classical models."
   },
   "mdl04_gru": {
-    "name": "Model 04: GRU",
+    "name": "[Optional] Model 04: GRU",
     "type": "recurrent_neural_network",
     "module": "src.mdl04_gru",
     "ready": false,
@@ -33,7 +33,7 @@
   },
   "mdl05_tabtransformer": {
     "name": "Model 05: Custom Tabular Transformer",
-    "type": "custom_transformer",
+    "type": "transformer",
     "module": "src.mdl05_tabtransformer",
     "ready": false,
     "enabled": false,

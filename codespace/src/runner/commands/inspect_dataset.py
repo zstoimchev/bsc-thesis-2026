@@ -1,10 +1,14 @@
 import numpy as np
 import pandas as pd
 
-from src.common.data_loader import load_dataset
-from src.common.preprocessing import clean_column_name, clean_dataframe_columns, prepare_xy
+from collections import Counter
+
 from src.runner.paths import PROJECT_ROOT
 from src.runner.registry import load_dataset_registry
+from src.common.preprocessing import (
+    clean_column_name,
+    iter_prepared_xy_chunks,
+)
 
 
 def print_counts(title: str, values: pd.Series) -> None:
@@ -30,6 +34,13 @@ def add_inspect_dataset_parser(subparsers) -> None:
     )
 
     parser.add_argument(
+        "--chunk-size",
+        type=int,
+        default=50_000,
+        help="Number of rows to process per chunk.",
+    )
+
+    parser.add_argument(
         "--feature-set",
         default="all",
         choices=["all", "common"],
@@ -47,6 +58,15 @@ def add_inspect_dataset_parser(subparsers) -> None:
         action="store_true",
         help="Allow inspecting datasets marked enabled=false.",
     )
+
+
+def print_counter(title: str, counter: Counter) -> None:
+    print(title)
+
+    for value, count in counter.most_common():
+        print(f"  {value}: {count}")
+
+    print()
 
 
 def run_inspect_dataset(args) -> None:
@@ -75,71 +95,88 @@ def run_inspect_dataset(args) -> None:
     print(f"Path: {dataset_cfg.get('path')}")
     print(f"Format: {dataset_cfg.get('format')}")
     print(f"Feature set: {args.feature_set}")
+    print(f"Chunk size: {args.chunk_size}")
     print("=" * 80)
     print()
 
-    df = load_dataset(dataset_cfg, project_root=PROJECT_ROOT)
-
-    print(f"Raw shape: {df.shape[0]} rows x {df.shape[1]} columns")
-    print()
-
-    cleaned_df = clean_dataframe_columns(df)
     label_column = clean_column_name(dataset_cfg["label_column"])
 
-    if label_column not in cleaned_df.columns:
-        raise ValueError(
-            f"Label column not found after cleaning: {label_column}. "
-            f"Available columns: {list(cleaned_df.columns)}"
+    chunk_count = 0
+    total_rows = 0
+    feature_columns = None
+
+    binary_label_counts = Counter()
+    numeric_features = set()
+    non_numeric_features = set()
+
+    missing_values_total = 0
+    infinite_values_total = 0
+
+    for x, y, current_feature_columns in iter_prepared_xy_chunks(
+            dataset_cfg=dataset_cfg,
+            project_root=PROJECT_ROOT,
+            feature_set=args.feature_set,
+            chunk_size=args.chunk_size,
+    ):
+        chunk_count += 1
+        total_rows += len(x)
+
+        if feature_columns is None:
+            feature_columns = current_feature_columns
+
+        binary_label_counts.update(y.value_counts(dropna=False).to_dict())
+
+        numeric_columns = set(x.select_dtypes(include=["number"]).columns)
+        non_numeric_columns = set(x.columns) - numeric_columns
+
+        numeric_features.update(numeric_columns)
+        non_numeric_features.update(non_numeric_columns)
+
+        missing_values_total += int(x.isna().sum().sum())
+
+        numeric_x = x.select_dtypes(include=["number"])
+        if not numeric_x.empty:
+            infinite_values_total += int(np.isinf(numeric_x.to_numpy()).sum())
+
+        print(
+            f"Processed chunk {chunk_count}: "
+            f"{len(x)} rows "
+            f"(total: {total_rows})"
         )
 
-    print_counts(
-        title=f"Raw label distribution ({label_column}):",
-        values=cleaned_df[label_column],
-    )
-
-    x, y, feature_columns = prepare_xy(
-        df=df,
-        dataset_cfg=dataset_cfg,
-        feature_set=args.feature_set,
-    )
-
-    print(f"Prepared X shape: {x.shape[0]} rows x {x.shape[1]} columns")
-    print(f"Prepared y shape: {y.shape[0]} rows")
+    print()
+    print("=" * 80)
+    print("Inspection summary")
+    print("=" * 80)
     print()
 
-    print("Selected features:")
-    for feature in feature_columns:
+    print(f"Label column: {label_column}")
+    print(f"Total chunks: {chunk_count}")
+    print(f"Total rows: {total_rows}")
+    print()
+
+    print_counter(
+        title="Binary label distribution after normalization:",
+        counter=binary_label_counts,
+    )
+
+    print(f"Selected features: {len(feature_columns or [])}")
+    for feature in feature_columns or []:
         print(f"  - {feature}")
     print()
 
-    print_counts(
-        title="Binary label distribution after normalization:",
-        values=y,
-    )
+    print(f"Numeric features: {len(numeric_features)}")
+    print(f"Non-numeric features: {len(non_numeric_features)}")
 
-    numeric_columns = list(x.select_dtypes(include=["number"]).columns)
-    non_numeric_columns = [c for c in x.columns if c not in numeric_columns]
-
-    print(f"Numeric features: {len(numeric_columns)}")
-    print(f"Non-numeric features: {len(non_numeric_columns)}")
-
-    if non_numeric_columns:
+    if non_numeric_features:
         print("Non-numeric feature columns:")
-        for column in non_numeric_columns:
+        for column in sorted(non_numeric_features):
             print(f"  - {column}")
 
     print()
 
-    missing_values = int(x.isna().sum().sum())
-    print(f"Missing values after preprocessing: {missing_values}")
-
-    numeric_x = x.select_dtypes(include=["number"])
-    if numeric_x.empty:
-        infinite_values = 0
-    else:
-        infinite_values = int(np.isinf(numeric_x.to_numpy()).sum())
-
-    print(f"Infinite numeric values after preprocessing: {infinite_values}")
+    print(f"Missing values after preprocessing: {missing_values_total}")
+    print(f"Infinite numeric values after preprocessing: {infinite_values_total}")
     print()
 
     print("Inspection completed successfully.")
