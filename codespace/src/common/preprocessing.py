@@ -86,7 +86,7 @@ def iter_prepared_xy_chunks(
         dataset_cfg: dict,
         project_root: Path,
         feature_set: str,
-        chunk_size: int = 100_000,
+        chunk_size: int = 250_000,
 ) -> Iterator[tuple[pd.DataFrame, pd.Series, list[str]]]:
     for chunk in iterate_dataset(
             dataset_cfg=dataset_cfg,

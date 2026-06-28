@@ -32,7 +32,7 @@ def load_dataset(dataset_cfg: dict, project_root: Path) -> pd.DataFrame:
 def iterate_dataset(
         dataset_cfg: dict,
         project_root: Path,
-        chunk_size: int = 50_000,
+        chunk_size: int = 250_000,
 ) -> Iterator[pd.DataFrame]:
     dataset_path = resolve_dataset_path(dataset_cfg, project_root)
     dataset_format = dataset_cfg.get("format", "").lower()
