@@ -3,7 +3,7 @@
     "enabled": true,
     "dataset_id": "cic_collection",
     "feature_set_id": "cic_common_v1",
-    "prepared_dir": "data/prepared/cic_random_80_20_v1",
+    "prepared_dir": "data/raw/cic_random_80_20_v1",
     "label_column": "label",
     "split_method": {
       "type": "random",

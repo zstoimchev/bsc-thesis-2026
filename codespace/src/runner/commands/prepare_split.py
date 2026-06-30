@@ -80,9 +80,7 @@ def run_prepare_split(args) -> None:
     df = load_dataset(dataset_cfg=dataset_cfg, project_root=PROJECT_ROOT)
     df = clean_dataframe_columns(df)
 
-    label_column = clean_column_name(
-        split_cfg.get("label_column") or dataset_cfg["label_column"]
-    )
+    label_column = clean_column_name(split_cfg.get("label_column") or dataset_cfg["label_column"])
 
     if label_column not in df.columns:
         raise ValueError(f"Label column not found after cleaning: {label_column}")
@@ -158,9 +156,7 @@ def create_random_split(
     method = split_cfg["split_method"]
 
     if method["type"] != "random":
-        raise NotImplementedError(
-            f"Only random split is implemented for now. Got: {method['type']}"
-        )
+        raise NotImplementedError(f"Only random split is implemented for now. Got: {method['type']}")
 
     test_size = method["test_size"]
     seed = method["seed"]
