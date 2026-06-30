@@ -57,8 +57,18 @@ def run_prepare_split(args) -> None:
     dataset_cfg = datasets[dataset_id]
     feature_cfg = features[feature_set_id]
 
-    prepared_dir = PROJECT_ROOT / split_cfg["prepared_dir"]
     output_cfg = split_cfg["output"]
+
+    prepared_dir = PROJECT_ROOT / output_cfg["output_dir"]
+
+    prepared_root = (PROJECT_ROOT / "data" / "prepared").resolve()
+    prepared_dir = prepared_dir.resolve()
+
+    if prepared_root not in prepared_dir.parents and prepared_dir != prepared_root:
+        raise ValueError(
+            f"Invalid output_dir for split '{split_id}': {prepared_dir}\n"
+            f"Prepared split output must be under: {prepared_root}"
+        )
 
     train_path = prepared_dir / output_cfg["train_file"]
     test_path = prepared_dir / output_cfg["test_file"]
@@ -122,7 +132,7 @@ def run_prepare_split(args) -> None:
         "dataset_name": dataset_cfg.get("name", ""),
         "dataset_path": dataset_cfg.get("path"),
         "feature_set_id": feature_set_id,
-        "prepared_dir": split_cfg["prepared_dir"],
+        "prepared_dir": output_cfg["output_dir"],
         "train_file": str(train_path.relative_to(PROJECT_ROOT)),
         "test_file": str(test_path.relative_to(PROJECT_ROOT)),
         "label_column": label_column,

@@ -7,10 +7,12 @@
       "total_bwd_packets",
       "total_fwd_bytes",
       "total_bwd_bytes",
+      "fwd_packet_length_mean",
+      "bwd_packet_length_mean",
       "flow_packets_s",
       "flow_bytes_s",
       "syn_flag_count",
-      "ack_flag_count"
+      "urg_flag_count"
     ],
     "description": "Common CIC-like flow features used for reproducible model comparison."
   },
