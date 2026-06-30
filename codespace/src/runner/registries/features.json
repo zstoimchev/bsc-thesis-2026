@@ -1,0 +1,22 @@
+{
+  "cic_common_v1": {
+    "dataset_family": "cic",
+    "features": [
+      "flow_duration",
+      "total_fwd_packets",
+      "total_bwd_packets",
+      "total_fwd_bytes",
+      "total_bwd_bytes",
+      "flow_packets_s",
+      "flow_bytes_s",
+      "syn_flag_count",
+      "ack_flag_count"
+    ],
+    "description": "Common CIC-like flow features used for reproducible model comparison."
+  },
+  "cic_full_v1": {
+    "dataset_family": "cic",
+    "features": "all_numeric_except_dropped",
+    "description": "Full numeric CIC feature set after dataset-level drop columns."
+  }
+}

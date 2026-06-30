@@ -8,10 +8,9 @@ from collections.abc import Callable
 from src.common.metrics import save_json
 from src.runner.paths import PROJECT_ROOT
 from src.runner.registry import load_registries
-from src.runner.commands.inspect_dataset import (
-    add_inspect_dataset_parser,
-    run_inspect_dataset,
-)
+from src.runner.commands.inspect_dataset import add_inspect_dataset_parser, run_inspect_dataset
+from src.runner.commands.prepare_split import add_prepare_split_parser, run_prepare_split
+from src.runner.registry import load_split_registry
 
 def list_registry_items(title: str, registry: dict) -> None:
     print(f"\n{title}")
@@ -361,6 +360,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     add_inspect_dataset_parser(subparsers)
 
+    subparsers.add_parser("list-splits")
+    add_prepare_split_parser(subparsers)
+
     train_parser = subparsers.add_parser("train")
     add_experiment_args(train_parser)
 
@@ -393,6 +395,28 @@ def main() -> None:
     
     if args.command in {"train", "evaluate", "train-evaluate"}:
         run_experiments(args, mode=args.command)
+        return
+
+    if args.command == "prepare-split":
+        run_prepare_split(args)
+        return
+
+    if args.command == "list-splits":
+        split_registry = load_split_registry()
+        print("\nAvailable splits")
+        print("----------------")
+
+        for split_id, cfg in split_registry.items():
+            print(f"{split_id}")
+            print(f"  enabled={cfg.get('enabled', True)}")
+            print(f"  dataset_id={cfg.get('dataset_id')}")
+            print(f"  feature_set_id={cfg.get('feature_set_id')}")
+            print(f"  prepared_dir={cfg.get('prepared_dir')}")
+            description = cfg.get("description", "")
+            if description:
+                print(f"  {description}")
+
+        print()
         return
 
     raise ValueError(f"Unknown command: {args.command}")

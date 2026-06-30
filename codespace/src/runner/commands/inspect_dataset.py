@@ -30,7 +30,7 @@ def add_inspect_dataset_parser(subparsers) -> None:
     parser.add_argument(
         "--dataset",
         required=True,
-        help="Dataset ID from dataset_registry.json.",
+        help="Dataset ID from datasets.json.",
     )
 
     parser.add_argument(

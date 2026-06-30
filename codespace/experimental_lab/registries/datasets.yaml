@@ -10,7 +10,7 @@ datasets:
   drop_columns: []
 - id: cic_superset
   name: Prepared CIC DDoS superset
-  path: data/parquets/cic_superset.parquet
+  path: data/raw/cic_superset.parquet
   split_type: generated
   label_col: null
   problem_type: binary
@@ -136,7 +136,7 @@ datasets:
   - label_source
 - id: realworld_botnet_balanced_cic_full
   name: Real-world botnet-balanced CIC-like dataset full
-  path: data/parquets/realworld_botnet_balanced/realworld_cic_like_botnet_balanced.parquet
+  path: data/raw/realworld_botnet_balanced/realworld_cic_like_botnet_balanced.parquet
   split_type: generated
   label_col: label
   problem_type: binary

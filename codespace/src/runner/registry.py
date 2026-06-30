@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from src.runner.paths import DATASET_REGISTRY_PATH, MODEL_REGISTRY_PATH
+from src.runner.paths import DATASET_REGISTRY_PATH, MODEL_REGISTRY_PATH, FEATURE_REGISTRY_PATH, SPLIT_REGISTRY_PATH
 
 
 def load_json(path: Path) -> dict:
@@ -21,3 +21,11 @@ def load_dataset_registry() -> dict:
 
 def load_model_registry() -> dict:
     return load_json(MODEL_REGISTRY_PATH)
+
+
+def load_feature_registry() -> dict:
+    return load_json(FEATURE_REGISTRY_PATH)
+
+
+def load_split_registry() -> dict:
+    return load_json(SPLIT_REGISTRY_PATH)
