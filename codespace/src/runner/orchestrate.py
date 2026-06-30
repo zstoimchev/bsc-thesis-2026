@@ -1,13 +1,8 @@
 import argparse
 
-from src.runner.commands.inspect_dataset import (
-    add_inspect_dataset_parser,
-    run_inspect_dataset,
-)
-from src.runner.commands.prepare_split import (
-    add_prepare_split_parser,
-    run_prepare_split,
-)
+from src.runner.commands.inspect_dataset import add_inspect_dataset_parser, run_inspect_dataset
+from src.runner.commands.inspect_model import add_inspect_model_parser, run_inspect_model
+from src.runner.commands.prepare_split import add_prepare_split_parser, run_prepare_split
 from src.runner.commands.list_registry import (
     add_list_registry_parsers,
     run_list_models,
@@ -15,10 +10,7 @@ from src.runner.commands.list_registry import (
     run_list_splits,
     run_list_features,
 )
-from src.runner.commands.run_experiment import (
-    add_experiment_parsers,
-    run_experiments,
-)
+from src.runner.commands.run_experiment import add_experiment_parsers, run_experiments
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -30,6 +22,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     add_list_registry_parsers(subparsers)
     add_inspect_dataset_parser(subparsers)
+    add_inspect_model_parser(subparsers)
     add_prepare_split_parser(subparsers)
     add_experiment_parsers(subparsers)
 
@@ -58,6 +51,10 @@ def main() -> None:
 
     if args.command == "inspect-dataset":
         run_inspect_dataset(args)
+        return
+
+    if args.command == "inspect-model":
+        run_inspect_model(args)
         return
 
     if args.command == "prepare-split":
