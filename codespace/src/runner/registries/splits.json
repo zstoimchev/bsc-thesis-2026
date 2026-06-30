@@ -1,0 +1,24 @@
+{
+  "cic_random_80_20_v1": {
+    "enabled": true,
+    "dataset_id": "cic_collection",
+    "feature_set_id": "cic_common_v1",
+    "label_column": "label",
+    "split_method": {
+      "type": "random",
+      "test_size": 0.2,
+      "seed": 42,
+      "stratify": true
+    },
+    "drop_columns": [],
+    "use_dataset_drop_columns": true,
+    "output": {
+      "output_dir": "data/prepared/cic_random_80_20_v1",
+      "format": "parquet",
+      "train_file": "train.parquet",
+      "test_file": "test.parquet",
+      "metadata_file": "metadata.json"
+    },
+    "description": "Initial reproducible 80/20 split for baseline model comparison."
+  }
+}

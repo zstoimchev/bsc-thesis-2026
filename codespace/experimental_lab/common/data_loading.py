@@ -158,7 +158,7 @@ def load_dataset_from_record(
 
     Single-file dataset:
         id: cic_superset
-        path: data/parquets/cic_superset.parquet
+        path: data/raw/cic_superset.parquet
         label_col: label
         split_type: generated
 

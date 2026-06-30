@@ -30,13 +30,13 @@ def add_inspect_dataset_parser(subparsers) -> None:
     parser.add_argument(
         "--dataset",
         required=True,
-        help="Dataset ID from dataset_registry.json.",
+        help="Dataset ID from datasets.json.",
     )
 
     parser.add_argument(
         "--chunk-size",
         type=int,
-        default=50_000,
+        default=250_000,
         help="Number of rows to process per chunk.",
     )
 
@@ -138,11 +138,18 @@ def run_inspect_dataset(args) -> None:
         if not numeric_x.empty:
             infinite_values_total += int(np.isinf(numeric_x.to_numpy()).sum())
 
-        print(
-            f"Processed chunk {chunk_count}: "
-            f"{len(x)} rows "
-            f"(total: {total_rows})"
-        )
+        if chunk_count == 1 or chunk_count % 7 == 0:
+            print(
+                f"Processed chunk {chunk_count}: "
+                f"{len(x)} rows "
+                f"(total: {total_rows})"
+            )
+
+    print(
+        f"Processed chunk {chunk_count}: "
+        f"{total_rows} rows "
+        f"(total: {total_rows})"
+    )
 
     print()
     print("=" * 80)

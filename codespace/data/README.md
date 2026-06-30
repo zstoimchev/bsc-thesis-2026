@@ -42,7 +42,7 @@ The `experimental_lab` can reference this directory through local symlinks:
 
 ```bash
 ln -s ../../data/original_datasets experimental_lab/data/original_datasets
-ln -s ../../data/parquets experimental_lab/data/parquets
+ln -s ../../data/raw experimental_lab/data/raw
 ```
 
 These symlinks are local convenience links and do not need to be committed.
