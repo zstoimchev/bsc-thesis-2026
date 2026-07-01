@@ -84,8 +84,8 @@ def run_inspect_dataset(args) -> None:
     chunk_count = 0
     total_rows = 0
 
-    columns_seen: list[str] | None = None
-    non_label_columns_seen: list[str] | None = None
+    columns_seen: list[str] = []
+    non_label_columns_seen: list[str] = []
 
     raw_label_counts = Counter()
     binary_label_counts = Counter()
@@ -107,7 +107,7 @@ def run_inspect_dataset(args) -> None:
         if label_column not in chunk.columns:
             raise ValueError(f"Label column not found after cleaning: {label_column}")
 
-        if columns_seen is None:
+        if not columns_seen:
             columns_seen = list(chunk.columns)
             non_label_columns_seen = [
                 column
