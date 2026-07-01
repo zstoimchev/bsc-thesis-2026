@@ -1,4 +1,4 @@
-from src.runner.registry import (
+from src.common.registry import (
     load_dataset_registry,
     load_model_registry,
     load_split_registry,
@@ -45,21 +45,21 @@ def add_list_registry_parsers(subparsers) -> None:
     subparsers.add_parser("list-features", help="List registered feature sets.")
 
 
-def run_list_models(args) -> None:
+def run_list_models() -> None:
     registry = load_model_registry()
     list_registry_items("Available models", registry)
 
 
-def run_list_datasets(args) -> None:
+def run_list_datasets() -> None:
     registry = load_dataset_registry()
     list_registry_items("Available datasets", registry)
 
 
-def run_list_splits(args) -> None:
+def run_list_splits() -> None:
     registry = load_split_registry()
     list_registry_items("Available splits", registry)
 
 
-def run_list_features(args) -> None:
+def run_list_features() -> None:
     registry = load_feature_registry()
     list_registry_items("Available feature sets", registry)

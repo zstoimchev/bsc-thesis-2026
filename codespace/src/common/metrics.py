@@ -43,10 +43,10 @@ def compute_metrics(y_true, y_pred) -> dict:
 
 
 def compute_metrics_from_confusion(
-    tn: int,
-    fp: int,
-    fn: int,
-    tp: int,
+        tn: int,
+        fp: int,
+        fn: int,
+        tp: int,
 ) -> dict:
     total = tn + fp + fn + tp
 

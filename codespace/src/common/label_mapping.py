@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 BENIGN_LABELS = {
     "benign",
     "normal",

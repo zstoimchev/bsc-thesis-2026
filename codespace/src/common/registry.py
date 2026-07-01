@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from src.runner.paths import DATASET_REGISTRY_PATH, MODEL_REGISTRY_PATH, FEATURE_REGISTRY_PATH, SPLIT_REGISTRY_PATH
+from src.runner.constants import DATASET_REGISTRY_PATH, MODEL_REGISTRY_PATH, FEATURE_REGISTRY_PATH, SPLIT_REGISTRY_PATH
 
 
 def load_json(path: Path) -> dict:

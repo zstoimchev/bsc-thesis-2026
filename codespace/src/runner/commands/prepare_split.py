@@ -1,14 +1,19 @@
 from datetime import datetime
 
+import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
 
 from src.common.data_loader import load_dataset
 from src.common.label_mapping import normalize_binary_labels
 from src.common.metrics import save_json
 from src.common.preprocessing import clean_dataframe_columns, clean_column_name
-from src.runner.paths import PROJECT_ROOT
-from src.runner.registry import load_dataset_registry, load_feature_registry, load_split_registry
+from src.runner.constants import PROJECT_ROOT
+from src.common.splitting import split_dataframe
+from src.common.registry import (
+    load_dataset_registry,
+    load_feature_registry,
+    load_split_registry,
+)
 
 
 def add_prepare_split_parser(subparsers) -> None:
@@ -56,10 +61,14 @@ def run_prepare_split(args) -> None:
 
     dataset_cfg = datasets[dataset_id]
     feature_cfg = features[feature_set_id]
-
     output_cfg = split_cfg["output"]
 
-    prepared_dir = PROJECT_ROOT / output_cfg["output_dir"]
+    output_format = output_cfg.get("format", "parquet").lower()
+    if output_format != "parquet":
+        raise ValueError(f"Only parquet output is supported for now. Got: {output_format}")
+
+    output_base_dir = PROJECT_ROOT / output_cfg["output_dir"]
+    prepared_dir = output_base_dir / split_id
 
     prepared_root = (PROJECT_ROOT / "data" / "prepared").resolve()
     prepared_dir = prepared_dir.resolve()
@@ -86,41 +95,35 @@ def run_prepare_split(args) -> None:
     print(f"[prepare-split] split_id={split_id}")
     print(f"[prepare-split] dataset_id={dataset_id}")
     print(f"[prepare-split] feature_set_id={feature_set_id}")
+    print(f"[prepare-split] output_dir={prepared_dir.relative_to(PROJECT_ROOT)}")
 
     df = load_dataset(dataset_cfg=dataset_cfg, project_root=PROJECT_ROOT)
+    source_rows = int(len(df))
+
     df = clean_dataframe_columns(df)
 
-    label_column = clean_column_name(split_cfg.get("label_column") or dataset_cfg["label_column"])
+    label_column = clean_column_name(
+        split_cfg.get("label_column") or dataset_cfg["label_column"]
+    )
 
     if label_column not in df.columns:
         raise ValueError(f"Label column not found after cleaning: {label_column}")
 
     df[label_column] = normalize_binary_labels(df[label_column])
 
-    train_df, test_df = create_random_split(
+    final_df, final_features, dropped_columns = select_final_columns(
         df=df,
-        split_cfg=split_cfg,
-        label_column=label_column,
-    )
-
-    train_df, final_features, dropped_columns = select_final_columns(
-        df=train_df,
         dataset_cfg=dataset_cfg,
         split_cfg=split_cfg,
         feature_cfg=feature_cfg,
         label_column=label_column,
     )
 
-    test_df, test_features, _ = select_final_columns(
-        df=test_df,
-        dataset_cfg=dataset_cfg,
-        split_cfg=split_cfg,
-        feature_cfg=feature_cfg,
+    train_df, test_df = split_dataframe(
+        df=final_df,
         label_column=label_column,
+        split_cfg=split_cfg,
     )
-
-    if final_features != test_features:
-        raise ValueError("Train and test feature columns do not match.")
 
     train_df.to_parquet(train_path, index=False)
     test_df.to_parquet(test_path, index=False)
@@ -132,13 +135,17 @@ def run_prepare_split(args) -> None:
         "dataset_name": dataset_cfg.get("name", ""),
         "dataset_path": dataset_cfg.get("path"),
         "feature_set_id": feature_set_id,
-        "prepared_dir": output_cfg["output_dir"],
+        "output_base_dir": output_cfg["output_dir"],
+        "output_dir": str(prepared_dir.relative_to(PROJECT_ROOT)),
         "train_file": str(train_path.relative_to(PROJECT_ROOT)),
         "test_file": str(test_path.relative_to(PROJECT_ROOT)),
         "label_column": label_column,
         "split_method": split_cfg["split_method"],
         "feature_columns": final_features,
         "dropped_columns": dropped_columns,
+        "source_rows": source_rows,
+        "prepared_rows": int(len(final_df)),
+        "dropped_rows_during_preparation": int(source_rows - len(final_df)),
         "train_rows": int(len(train_df)),
         "test_rows": int(len(test_df)),
         "train_label_distribution": {
@@ -153,36 +160,13 @@ def run_prepare_split(args) -> None:
 
     save_json(metadata, metadata_path)
 
+    print(f"[prepare-split] source rows: {source_rows}")
+    print(f"[prepare-split] prepared rows: {len(final_df)}")
+    print(f"[prepare-split] train rows: {len(train_df)}")
+    print(f"[prepare-split] test rows: {len(test_df)}")
     print(f"[prepare-split] saved train: {train_path}")
     print(f"[prepare-split] saved test: {test_path}")
     print(f"[prepare-split] saved metadata: {metadata_path}")
-
-
-def create_random_split(
-        df: pd.DataFrame,
-        split_cfg: dict,
-        label_column: str,
-) -> tuple[pd.DataFrame, pd.DataFrame]:
-    method = split_cfg["split_method"]
-
-    if method["type"] != "random":
-        raise NotImplementedError(f"Only random split is implemented for now. Got: {method['type']}")
-
-    test_size = method["test_size"]
-    seed = method["seed"]
-    stratify_enabled = method.get("stratify", False)
-
-    stratify = df[label_column] if stratify_enabled else None
-
-    train_df, test_df = train_test_split(
-        df,
-        test_size=test_size,
-        random_state=seed,
-        stratify=stratify,
-        shuffle=True,
-    )
-
-    return train_df.reset_index(drop=True), test_df.reset_index(drop=True)
 
 
 def select_final_columns(
@@ -237,8 +221,7 @@ def select_final_columns(
     final_columns = selected_features + [label_column]
     final_df = df[final_columns].copy()
 
-    final_df = final_df.replace([float("inf"), float("-inf")], pd.NA)
-    final_df = final_df.dropna()
+    final_df = final_df.replace([np.inf, -np.inf], np.nan)
 
     for column in selected_features:
         final_df[column] = pd.to_numeric(final_df[column], errors="coerce")

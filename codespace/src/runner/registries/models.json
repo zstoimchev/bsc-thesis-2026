@@ -31,12 +31,12 @@
     "enabled": false,
     "description": "Optional recurrent model used only if a meaningful sequence representation is created."
   },
-  "mdl05_tabtransformer": {
-    "name": "Model 05: Custom Tabular Transformer",
+  "mdl05_transformer": {
+    "name": "Model 05: Custom Transformer Architecture",
     "type": "transformer",
-    "module": "src.mdl05_tabtransformer",
+    "module": "src.mdl05_transformer",
     "ready": false,
     "enabled": false,
-    "description": "Custom attention-based tabular model proposed and evaluated as an extension."
+    "description": "Custom transformer model proposed and evaluated as an extension."
   }
 }

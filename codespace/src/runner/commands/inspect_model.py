@@ -1,7 +1,7 @@
 import importlib
 import json
 
-from src.runner.registry import load_registries
+from src.common.registry import load_registries
 
 
 def add_inspect_model_parser(subparsers) -> None:

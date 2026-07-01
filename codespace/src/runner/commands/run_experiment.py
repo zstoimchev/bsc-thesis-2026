@@ -6,8 +6,8 @@ from pathlib import Path
 from collections.abc import Callable
 
 from src.common.metrics import save_json
-from src.runner.paths import PROJECT_ROOT
-from src.runner.registry import load_registries
+from src.runner.constants import PROJECT_ROOT
+from src.common.registry import load_registries
 
 
 def get_model_modules(model_cfg: dict):

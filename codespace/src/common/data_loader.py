@@ -1,16 +1,7 @@
-from pathlib import Path
 from collections.abc import Iterator
+from pathlib import Path
 
 import pandas as pd
-
-
-def resolve_dataset_path(dataset_cfg: dict, project_root: Path) -> Path:
-    dataset_path = project_root / dataset_cfg["path"]
-
-    if not dataset_path.exists():
-        raise FileNotFoundError(f"Dataset not found: {dataset_path}")
-
-    return dataset_path
 
 
 def load_dataset(dataset_cfg: dict, project_root: Path) -> pd.DataFrame:
@@ -34,8 +25,11 @@ def iterate_dataset(
         project_root: Path,
         chunk_size: int = 250_000,
 ) -> Iterator[pd.DataFrame]:
-    dataset_path = resolve_dataset_path(dataset_cfg, project_root)
+    dataset_path = project_root / dataset_cfg["path"]
     dataset_format = dataset_cfg.get("format", "").lower()
+
+    if not dataset_path.exists():
+        raise FileNotFoundError(f"Dataset not found: {dataset_path}")
 
     if dataset_format == "csv":
         yield from pd.read_csv(dataset_path, chunksize=chunk_size)

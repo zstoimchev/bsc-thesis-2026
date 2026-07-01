@@ -13,7 +13,7 @@
     "drop_columns": [],
     "use_dataset_drop_columns": true,
     "output": {
-      "output_dir": "data/prepared/cic_random_80_20_v1",
+      "output_dir": "data/prepared",
       "format": "parquet",
       "train_file": "train.parquet",
       "test_file": "test.parquet",

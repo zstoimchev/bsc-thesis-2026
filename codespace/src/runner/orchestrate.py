@@ -34,19 +34,19 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.command == "list-models":
-        run_list_models(args)
+        run_list_models()
         return
 
     if args.command == "list-datasets":
-        run_list_datasets(args)
+        run_list_datasets()
         return
 
     if args.command == "list-splits":
-        run_list_splits(args)
+        run_list_splits()
         return
 
     if args.command == "list-features":
-        run_list_features(args)
+        run_list_features()
         return
 
     if args.command == "inspect-dataset":
