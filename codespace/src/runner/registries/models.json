@@ -19,8 +19,8 @@
     "name": "Model 03: MLP",
     "type": "neural_network",
     "module": "src.mdl03_mlp",
-    "ready": false,
-    "enabled": false,
+    "ready": true,
+    "enabled": true,
     "description": "Feedforward neural network baseline for comparison with classical models."
   },
   "mdl04_gru": {
