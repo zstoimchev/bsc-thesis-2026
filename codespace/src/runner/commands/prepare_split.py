@@ -7,13 +7,9 @@ from src.common.data_loader import load_dataset
 from src.common.label_mapping import normalize_binary_labels
 from src.common.metrics import save_json
 from src.common.preprocessing import clean_dataframe_columns, clean_column_name
-from src.runner.constants import PROJECT_ROOT
+from src.common.shared import load_split_context
 from src.common.splitting import split_dataframe
-from src.common.registry import (
-    load_dataset_registry,
-    load_feature_registry,
-    load_split_registry,
-)
+from src.runner.constants import PROJECT_ROOT
 
 
 def add_prepare_split_parser(subparsers) -> None:
@@ -36,31 +32,18 @@ def add_prepare_split_parser(subparsers) -> None:
 
 
 def run_prepare_split(args) -> None:
-    datasets = load_dataset_registry()
-    features = load_feature_registry()
-    splits = load_split_registry()
-
     split_id = args.split_id
 
-    if split_id not in splits:
-        raise ValueError(f"Unknown split: {split_id}")
+    split_cfg, dataset_cfg, feature_cfg = load_split_context(
+        split_id=split_id,
+        require_feature=True,
+    )
 
-    split_cfg = splits[split_id]
-
-    if not split_cfg.get("enabled", True):
-        raise ValueError(f"Split is disabled: {split_id}")
+    if feature_cfg is None:
+        raise ValueError(f"Missing feature config for split: {split_id}")
 
     dataset_id = split_cfg["dataset_id"]
     feature_set_id = split_cfg["feature_set_id"]
-
-    if dataset_id not in datasets:
-        raise ValueError(f"Unknown dataset in split '{split_id}': {dataset_id}")
-
-    if feature_set_id not in features:
-        raise ValueError(f"Unknown feature set in split '{split_id}': {feature_set_id}")
-
-    dataset_cfg = datasets[dataset_id]
-    feature_cfg = features[feature_set_id]
     output_cfg = split_cfg["output"]
 
     output_format = output_cfg.get("format", "parquet").lower()

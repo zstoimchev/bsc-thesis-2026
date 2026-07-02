@@ -2,90 +2,52 @@ from pathlib import Path
 
 import joblib
 
-from src.common.metrics import BinaryMetricsAccumulator
-from src.common.preprocessing import iter_prepared_xy_chunks
-
-
-LOG_EVERY_N_CHUNKS = 7
+from src.common.data_loader import load_dataset
+from src.common.metrics import compute_metrics
+from src.common.preprocessing import split_xy
 
 
 def evaluate(
-        dataset_cfg: dict,
-        model_path: Path,
-        project_root: Path,
-        feature_set: str,
-        chunk_size: int,
-        split: str,
-        test_size: float,
-        seed: int,
+    model_path: Path,
+    project_root: Path,
+    seed: int,
+    split_id: str,
+    split_cfg: dict,
+    split_metadata: dict,
 ) -> dict:
-    if split != "random":
-        raise NotImplementedError(
-            f"Split strategy '{split}' is not implemented for mdl01_baseline."
-        )
+    print("[mdl01_baseline] Evaluating majority-class baseline")
 
     artifact = joblib.load(model_path)
-
     model = artifact["model"]
+
+    test_df = load_dataset(
+        dataset_cfg={
+            "path": split_metadata["test_file"],
+            "format": "parquet",
+        },
+        project_root=project_root,
+    )
+
+    x_test, y_test = split_xy(
+        df=test_df,
+        label_column=split_metadata["label_column"],
+        feature_columns=split_metadata["feature_columns"],
+    )
+
     expected_features = artifact["feature_columns"]
+    x_test = x_test[expected_features]
 
-    metrics = BinaryMetricsAccumulator()
+    y_pred = model.predict(x_test)
 
-    chunk_count = 0
-    total_rows = 0
+    metrics = compute_metrics(y_test, y_pred)
 
-    print("[mdl01_baseline] Evaluating majority-class baseline")
-    print("[mdl01_baseline] Using split part: test")
+    metrics["model_type"] = "majority_class_baseline"
+    metrics["majority_class"] = artifact["majority_class"]
+    metrics["training_label_counts"] = artifact["label_counts"]
+    metrics["training_rows"] = artifact["training_rows"]
+    metrics["evaluation_rows"] = int(len(y_test))
+    metrics["feature_columns"] = expected_features
+    metrics["split_id"] = split_id
+    metrics["seed"] = seed
 
-    for x_chunk, y_chunk, feature_columns in iter_prepared_xy_chunks(
-            dataset_cfg=dataset_cfg,
-            project_root=project_root,
-            feature_set=feature_set,
-            chunk_size=chunk_size,
-            split_part="test",
-            test_size=test_size,
-            seed=seed,
-    ):
-        missing_features = [
-            feature
-            for feature in expected_features
-            if feature not in x_chunk.columns
-        ]
-
-        if missing_features:
-            raise ValueError(
-                "Evaluation dataset is missing features expected by model: "
-                f"{missing_features}"
-            )
-
-        x_chunk = x_chunk[expected_features]
-
-        y_pred = model.predict(x_chunk)
-        metrics.update(y_chunk, y_pred)
-
-        chunk_count += 1
-        total_rows += len(y_chunk)
-
-        if chunk_count == 1 or chunk_count % LOG_EVERY_N_CHUNKS == 0:
-            print(
-                f"[mdl01_baseline] evaluated chunk {chunk_count}: "
-                f"{len(y_chunk)} rows "
-                f"(total: {total_rows})"
-            )
-
-    result = metrics.compute()
-
-    result["model_type"] = "majority_class_baseline"
-    result["majority_class"] = artifact["majority_class"]
-    result["training_label_counts"] = artifact["label_counts"]
-    result["training_rows"] = artifact["total_rows"]
-    result["evaluation_rows"] = total_rows
-    result["chunk_count"] = chunk_count
-    result["feature_columns"] = expected_features
-    result["feature_set"] = feature_set
-    result["split"] = split
-    result["split_part"] = "test"
-    result["test_size"] = test_size
-    result["seed"] = seed
-
-    return result
+    return metrics

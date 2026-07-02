@@ -3,58 +3,38 @@ from pathlib import Path
 
 import joblib
 
-from src.common.preprocessing import iter_prepared_xy_chunks
+from src.common.data_loader import load_dataset
+from src.common.preprocessing import split_xy
 from src.mdl01_baseline.model import MajorityClassBaseline
 
 
-LOG_EVERY_N_CHUNKS = 7
-
-
 def train(
-        dataset_cfg: dict,
-        output_dir: Path,
-        model_path: Path,
-        project_root: Path,
-        feature_set: str,
-        chunk_size: int,
-        split: str,
-        test_size: float,
-        seed: int,
+    output_dir: Path,
+    model_path: Path,
+    project_root: Path,
+    seed: int,
+    split_id: str,
+    split_cfg: dict,
+    split_metadata: dict,
 ) -> None:
-    if split != "random":
-        raise NotImplementedError(
-            f"Split strategy '{split}' is not implemented for mdl01_baseline."
-        )
+    print("[mdl01_baseline] Training majority-class baseline")
+
+    train_df = load_dataset(
+        dataset_cfg={
+            "path": split_metadata["train_file"],
+            "format": "parquet",
+        },
+        project_root=project_root,
+    )
+
+    x_train, y_train = split_xy(
+        df=train_df,
+        label_column=split_metadata["label_column"],
+        feature_columns=split_metadata["feature_columns"],
+    )
 
     model = MajorityClassBaseline()
-
-    chunk_count = 0
-    total_rows = 0
-
-    print("[mdl01_baseline] Training majority-class baseline")
-    print("[mdl01_baseline] Using split part: train")
-
-    for x_chunk, y_chunk, feature_columns in iter_prepared_xy_chunks(
-            dataset_cfg=dataset_cfg,
-            project_root=project_root,
-            feature_set=feature_set,
-            chunk_size=chunk_size,
-            split_part="train",
-            test_size=test_size,
-            seed=seed,
-    ):
-        chunk_count += 1
-        total_rows += len(y_chunk)
-
-        model.partial_fit(x_chunk, y_chunk)
-
-        if chunk_count == 1 or chunk_count % LOG_EVERY_N_CHUNKS == 0:
-            print(
-                f"[mdl01_baseline] trained chunk {chunk_count}: "
-                f"{len(y_chunk)} rows "
-                f"total rows so far: {total_rows}"
-            )
-
+    model.partial_fit(x_train, y_train)
     model.finalize()
 
     artifact = {
@@ -63,35 +43,21 @@ def train(
         "majority_class": model.majority_class,
         "label_counts": dict(model.label_counts),
         "feature_columns": model.feature_columns,
-        "chunk_count": chunk_count,
-        "total_rows": total_rows,
-        "feature_set": feature_set,
-        "split": split,
-        "split_part": "train",
-        "test_size": test_size,
+        "split_id": split_id,
         "seed": seed,
+        "training_rows": int(len(y_train)),
     }
 
     joblib.dump(artifact, model_path)
 
-    training_summary = {
-        "model_type": "majority_class_baseline",
-        "majority_class": model.majority_class,
-        "label_counts": dict(model.label_counts),
-        "feature_columns": model.feature_columns,
-        "chunk_count": chunk_count,
-        "total_rows": total_rows,
-        "feature_set": feature_set,
-        "split": split,
-        "split_part": "train",
-        "test_size": test_size,
-        "seed": seed,
-    }
-
     summary_path = output_dir / "training_summary.json"
     with summary_path.open("w", encoding="utf-8") as f:
-        json.dump(training_summary, f, indent=2)
+        json.dump(
+            {k: v for k, v in artifact.items() if k != "model"},
+            f,
+            indent=2,
+        )
 
-    print(f"[mdl01_baseline] label_counts={dict(model.label_counts)}")
+    print(f"[mdl01_baseline] training rows={len(y_train)}")
     print(f"[mdl01_baseline] majority_class={model.majority_class}")
     print(f"[mdl01_baseline] saved model to: {model_path}")
