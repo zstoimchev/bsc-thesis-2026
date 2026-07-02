@@ -1,13 +1,14 @@
 import argparse
 import importlib
-
+import json
+from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
-from collections.abc import Callable
 
 from src.common.metrics import save_json
+from src.common.shared import load_split_context
 from src.runner.constants import PROJECT_ROOT
-from src.common.registry import load_registries
+from src.common.registry import load_model_registry
 
 
 def get_model_modules(model_cfg: dict):
@@ -62,20 +63,18 @@ def resolve_registry_items(
         selected.append(item_id)
 
     if not selected:
-        raise ValueError(
-            f"No {item_name}s selected. Check ready/enabled flags."
-        )
+        raise ValueError(f"No {item_name}s selected. Check ready/enabled flags.")
 
     return selected
 
 
 def resolve_models_to_run(
-        model_registry,
-        selected_model,
-        selected_tags,
-        include_not_ready,
-        include_disabled,
-):
+        model_registry: dict,
+        selected_model: str | None,
+        selected_tags: list[str] | None,
+        include_not_ready: bool,
+        include_disabled: bool,
+) -> list[str]:
     return resolve_registry_items(
         registry=model_registry,
         selected_item=selected_model,
@@ -85,31 +84,32 @@ def resolve_models_to_run(
         extra_filter=(
             None
             if not selected_tags
-            else lambda cfg: bool(set(cfg.get("tags", [])) & set(selected_tags))
+            else lambda cfg: bool(set(cfg.get("tags", [])) & set(selected_tags or []))
         ),
     )
 
 
-def resolve_datasets_to_run(
-        dataset_registry,
-        selected_dataset,
-        include_not_ready,
-        include_disabled,
-):
-    return resolve_registry_items(
-        registry=dataset_registry,
-        selected_item=selected_dataset,
-        item_name="dataset",
-        include_not_ready=include_not_ready,
-        include_disabled=include_disabled,
+def load_prepared_metadata(split_id: str, split_cfg: dict) -> dict:
+    metadata_path = (
+            PROJECT_ROOT
+            / split_cfg["output"]["output_dir"]
+            / split_id
+            / split_cfg["output"]["metadata_file"]
     )
+
+    if not metadata_path.exists():
+        raise FileNotFoundError(
+            f"Prepared split metadata not found: {metadata_path}. "
+            "Run prepare-split first."
+        )
+
+    with metadata_path.open("r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 def prepare_output_dir(
-        dataset_id: str,
+        split_id: str,
         model_id: str,
-        split: str,
-        feature_set: str,
         seed: int,
 ) -> Path:
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -118,7 +118,7 @@ def prepare_output_dir(
             PROJECT_ROOT
             / "results"
             / "runs"
-            / f"{timestamp}_{dataset_id}_{model_id}_{split}_{feature_set}_seed{seed}"
+            / f"{timestamp}_{split_id}_{model_id}_seed{seed}"
     )
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -128,28 +128,28 @@ def prepare_output_dir(
 def run_one_experiment(
         args,
         mode: str,
-        dataset_id: str,
-        model_id: str,
+        split_id: str,
+        split_cfg: dict,
+        split_metadata: dict,
         dataset_cfg: dict,
+        model_id: str,
         model_cfg: dict,
 ) -> None:
     print("\n[orchestrate] Starting experiment")
     print(f"[orchestrate] Mode: {mode}")
-    print(f"[orchestrate] Dataset: {dataset_id}")
+    print(f"[orchestrate] Split: {split_id}")
+    print(f"[orchestrate] Dataset: {split_cfg['dataset_id']}")
+    print(f"[orchestrate] Feature set: {split_cfg['feature_set_id']}")
     print(f"[orchestrate] Model: {model_id}")
-    print(f"[orchestrate] Split: {args.split}")
-    print(f"[orchestrate] Feature set: {args.feature_set}")
-    print(f"[orchestrate] Chunk size: {args.chunk_size}")
+    print(f"[orchestrate] Seed: {args.seed}")
 
     if args.dry_run:
         print("[orchestrate] Dry run only. Nothing will be trained or evaluated.")
         return
 
     output_dir = prepare_output_dir(
-        dataset_id=dataset_id,
+        split_id=split_id,
         model_id=model_id,
-        split=args.split,
-        feature_set=args.feature_set,
         seed=args.seed,
     )
 
@@ -160,16 +160,18 @@ def run_one_experiment(
     run_info = {
         "created_at": datetime.now().isoformat(timespec="seconds"),
         "mode": mode,
-        "dataset": dataset_id,
+        "pipeline": "prepared_split",
+        "split_id": split_id,
+        "dataset_id": split_cfg["dataset_id"],
         "dataset_name": dataset_cfg.get("name", ""),
-        "model": model_id,
+        "feature_set_id": split_cfg["feature_set_id"],
+        "model_id": model_id,
         "model_name": model_cfg.get("name", ""),
-        "split": args.split,
-        "feature_set": args.feature_set,
-        "test_size": args.test_size,
         "seed": args.seed,
-        "chunk_size": args.chunk_size,
-        "pipeline": "chunked",
+        "train_file": split_metadata["train_file"],
+        "test_file": split_metadata["test_file"],
+        "label_column": split_metadata["label_column"],
+        "feature_columns": split_metadata["feature_columns"],
     }
 
     save_json(run_info, run_info_path)
@@ -178,15 +180,13 @@ def run_one_experiment(
 
     if mode in {"train", "train-evaluate"}:
         train_module.train(
-            dataset_cfg=dataset_cfg,
             output_dir=output_dir,
             model_path=model_path,
             project_root=PROJECT_ROOT,
-            feature_set=args.feature_set,
-            chunk_size=args.chunk_size,
-            split=args.split,
-            test_size=args.test_size,
             seed=args.seed,
+            split_id=split_id,
+            split_cfg=split_cfg,
+            split_metadata=split_metadata,
         )
 
     if mode in {"evaluate", "train-evaluate"}:
@@ -196,14 +196,12 @@ def run_one_experiment(
             )
 
         metrics = evaluate_module.evaluate(
-            dataset_cfg=dataset_cfg,
             model_path=model_path,
             project_root=PROJECT_ROOT,
-            feature_set=args.feature_set,
-            chunk_size=args.chunk_size,
-            split=args.split,
-            test_size=args.test_size,
             seed=args.seed,
+            split_id=split_id,
+            split_cfg=split_cfg,
+            split_metadata=split_metadata,
         )
 
         save_json(metrics, metrics_path)
@@ -228,14 +226,16 @@ def run_one_experiment(
 
 
 def run_experiments(args, mode: str) -> None:
-    dataset_registry, model_registry = load_registries()
+    model_registry = load_model_registry()
 
-    dataset_ids = resolve_datasets_to_run(
-        dataset_registry=dataset_registry,
-        selected_dataset=args.dataset,
-        include_not_ready=args.include_not_ready,
-        include_disabled=args.include_disabled,
+    split_id = args.split_id
+
+    split_cfg, dataset_cfg, _ = load_split_context(
+        split_id=split_id,
+        require_feature=False,
     )
+
+    split_metadata = load_prepared_metadata(split_id, split_cfg)
 
     model_ids = resolve_models_to_run(
         model_registry=model_registry,
@@ -245,23 +245,22 @@ def run_experiments(args, mode: str) -> None:
         include_disabled=args.include_disabled,
     )
 
-    print(f"[orchestrate] Selected datasets: {dataset_ids}")
+    print(f"[orchestrate] Selected split: {split_id}")
     print(f"[orchestrate] Selected models: {model_ids}")
 
-    for dataset_id in dataset_ids:
-        dataset_cfg = dataset_registry[dataset_id]
+    for model_id in model_ids:
+        model_cfg = model_registry[model_id]
 
-        for model_id in model_ids:
-            model_cfg = model_registry[model_id]
-
-            run_one_experiment(
-                args=args,
-                mode=mode,
-                dataset_id=dataset_id,
-                model_id=model_id,
-                dataset_cfg=dataset_cfg,
-                model_cfg=model_cfg,
-            )
+        run_one_experiment(
+            args=args,
+            mode=mode,
+            split_id=split_id,
+            split_cfg=split_cfg,
+            split_metadata=split_metadata,
+            dataset_cfg=dataset_cfg,
+            model_id=model_id,
+            model_cfg=model_cfg,
+        )
 
 
 def add_experiment_args(parser: argparse.ArgumentParser) -> None:
@@ -273,17 +272,9 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
     )
 
     parser.add_argument(
-        "--dataset",
-        required=False,
-        default=None,
-        help="Dataset ID. If omitted, all ready/enabled datasets are used.",
-    )
-
-    parser.add_argument(
-        "--chunk-size",
-        type=int,
-        default=250_000,
-        help="Rows processed per chunk for chunk-compatible models.",
+        "--split-id",
+        required=True,
+        help="Prepared split ID from splits.json.",
     )
 
     parser.add_argument(
@@ -294,19 +285,10 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
     )
 
     parser.add_argument(
-        "--split",
-        default="random",
-        choices=["random"],
+        "--seed",
+        type=int,
+        default=42,
     )
-
-    parser.add_argument(
-        "--feature-set",
-        default="all",
-        choices=["all", "common"],
-    )
-
-    parser.add_argument("--test-size", type=float, default=0.2)
-    parser.add_argument("--seed", type=int, default=42)
 
     parser.add_argument(
         "--dry-run",
