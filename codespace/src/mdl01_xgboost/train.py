@@ -7,9 +7,9 @@ import pandas as pd
 
 from src.common.data_loader import load_dataset
 from src.common.preprocessing import split_xy
-from src.mdl03_mlp.model import build_mlp_classifier
+from src.mdl01_xgboost.model import build_xgboost_classifier
 
-MAX_TRAIN_ROWS = 200_000
+MAX_TRAIN_ROWS = 500_000
 
 
 def _check_numeric_features(x: pd.DataFrame) -> None:
@@ -21,7 +21,7 @@ def _check_numeric_features(x: pd.DataFrame) -> None:
 
     if non_numeric:
         raise ValueError(
-            "MLP expects numeric features only. "
+            "XGBoost expects numeric features only. "
             f"Non-numeric columns found: {non_numeric}"
         )
 
@@ -52,7 +52,7 @@ def _sample_training_data(
         sampled_indices.extend(selected.tolist())
 
     if not sampled_indices:
-        raise ValueError("No rows sampled for MLP training.")
+        raise ValueError("No rows sampled for XGBoost training.")
 
     sampled_indices = rng.permutation(sampled_indices)
 
@@ -71,9 +71,9 @@ def train(
         split_cfg: dict,
         split_metadata: dict,
 ) -> None:
-    print("[mdl03_mlp] Training MLP/DNN")
-    print(f"[mdl03_mlp] split_id={split_id}")
-    print("[mdl03_mlp] loading train split")
+    print("[mdl01_xgboost] Training XGBoost")
+    print(f"[mdl01_xgboost] split_id={split_id}")
+    print("[mdl01_xgboost] loading train split")
 
     train_df = load_dataset(
         dataset_cfg={
@@ -91,8 +91,8 @@ def train(
 
     _check_numeric_features(x_train)
 
-    print(f"[mdl03_mlp] full train shape={x_train.shape}")
-    print(f"[mdl03_mlp] full label counts={y_train.value_counts().sort_index().to_dict()}")
+    print(f"[mdl01_xgboost] full train shape={x_train.shape}")
+    print(f"[mdl01_xgboost] full label counts={y_train.value_counts().sort_index().to_dict()}")
 
     x_train, y_train = _sample_training_data(
         x_train=x_train,
@@ -102,17 +102,15 @@ def train(
 
     x_train = x_train.astype("float32")
 
-    print(f"[mdl03_mlp] sampled train shape={x_train.shape}")
-    print(f"[mdl03_mlp] sampled label counts={y_train.value_counts().sort_index().to_dict()}")
+    print(f"[mdl01_xgboost] sampled train shape={x_train.shape}")
+    print(f"[mdl01_xgboost] sampled label counts={y_train.value_counts().sort_index().to_dict()}")
 
-    model = build_mlp_classifier(seed=seed)
+    model = build_xgboost_classifier(seed=seed)
     model.fit(x_train, y_train)
-
-    mlp = model.named_steps["mlp"]
 
     artifact = {
         "model": model,
-        "model_type": "mlp_classifier",
+        "model_type": "xgboost_classifier",
         "feature_columns": list(x_train.columns),
         "split_id": split_id,
         "seed": seed,
@@ -123,10 +121,6 @@ def train(
             str(k): int(v)
             for k, v in y_train.value_counts().sort_index().items()
         },
-        "hidden_layer_sizes": mlp.hidden_layer_sizes,
-        "max_iter": mlp.max_iter,
-        "actual_iterations": int(mlp.n_iter_),
-        "loss": float(mlp.loss_),
         "params": model.get_params(),
     }
 
@@ -138,9 +132,6 @@ def train(
             {k: v for k, v in artifact.items() if k != "model"},
             f,
             indent=2,
-            default=str,
         )
 
-    print(f"[mdl03_mlp] actual iterations={mlp.n_iter_}")
-    print(f"[mdl03_mlp] final loss={mlp.loss_:.6f}")
-    print(f"[mdl03_mlp] saved model to: {model_path}")
+    print(f"[mdl01_xgboost] saved model to: {model_path}")

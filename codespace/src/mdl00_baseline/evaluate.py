@@ -15,7 +15,7 @@ def evaluate(
     split_cfg: dict,
     split_metadata: dict,
 ) -> dict:
-    print("[mdl01_baseline] Evaluating majority-class baseline")
+    print("[mdl00_baseline] Evaluating majority-class baseline")
 
     artifact = joblib.load(model_path)
     model = artifact["model"]

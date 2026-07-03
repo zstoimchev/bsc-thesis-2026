@@ -30,9 +30,9 @@ def evaluate(
         split_cfg: dict,
         split_metadata: dict,
 ) -> dict:
-    print("[mdl02_xgboost] Evaluating XGBoost")
-    print(f"[mdl02_xgboost] split_id={split_id}")
-    print("[mdl02_xgboost] loading test split")
+    print("[mdl01_xgboost] Evaluating XGBoost")
+    print(f"[mdl01_xgboost] split_id={split_id}")
+    print("[mdl01_xgboost] loading test split")
 
     artifact = joblib.load(model_path)
 
@@ -69,8 +69,8 @@ def evaluate(
 
     x_test = x_test[expected_features].astype("float32")
 
-    print(f"[mdl02_xgboost] test shape={x_test.shape}")
-    print(f"[mdl02_xgboost] test label counts={y_test.value_counts().sort_index().to_dict()}")
+    print(f"[mdl01_xgboost] test shape={x_test.shape}")
+    print(f"[mdl01_xgboost] test label counts={y_test.value_counts().sort_index().to_dict()}")
 
     y_pred = model.predict(x_test)
 

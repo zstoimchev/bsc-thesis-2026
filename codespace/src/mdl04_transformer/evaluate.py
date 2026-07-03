@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from src.common.data_loader import load_dataset
 from src.common.metrics import compute_metrics
 from src.common.preprocessing import split_xy
-from src.mdl05_transformer.model import build_tabular_transformer
+from src.mdl04_transformer.model import build_tabular_transformer
 
 
 BATCH_SIZE = 4096
@@ -53,17 +53,17 @@ def evaluate(
     split_cfg: dict,
     split_metadata: dict,
 ) -> dict:
-    print("[mdl05_transformer] Evaluating PyTorch Tabular Transformer")
-    print(f"[mdl05_transformer] split_id={split_id}")
+    print("[mdl04_transformer] Evaluating PyTorch Tabular Transformer")
+    print(f"[mdl04_transformer] split_id={split_id}")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"[mdl05_transformer] device={device}")
+    print(f"[mdl04_transformer] device={device}")
 
     artifact = torch.load(model_path, map_location=device)
 
     expected_features = artifact["feature_columns"]
 
-    print("[mdl05_transformer] loading test split")
+    print("[mdl04_transformer] loading test split")
 
     test_df = load_dataset(
         dataset_cfg={
@@ -95,9 +95,9 @@ def evaluate(
 
     x_test = x_test[expected_features]
 
-    print(f"[mdl05_transformer] test shape={x_test.shape}")
+    print(f"[mdl04_transformer] test shape={x_test.shape}")
     print(
-        "[mdl05_transformer] test label counts="
+        "[mdl04_transformer] test label counts="
         f"{y_test.value_counts().sort_index().to_dict()}"
     )
 
