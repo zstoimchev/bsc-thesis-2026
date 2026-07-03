@@ -35,8 +35,8 @@
     "name": "Model 05: Custom Transformer Architecture",
     "type": "transformer",
     "module": "src.mdl05_transformer",
-    "ready": false,
-    "enabled": false,
+    "ready": true,
+    "enabled": true,
     "description": "Custom transformer model proposed and evaluated as an extension."
   }
 }
