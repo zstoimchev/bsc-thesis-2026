@@ -1,31 +1,41 @@
-from sklearn.neural_network import MLPClassifier
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+import torch
+from torch import nn
 
 
-def build_mlp_classifier(seed: int) -> Pipeline:
-    return Pipeline(
-        steps=[
-            (
-                "scaler",
-                StandardScaler(),
-            ),
-            (
-                "mlp",
-                MLPClassifier(
-                    hidden_layer_sizes=(64, 32),
-                    activation="relu",
-                    solver="adam",
-                    alpha=0.0001,
-                    batch_size=2048,
-                    learning_rate_init=0.001,
-                    max_iter=20,
-                    early_stopping=True,
-                    validation_fraction=0.1,
-                    n_iter_no_change=5,
-                    random_state=seed,
-                    verbose=True,
-                ),
-            ),
-        ]
+class MLPClassifierTorch(nn.Module):
+    def __init__(
+            self,
+            num_features: int,
+            hidden_layer_sizes: tuple[int, ...] = (64, 32),
+            dropout: float = 0.1,
+    ) -> None:
+        super().__init__()
+
+        layers = []
+        input_size = num_features
+
+        for hidden_size in hidden_layer_sizes:
+            layers.append(nn.Linear(input_size, hidden_size))
+            layers.append(nn.ReLU())
+            layers.append(nn.Dropout(dropout))
+            input_size = hidden_size
+
+        layers.append(nn.Linear(input_size, 1))
+
+        self.network = nn.Sequential(*layers)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # output shape: [batch_size]
+        return self.network(x).squeeze(-1)
+
+
+def build_mlp_classifier(
+        num_features: int,
+        hidden_layer_sizes: tuple[int, ...] = (64, 32),
+        dropout: float = 0.1,
+) -> MLPClassifierTorch:
+    return MLPClassifierTorch(
+        num_features=num_features,
+        hidden_layer_sizes=hidden_layer_sizes,
+        dropout=dropout,
     )

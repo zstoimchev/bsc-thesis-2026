@@ -1,15 +1,27 @@
 import json
 from pathlib import Path
 
-import joblib
 import numpy as np
 import pandas as pd
+import torch
+from torch import nn
+from torch.utils.data import DataLoader, TensorDataset, random_split
 
 from src.common.data_loader import load_dataset
 from src.common.preprocessing import split_xy
 from src.mdl02_mlp.model import build_mlp_classifier
 
 MAX_TRAIN_ROWS = 200_000
+BATCH_SIZE = 4096
+EPOCHS = 10
+LEARNING_RATE = 0.001
+HIDDEN_LAYER_SIZES = (64, 32)
+DROPOUT = 0.1
+
+
+def _set_seed(seed: int) -> None:
+    np.random.seed(seed)
+    torch.manual_seed(seed)
 
 
 def _check_numeric_features(x: pd.DataFrame) -> None:
@@ -21,7 +33,7 @@ def _check_numeric_features(x: pd.DataFrame) -> None:
 
     if non_numeric:
         raise ValueError(
-            "MLP expects numeric features only. "
+            "PyTorch MLP expects numeric features only. "
             f"Non-numeric columns found: {non_numeric}"
         )
 
@@ -52,7 +64,7 @@ def _sample_training_data(
         sampled_indices.extend(selected.tolist())
 
     if not sampled_indices:
-        raise ValueError("No rows sampled for MLP training.")
+        raise ValueError("No rows sampled for PyTorch MLP training.")
 
     sampled_indices = rng.permutation(sampled_indices)
 
@@ -60,6 +72,22 @@ def _sample_training_data(
     y_sample = y_train.loc[sampled_indices].reset_index(drop=True)
 
     return x_sample, y_sample
+
+
+def _standardize_training_data(
+        x_train: pd.DataFrame,
+) -> tuple[np.ndarray, list[float], list[float]]:
+    x_np = x_train.to_numpy(dtype=np.float32)
+
+    mean = x_np.mean(axis=0)
+    std = x_np.std(axis=0)
+
+    std[std == 0] = 1.0
+
+    x_np = (x_np - mean) / std
+    x_np = np.nan_to_num(x_np, nan=0.0, posinf=0.0, neginf=0.0)
+
+    return x_np.astype(np.float32), mean.tolist(), std.tolist()
 
 
 def train(
@@ -71,8 +99,14 @@ def train(
         split_cfg: dict,
         split_metadata: dict,
 ) -> None:
-    print("[mdl02_mlp] Training MLP/DNN")
+    print("[mdl02_mlp] Training PyTorch MLP/DNN")
     print(f"[mdl02_mlp] split_id={split_id}")
+
+    _set_seed(seed)
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"[mdl02_mlp] device={device}")
+
     print("[mdl02_mlp] loading train split")
 
     train_df = load_dataset(
@@ -100,20 +134,128 @@ def train(
         seed=seed,
     )
 
-    x_train = x_train.astype("float32")
-
     print(f"[mdl02_mlp] sampled train shape={x_train.shape}")
     print(f"[mdl02_mlp] sampled label counts={y_train.value_counts().sort_index().to_dict()}")
 
-    model = build_mlp_classifier(seed=seed)
-    model.fit(x_train, y_train)
+    feature_columns = list(x_train.columns)
 
-    mlp = model.named_steps["mlp"]
+    x_np, feature_mean, feature_std = _standardize_training_data(x_train)
+    y_np = y_train.to_numpy(dtype=np.float32)
+
+    x_tensor = torch.tensor(x_np, dtype=torch.float32)
+    y_tensor = torch.tensor(y_np, dtype=torch.float32)
+
+    dataset = TensorDataset(x_tensor, y_tensor)
+
+    val_size = int(len(dataset) * 0.1)
+    train_size = len(dataset) - val_size
+
+    train_dataset, val_dataset = random_split(
+        dataset,
+        [train_size, val_size],
+        generator=torch.Generator().manual_seed(seed),
+    )
+
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=True,
+    )
+
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=False,
+    )
+
+    model = build_mlp_classifier(
+        num_features=len(feature_columns),
+        hidden_layer_sizes=HIDDEN_LAYER_SIZES,
+        dropout=DROPOUT,
+    ).to(device)
+
+    criterion = nn.BCEWithLogitsLoss()
+
+    optimizer = torch.optim.AdamW(
+        model.parameters(),
+        lr=LEARNING_RATE,
+        weight_decay=0.0001,
+    )
+
+    history = []
+
+    for epoch in range(1, EPOCHS + 1):
+        model.train()
+
+        train_loss_sum = 0.0
+        train_examples = 0
+
+        for batch_x, batch_y in train_loader:
+            batch_x = batch_x.to(device)
+            batch_y = batch_y.to(device)
+
+            optimizer.zero_grad()
+
+            logits = model(batch_x)
+            loss = criterion(logits, batch_y)
+
+            loss.backward()
+            optimizer.step()
+
+            batch_size = batch_x.size(0)
+            train_loss_sum += loss.item() * batch_size
+            train_examples += batch_size
+
+        train_loss = train_loss_sum / train_examples
+
+        model.eval()
+
+        val_loss_sum = 0.0
+        val_examples = 0
+        correct = 0
+
+        with torch.no_grad():
+            for batch_x, batch_y in val_loader:
+                batch_x = batch_x.to(device)
+                batch_y = batch_y.to(device)
+
+                logits = model(batch_x)
+                loss = criterion(logits, batch_y)
+
+                probs = torch.sigmoid(logits)
+                preds = (probs >= 0.5).float()
+
+                batch_size = batch_x.size(0)
+                val_loss_sum += loss.item() * batch_size
+                val_examples += batch_size
+                correct += (preds == batch_y).sum().item()
+
+        val_loss = val_loss_sum / val_examples
+        val_accuracy = correct / val_examples
+
+        epoch_info = {
+            "epoch": epoch,
+            "train_loss": float(train_loss),
+            "val_loss": float(val_loss),
+            "val_accuracy": float(val_accuracy),
+        }
+
+        history.append(epoch_info)
+
+        print(
+            f"[mdl02_mlp] epoch={epoch:02d}/{EPOCHS} "
+            f"train_loss={train_loss:.6f} "
+            f"val_loss={val_loss:.6f} "
+            f"val_accuracy={val_accuracy:.4f}"
+        )
 
     artifact = {
-        "model": model,
-        "model_type": "mlp_classifier",
-        "feature_columns": list(x_train.columns),
+        "model_state_dict": model.state_dict(),
+        "model_type": "pytorch_mlp_classifier",
+        "num_features": len(feature_columns),
+        "feature_columns": feature_columns,
+        "feature_mean": feature_mean,
+        "feature_std": feature_std,
         "split_id": split_id,
         "seed": seed,
         "max_train_rows": MAX_TRAIN_ROWS,
@@ -123,24 +265,24 @@ def train(
             str(k): int(v)
             for k, v in y_train.value_counts().sort_index().items()
         },
-        "hidden_layer_sizes": mlp.hidden_layer_sizes,
-        "max_iter": mlp.max_iter,
-        "actual_iterations": int(mlp.n_iter_),
-        "loss": float(mlp.loss_),
-        "params": model.get_params(),
+        "epochs": EPOCHS,
+        "batch_size": BATCH_SIZE,
+        "learning_rate": LEARNING_RATE,
+        "architecture": {
+            "hidden_layer_sizes": list(HIDDEN_LAYER_SIZES),
+            "dropout": DROPOUT,
+        },
+        "history": history,
     }
 
-    joblib.dump(artifact, model_path)
+    torch.save(artifact, model_path)
 
     summary_path = output_dir / "training_summary.json"
     with summary_path.open("w", encoding="utf-8") as f:
         json.dump(
-            {k: v for k, v in artifact.items() if k != "model"},
+            {k: v for k, v in artifact.items() if k != "model_state_dict"},
             f,
             indent=2,
-            default=str,
         )
 
-    print(f"[mdl02_mlp] actual iterations={mlp.n_iter_}")
-    print(f"[mdl02_mlp] final loss={mlp.loss_:.6f}")
     print(f"[mdl02_mlp] saved model to: {model_path}")

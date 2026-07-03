@@ -1,11 +1,16 @@
 from pathlib import Path
 
-import joblib
+import numpy as np
 import pandas as pd
+import torch
+from torch.utils.data import DataLoader, TensorDataset
 
 from src.common.data_loader import load_dataset
 from src.common.metrics import compute_metrics
 from src.common.preprocessing import split_xy
+from src.mdl02_mlp.model import build_mlp_classifier
+
+BATCH_SIZE = 4096
 
 
 def _check_numeric_features(x: pd.DataFrame) -> None:
@@ -17,9 +22,27 @@ def _check_numeric_features(x: pd.DataFrame) -> None:
 
     if non_numeric:
         raise ValueError(
-            "MLP expects numeric features only. "
+            "PyTorch MLP expects numeric features only. "
             f"Non-numeric columns found: {non_numeric}"
         )
+
+
+def _standardize_eval_data(
+        x_test: pd.DataFrame,
+        feature_mean: list[float],
+        feature_std: list[float],
+) -> np.ndarray:
+    x_np = x_test.to_numpy(dtype=np.float32)
+
+    mean = np.array(feature_mean, dtype=np.float32)
+    std = np.array(feature_std, dtype=np.float32)
+
+    std[std == 0] = 1.0
+
+    x_np = (x_np - mean) / std
+    x_np = np.nan_to_num(x_np, nan=0.0, posinf=0.0, neginf=0.0)
+
+    return x_np.astype(np.float32)
 
 
 def evaluate(
@@ -30,14 +53,17 @@ def evaluate(
         split_cfg: dict,
         split_metadata: dict,
 ) -> dict:
-    print("[mdl02_mlp] Evaluating MLP/DNN")
+    print("[mdl02_mlp] Evaluating PyTorch MLP/DNN")
     print(f"[mdl02_mlp] split_id={split_id}")
-    print("[mdl02_mlp] loading test split")
 
-    artifact = joblib.load(model_path)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"[mdl02_mlp] device={device}")
 
-    model = artifact["model"]
+    artifact = torch.load(model_path, map_location=device)
+
     expected_features = artifact["feature_columns"]
+
+    print("[mdl02_mlp] loading test split")
 
     test_df = load_dataset(
         dataset_cfg={
@@ -67,25 +93,64 @@ def evaluate(
 
     _check_numeric_features(x_test)
 
-    x_test = x_test[expected_features].astype("float32")
+    x_test = x_test[expected_features]
 
     print(f"[mdl02_mlp] test shape={x_test.shape}")
     print(f"[mdl02_mlp] test label counts={y_test.value_counts().sort_index().to_dict()}")
 
-    y_pred = model.predict(x_test)
+    x_np = _standardize_eval_data(
+        x_test=x_test,
+        feature_mean=artifact["feature_mean"],
+        feature_std=artifact["feature_std"],
+    )
 
-    metrics = compute_metrics(y_test, y_pred)
+    y_np = y_test.to_numpy(dtype=np.int64)
 
-    metrics["model_type"] = "mlp_classifier"
+    x_tensor = torch.tensor(x_np, dtype=torch.float32)
+
+    dataset = TensorDataset(x_tensor)
+    loader = DataLoader(
+        dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=False,
+    )
+
+    model = build_mlp_classifier(
+        num_features=artifact["num_features"],
+        hidden_layer_sizes=tuple(artifact["architecture"]["hidden_layer_sizes"]),
+        dropout=artifact["architecture"]["dropout"],
+    ).to(device)
+
+    model.load_state_dict(artifact["model_state_dict"])
+    model.eval()
+
+    predictions = []
+
+    with torch.no_grad():
+        for (batch_x,) in loader:
+            batch_x = batch_x.to(device)
+
+            logits = model(batch_x)
+            probs = torch.sigmoid(logits)
+            preds = (probs >= 0.5).long()
+
+            predictions.append(preds.cpu().numpy())
+
+    y_pred = np.concatenate(predictions)
+
+    metrics = compute_metrics(y_np, y_pred)
+
+    metrics["model_type"] = "pytorch_mlp_classifier"
     metrics["split_id"] = split_id
     metrics["seed"] = seed
     metrics["training_sample_rows"] = artifact["sampled_training_rows"]
     metrics["training_sample_label_counts"] = artifact["sampled_label_counts"]
     metrics["evaluation_rows"] = int(len(y_test))
     metrics["feature_columns"] = expected_features
-    metrics["hidden_layer_sizes"] = artifact["hidden_layer_sizes"]
-    metrics["max_iter"] = artifact["max_iter"]
-    metrics["actual_iterations"] = artifact["actual_iterations"]
-    metrics["training_loss"] = artifact["loss"]
+    metrics["epochs"] = artifact["epochs"]
+    metrics["batch_size"] = artifact["batch_size"]
+    metrics["learning_rate"] = artifact["learning_rate"]
+    metrics["architecture"] = artifact["architecture"]
+    metrics["training_history"] = artifact["history"]
 
     return metrics
