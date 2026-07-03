@@ -14,8 +14,7 @@ lightgbm>=4.0
 matplotlib>=3.8
 
 # Optional deep learning dependencies.
-# Install these only when you start testing neural runners.
 # tensorflow>=2.15
-# torch>=2.0
+torch>=2.0
 # torchvision>=0.15
 # fastai>=2.7
