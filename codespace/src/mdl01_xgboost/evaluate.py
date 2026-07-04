@@ -17,7 +17,7 @@ def _check_numeric_features(x: pd.DataFrame) -> None:
 
     if non_numeric:
         raise ValueError(
-            "MLP expects numeric features only. "
+            "XGBoost expects numeric features only. "
             f"Non-numeric columns found: {non_numeric}"
         )
 
@@ -30,9 +30,9 @@ def evaluate(
         split_cfg: dict,
         split_metadata: dict,
 ) -> dict:
-    print("[mdl03_mlp] Evaluating MLP/DNN")
-    print(f"[mdl03_mlp] split_id={split_id}")
-    print("[mdl03_mlp] loading test split")
+    print("[mdl01_xgboost] Evaluating XGBoost")
+    print(f"[mdl01_xgboost] split_id={split_id}")
+    print("[mdl01_xgboost] loading test split")
 
     artifact = joblib.load(model_path)
 
@@ -69,23 +69,20 @@ def evaluate(
 
     x_test = x_test[expected_features].astype("float32")
 
-    print(f"[mdl03_mlp] test shape={x_test.shape}")
-    print(f"[mdl03_mlp] test label counts={y_test.value_counts().sort_index().to_dict()}")
+    print(f"[mdl01_xgboost] test shape={x_test.shape}")
+    print(f"[mdl01_xgboost] test label counts={y_test.value_counts().sort_index().to_dict()}")
 
     y_pred = model.predict(x_test)
 
     metrics = compute_metrics(y_test, y_pred)
 
-    metrics["model_type"] = "mlp_classifier"
+    metrics["model_type"] = "xgboost_classifier"
     metrics["split_id"] = split_id
     metrics["seed"] = seed
     metrics["training_sample_rows"] = artifact["sampled_training_rows"]
     metrics["training_sample_label_counts"] = artifact["sampled_label_counts"]
     metrics["evaluation_rows"] = int(len(y_test))
     metrics["feature_columns"] = expected_features
-    metrics["hidden_layer_sizes"] = artifact["hidden_layer_sizes"]
-    metrics["max_iter"] = artifact["max_iter"]
-    metrics["actual_iterations"] = artifact["actual_iterations"]
-    metrics["training_loss"] = artifact["loss"]
+    metrics["params"] = artifact["params"]
 
     return metrics

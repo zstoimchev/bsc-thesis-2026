@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader, TensorDataset, random_split
 
 from src.common.data_loader import load_dataset
 from src.common.preprocessing import split_xy
-from src.mdl05_transformer.model import build_tabular_transformer
+from src.mdl04_transformer.model import build_tabular_transformer
 
 
 MAX_TRAIN_ROWS = 200_000
@@ -97,15 +97,15 @@ def train(
     split_cfg: dict,
     split_metadata: dict,
 ) -> None:
-    print("[mdl05_transformer] Training PyTorch Tabular Transformer")
-    print(f"[mdl05_transformer] split_id={split_id}")
+    print("[mdl04_transformer] Training PyTorch Tabular Transformer")
+    print(f"[mdl04_transformer] split_id={split_id}")
 
     _set_seed(seed)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"[mdl05_transformer] device={device}")
+    print(f"[mdl04_transformer] device={device}")
 
-    print("[mdl05_transformer] loading train split")
+    print("[mdl04_transformer] loading train split")
 
     train_df = load_dataset(
         dataset_cfg={
@@ -123,9 +123,9 @@ def train(
 
     _check_numeric_features(x_train)
 
-    print(f"[mdl05_transformer] full train shape={x_train.shape}")
+    print(f"[mdl04_transformer] full train shape={x_train.shape}")
     print(
-        "[mdl05_transformer] full label counts="
+        "[mdl04_transformer] full label counts="
         f"{y_train.value_counts().sort_index().to_dict()}"
     )
 
@@ -135,9 +135,9 @@ def train(
         seed=seed,
     )
 
-    print(f"[mdl05_transformer] sampled train shape={x_train.shape}")
+    print(f"[mdl04_transformer] sampled train shape={x_train.shape}")
     print(
-        "[mdl05_transformer] sampled label counts="
+        "[mdl04_transformer] sampled label counts="
         f"{y_train.value_counts().sort_index().to_dict()}"
     )
 
@@ -249,7 +249,7 @@ def train(
         history.append(epoch_info)
 
         print(
-            f"[mdl05_transformer] epoch={epoch:02d}/{EPOCHS} "
+            f"[mdl04_transformer] epoch={epoch:02d}/{EPOCHS} "
             f"train_loss={train_loss:.6f} "
             f"val_loss={val_loss:.6f} "
             f"val_accuracy={val_accuracy:.4f}"
@@ -293,4 +293,4 @@ def train(
             indent=2,
         )
 
-    print(f"[mdl05_transformer] saved model to: {model_path}")
+    print(f"[mdl04_transformer] saved model to: {model_path}")

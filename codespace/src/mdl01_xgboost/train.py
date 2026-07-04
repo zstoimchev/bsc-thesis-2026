@@ -7,7 +7,7 @@ import pandas as pd
 
 from src.common.data_loader import load_dataset
 from src.common.preprocessing import split_xy
-from src.mdl02_xgboost.model import build_xgboost_classifier
+from src.mdl01_xgboost.model import build_xgboost_classifier
 
 MAX_TRAIN_ROWS = 500_000
 
@@ -71,9 +71,9 @@ def train(
         split_cfg: dict,
         split_metadata: dict,
 ) -> None:
-    print("[mdl02_xgboost] Training XGBoost")
-    print(f"[mdl02_xgboost] split_id={split_id}")
-    print("[mdl02_xgboost] loading train split")
+    print("[mdl01_xgboost] Training XGBoost")
+    print(f"[mdl01_xgboost] split_id={split_id}")
+    print("[mdl01_xgboost] loading train split")
 
     train_df = load_dataset(
         dataset_cfg={
@@ -91,8 +91,8 @@ def train(
 
     _check_numeric_features(x_train)
 
-    print(f"[mdl02_xgboost] full train shape={x_train.shape}")
-    print(f"[mdl02_xgboost] full label counts={y_train.value_counts().sort_index().to_dict()}")
+    print(f"[mdl01_xgboost] full train shape={x_train.shape}")
+    print(f"[mdl01_xgboost] full label counts={y_train.value_counts().sort_index().to_dict()}")
 
     x_train, y_train = _sample_training_data(
         x_train=x_train,
@@ -102,8 +102,8 @@ def train(
 
     x_train = x_train.astype("float32")
 
-    print(f"[mdl02_xgboost] sampled train shape={x_train.shape}")
-    print(f"[mdl02_xgboost] sampled label counts={y_train.value_counts().sort_index().to_dict()}")
+    print(f"[mdl01_xgboost] sampled train shape={x_train.shape}")
+    print(f"[mdl01_xgboost] sampled label counts={y_train.value_counts().sort_index().to_dict()}")
 
     model = build_xgboost_classifier(seed=seed)
     model.fit(x_train, y_train)
@@ -134,4 +134,4 @@ def train(
             indent=2,
         )
 
-    print(f"[mdl02_xgboost] saved model to: {model_path}")
+    print(f"[mdl01_xgboost] saved model to: {model_path}")

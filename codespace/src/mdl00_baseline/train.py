@@ -5,7 +5,7 @@ import joblib
 
 from src.common.data_loader import load_dataset
 from src.common.preprocessing import split_xy
-from src.mdl01_baseline.model import MajorityClassBaseline
+from src.mdl00_baseline.model import MajorityClassBaseline
 
 
 def train(
@@ -17,7 +17,7 @@ def train(
     split_cfg: dict,
     split_metadata: dict,
 ) -> None:
-    print("[mdl01_baseline] Training majority-class baseline")
+    print("[mdl00_baseline] Training majority-class baseline")
 
     train_df = load_dataset(
         dataset_cfg={
@@ -58,6 +58,6 @@ def train(
             indent=2,
         )
 
-    print(f"[mdl01_baseline] training rows={len(y_train)}")
-    print(f"[mdl01_baseline] majority_class={model.majority_class}")
-    print(f"[mdl01_baseline] saved model to: {model_path}")
+    print(f"[mdl00_baseline] training rows={len(y_train)}")
+    print(f"[mdl00_baseline] majority_class={model.majority_class}")
+    print(f"[mdl00_baseline] saved model to: {model_path}")

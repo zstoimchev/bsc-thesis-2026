@@ -1,40 +1,40 @@
 {
-  "mdl01_baseline": {
-    "name": "Model 01: Baseline Decision Tree",
+  "mdl00_baseline": {
+    "name": "Model 00: Baseline Decision Tree",
     "type": "decision_tree",
-    "module": "src.mdl01_baseline",
+    "module": "src.mdl00_baseline",
     "ready": true,
     "enabled": true,
     "description": "Simple baseline model used to test the full pipeline before implementing advanced models."
   },
-  "mdl02_xgboost": {
-    "name": "Model 02: XGBoost",
+  "mdl01_xgboost": {
+    "name": "Model 01: XGBoost",
     "type": "classical_ml",
-    "module": "src.mdl02_xgboost",
+    "module": "src.mdl01_xgboost",
     "ready": true,
     "enabled": true,
     "description": "Strong tabular machine learning model selected as a high-performing classical reference."
   },
-  "mdl03_mlp": {
-    "name": "Model 03: MLP",
+  "mdl02_mlp": {
+    "name": "Model 02: MLP",
     "type": "neural_network",
-    "module": "src.mdl03_mlp",
+    "module": "src.mdl02_mlp",
     "ready": true,
     "enabled": true,
     "description": "Feedforward neural network baseline for comparison with classical models."
   },
-  "mdl04_gru": {
-    "name": "[Optional] Model 04: GRU",
+  "mdl03_gru": {
+    "name": "[Optional] Model 03: GRU",
     "type": "recurrent_neural_network",
-    "module": "src.mdl04_gru",
+    "module": "src.mdl03_gru",
     "ready": false,
     "enabled": false,
     "description": "Optional recurrent model used only if a meaningful sequence representation is created."
   },
-  "mdl05_transformer": {
-    "name": "Model 05: Custom Transformer Architecture",
+  "mdl04_transformer": {
+    "name": "Model 04: Custom Transformer Architecture",
     "type": "transformer",
-    "module": "src.mdl05_transformer",
+    "module": "src.mdl04_transformer",
     "ready": true,
     "enabled": true,
     "description": "Custom transformer model proposed and evaluated as an extension."
