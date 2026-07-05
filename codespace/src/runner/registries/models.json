@@ -1,6 +1,6 @@
 {
   "mdl00_baseline": {
-    "name": "Model 00: Baseline Decision Tree",
+    "name": "Model 00: Majority Class Baseline",
     "type": "decision_tree",
     "module": "src.mdl00_baseline",
     "ready": true,
@@ -16,7 +16,7 @@
     "description": "Strong tabular machine learning model selected as a high-performing classical reference."
   },
   "mdl02_mlp": {
-    "name": "Model 02: MLP",
+    "name": "Model 02: PyTorch MLP / DNN",
     "type": "neural_network",
     "module": "src.mdl02_mlp",
     "ready": true,
@@ -32,7 +32,7 @@
     "description": "Optional recurrent model used only if a meaningful sequence representation is created."
   },
   "mdl04_transformer": {
-    "name": "Model 04: Custom Transformer Architecture",
+    "name": "Model 04: PyTorch Tabular Transformer",
     "type": "transformer",
     "module": "src.mdl04_transformer",
     "ready": true,
