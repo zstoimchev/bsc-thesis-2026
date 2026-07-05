@@ -29,7 +29,7 @@ class TabularTransformer(nn.Module):
             dropout=dropout,
             activation="gelu",
             batch_first=True,
-            norm_first=True,
+            norm_first=False,
         )
 
         self.encoder = nn.TransformerEncoder(
