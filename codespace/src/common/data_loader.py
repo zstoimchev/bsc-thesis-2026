@@ -3,8 +3,6 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.common.preprocessing import split_xy
-
 
 def load_dataset(dataset_cfg: dict, project_root: Path) -> pd.DataFrame:
     dataset_path = project_root / dataset_cfg["path"]
@@ -48,28 +46,3 @@ def iterate_dataset(
         return
 
     raise ValueError(f"Unsupported dataset format: {dataset_format}")
-
-
-def load_prepared_xy(
-        split_metadata: dict,
-        project_root: Path,
-        part: str,
-) -> tuple[pd.DataFrame, pd.Series]:
-    if part not in {"train", "test"}:
-        raise ValueError(f"Unknown prepared split part: {part}")
-
-    file_key = f"{part}_file"
-
-    df = load_dataset(
-        dataset_cfg={
-            "path": split_metadata[file_key],
-            "format": "parquet",
-        },
-        project_root=project_root,
-    )
-
-    return split_xy(
-        df=df,
-        label_column=split_metadata["label_column"],
-        feature_columns=split_metadata["feature_columns"],
-    )
