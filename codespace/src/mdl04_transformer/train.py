@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.common.torch_training import train_pytorch_binary_classifier
+from src.libraries.torch_training import train_pytorch_binary_classifier
 from src.mdl04_transformer.model import build_tabular_transformer
 
 MODEL_ID = "[mdl04_transformer]"
