@@ -12,7 +12,7 @@
     "type": "classical_ml",
     "module": "src.mdl01_xgboost",
     "ready": true,
-    "enabled": true,
+    "enabled": false,
     "description": "Strong tabular machine learning model selected as a high-performing classical reference."
   },
   "mdl02_mlp": {

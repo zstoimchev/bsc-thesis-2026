@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.common.torch_training import train_pytorch_binary_classifier
+from src.libraries.torch_training import train_pytorch_binary_classifier
 from src.mdl02_mlp.model import build_mlp_classifier
 
 MODEL_ID = "[mdl02_mlp]"

@@ -125,6 +125,73 @@ def prepare_output_dir(
     return output_dir
 
 
+def find_latest_trained_model_path(
+        model_id: str,
+        seed: int,
+) -> Path:
+    runs_root = PROJECT_ROOT / "results" / "runs"
+
+    if not runs_root.exists():
+        raise FileNotFoundError(f"Runs directory does not exist: {runs_root}")
+
+    candidates = []
+
+    for run_dir in runs_root.iterdir():
+        if not run_dir.is_dir():
+            continue
+
+        model_path = run_dir / "model.joblib"
+        run_info_path = run_dir / "run_info.json"
+
+        if not model_path.exists():
+            continue
+
+        if not run_info_path.exists():
+            continue
+
+        with run_info_path.open("r", encoding="utf-8") as f:
+            run_info = json.load(f)
+
+        if run_info.get("model_id") != model_id:
+            continue
+
+        if run_info.get("seed") != seed:
+            continue
+
+        candidates.append(
+            {
+                "model_path": model_path,
+                "run_dir": run_dir,
+                "modified_time": model_path.stat().st_mtime,
+            }
+        )
+
+    if not candidates:
+        raise FileNotFoundError(
+            f"No trained model found for model={model_id}, seed={seed}. "
+            "Run train or train-evaluate first."
+        )
+
+    latest = max(candidates, key=lambda item: item["modified_time"])
+
+    return latest["model_path"]
+
+
+def resolve_model_path_for_mode(
+        mode: str,
+        output_dir: Path,
+        model_id: str,
+        seed: int,
+) -> Path:
+    if mode in {"train", "train-evaluate"}:
+        return output_dir / "model.joblib"
+
+    if mode == "evaluate":
+        return find_latest_trained_model_path(model_id=model_id, seed=seed)
+
+    raise ValueError(f"Unknown experiment mode: {mode}")
+
+
 def run_one_experiment(
         args,
         mode: str,
@@ -147,13 +214,14 @@ def run_one_experiment(
         print("[orchestrate] Dry run only. Nothing will be trained or evaluated.")
         return
 
-    output_dir = prepare_output_dir(
-        split_id=split_id,
+    output_dir = prepare_output_dir(split_id=split_id, model_id=model_id, seed=args.seed)
+    # model_path = output_dir / "model.joblib"
+    model_path = resolve_model_path_for_mode(
+        mode=mode,
+        output_dir=output_dir,
         model_id=model_id,
         seed=args.seed,
     )
-
-    model_path = output_dir / "model.joblib"
     metrics_path = output_dir / "metrics.json"
     run_info_path = output_dir / "run_info.json"
 
@@ -167,6 +235,8 @@ def run_one_experiment(
         "feature_set_id": split_cfg["feature_set_id"],
         "model_id": model_id,
         "model_name": model_cfg.get("name", ""),
+        "model_path": str(model_path),
+        "output_dir": str(output_dir),
         "seed": args.seed,
         "train_file": split_metadata["train_file"],
         "test_file": split_metadata["test_file"],
@@ -229,12 +299,7 @@ def run_experiments(args, mode: str) -> None:
     model_registry = load_model_registry()
 
     split_id = args.split_id
-
-    split_cfg, dataset_cfg, _ = load_split_context(
-        split_id=split_id,
-        require_feature=False,
-    )
-
+    split_cfg, dataset_cfg, _ = load_split_context(split_id=split_id, require_feature=False)
     split_metadata = load_prepared_metadata(split_id, split_cfg)
 
     model_ids = resolve_models_to_run(
