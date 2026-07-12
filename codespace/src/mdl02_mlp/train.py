@@ -17,7 +17,6 @@ def train(
         project_root: Path,
         seed: int,
         split_id: str,
-        split_cfg: dict,
         split_metadata: dict,
 ) -> None:
     train_pytorch_binary_classifier(

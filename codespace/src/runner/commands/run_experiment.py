@@ -255,7 +255,6 @@ def run_one_experiment(
             project_root=PROJECT_ROOT,
             seed=args.seed,
             split_id=split_id,
-            split_cfg=split_cfg,
             split_metadata=split_metadata,
         )
 
