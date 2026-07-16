@@ -27,8 +27,8 @@
     "name": "[Optional] Model 03: GRU",
     "type": "recurrent_neural_network",
     "module": "src.mdl03_gru",
-    "ready": false,
-    "enabled": false,
+    "ready": true,
+    "enabled": true,
     "description": "Optional recurrent model used only if a meaningful sequence representation is created."
   },
   "mdl04_transformer": {
