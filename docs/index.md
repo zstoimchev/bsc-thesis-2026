@@ -464,3 +464,32 @@ Infinite numeric values after preprocessing: 0
 Inspection completed successfully.
 ```
 
+## Results
+
+```bash
+(thesis2026) zstoimchev@zetrox:~/Documents/Thesis2026/codespace$ python run.py summarize-results --split-id cic_random_80_20_v1
+
+Model               Trained on                    Evaluated on                    Accuracy    BalAcc    Recall        F1
+------------------------------------------------------------------------------------------------------------------------
+mdl00_baseline      realworld_random_80_20_v1     cic_random_80_20_v1               0.7839    0.5000    0.0000    0.0000
+mdl01_xgboost       realworld_random_80_20_v1     cic_random_80_20_v1               0.7558    0.6133    0.3625    0.3908
+mdl02_mlp           realworld_random_80_20_v1     cic_random_80_20_v1               0.8008    0.5422    0.0866    0.1583
+mdl03_gru           realworld_random_80_20_v1     cic_random_80_20_v1               0.7245    0.6244    0.4481    0.4128
+mdl04_transformer   realworld_random_80_20_v1     cic_random_80_20_v1               0.7713    0.4943    0.0064    0.0120
+
+[summary] CSV:  /home/zstoimchev/Documents/Thesis2026/codespace/results/latest_summary.csv
+[summary] JSON: /home/zstoimchev/Documents/Thesis2026/codespace/results/latest_summary.json
+(thesis2026) zstoimchev@zetrox:~/Documents/Thesis2026/codespace$ python run.py summarize-results --split-id realworld_random_80_20_v1
+
+Model               Trained on                    Evaluated on                    Accuracy    BalAcc    Recall        F1
+------------------------------------------------------------------------------------------------------------------------
+mdl00_baseline      realworld_random_80_20_v1     realworld_random_80_20_v1         0.7629    0.5000    0.0000    0.0000
+mdl01_xgboost       realworld_random_80_20_v1     realworld_random_80_20_v1         1.0000    1.0000    1.0000    1.0000
+mdl02_mlp           realworld_random_80_20_v1     realworld_random_80_20_v1         0.9993    0.9996    1.0000    0.9986
+mdl03_gru           realworld_random_80_20_v1     realworld_random_80_20_v1         0.9995    0.9997    1.0000    0.9989
+mdl04_transformer   realworld_random_80_20_v1     realworld_random_80_20_v1         0.9996    0.9995    0.9994    0.9991
+
+[summary] CSV:  /home/zstoimchev/Documents/Thesis2026/codespace/results/latest_summary.csv
+[summary] JSON: /home/zstoimchev/Documents/Thesis2026/codespace/results/latest_summary.json
+(thesis2026) zstoimchev@zetrox:~/Documents/Thesis2026/codespace$ 
+```
