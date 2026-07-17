@@ -11,6 +11,7 @@ from src.runner.commands.list_registry import (
     run_list_features,
 )
 from src.runner.commands.run_experiment import add_experiment_parsers, run_experiments
+from src.runner.commands.summarize_results import add_summarize_results_parser, run_summarize_results
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -25,6 +26,7 @@ def build_parser() -> argparse.ArgumentParser:
     add_inspect_model_parser(subparsers)
     add_prepare_split_parser(subparsers)
     add_experiment_parsers(subparsers)
+    add_summarize_results_parser(subparsers)
 
     return parser
 
@@ -63,6 +65,10 @@ def main() -> None:
 
     if args.command in {"train", "evaluate", "train-evaluate"}:
         run_experiments(args, mode=args.command)
+        return
+
+    if args.command == "summarize-results":
+        run_summarize_results(args)
         return
 
     raise ValueError(f"Unknown command: {args.command}")
