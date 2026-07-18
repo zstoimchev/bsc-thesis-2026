@@ -299,6 +299,11 @@ def run_experiments(args, mode: str) -> None:
 
     split_id = args.split_id
     split_cfg, dataset_cfg, _ = load_split_context(split_id=split_id, require_feature=False)
+
+    split_type = split_cfg["split_method"]["type"]
+    if split_type == "external_full" and mode != "evaluate":
+        raise ValueError("An external_full split can only be used with the evaluate command.")
+
     split_metadata = load_prepared_metadata(split_id, split_cfg)
 
     model_ids = resolve_models_to_run(
