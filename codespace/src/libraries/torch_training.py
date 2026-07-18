@@ -94,7 +94,11 @@ def train_pytorch_binary_classifier(
 
     dataset = TensorDataset(x_tensor, y_tensor)
 
-    val_size = int(len(dataset) * config.validation_fraction)
+    if len(dataset) < 2:
+        raise ValueError("PyTorch training requires at least 2 rows.")
+
+    val_size = max(1, int(len(dataset) * config.validation_fraction))
+    val_size = min(val_size, len(dataset) - 1,)
     train_size = len(dataset) - val_size
 
     train_dataset, val_dataset = random_split(
@@ -204,6 +208,8 @@ def train_pytorch_binary_classifier(
         "train_row_cap": cap,
         "full_training_rows": int(full_training_rows),
         "training_rows": int(len(y_train)),
+        "fitting_rows": int(train_size),
+        "validation_rows": int(val_size),
         "training_label_counts": {
             str(k): int(v)
             for k, v in y_train.value_counts().sort_index().items()

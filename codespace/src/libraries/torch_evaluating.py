@@ -140,17 +140,30 @@ def evaluate_pytorch_binary_classifier(
 
     metrics = compute_metrics(y_np, y_pred)
 
-    metrics["model_type"] = model_type
-    metrics["split_id"] = split_id
-    metrics["seed"] = seed
-    metrics["training_sample_rows"] = artifact["sampled_training_rows"]
-    metrics["training_sample_label_counts"] = artifact["sampled_label_counts"]
+    metrics["model_type"] = artifact["model_type"]
+    metrics["training_split_id"] = artifact["split_id"]
+    metrics["evaluation_split_id"] = split_id
+    metrics["training_seed"] = artifact["seed"]
+    metrics["train_row_cap"] = artifact["train_row_cap"]
+    metrics["full_training_rows"] = artifact["full_training_rows"]
+    metrics["training_rows"] = artifact["training_rows"]
+    metrics["fitting_rows"] = artifact["fitting_rows"]
+    metrics["validation_rows"] = artifact["validation_rows"]
+    metrics["training_label_counts"] = artifact["training_label_counts"]
     metrics["evaluation_rows"] = int(len(y_test))
+    metrics["evaluation_label_counts"] = {
+        str(k): int(v)
+        for k, v in y_test.value_counts().sort_index().items()
+    }
     metrics["feature_columns"] = expected_features
     metrics["epochs"] = artifact["epochs"]
     metrics["batch_size"] = artifact["batch_size"]
+    metrics["evaluation_batch_size"] = config.eval_batch_size
     metrics["learning_rate"] = artifact["learning_rate"]
+    metrics["weight_decay"] = artifact["weight_decay"]
+    metrics["validation_fraction"] = artifact["validation_fraction"]
+    metrics["threshold"] = artifact["threshold"]
     metrics["architecture"] = artifact["architecture"]
-    metrics["training_history"] = artifact["history"]
+    metrics["history"] = artifact["history"]
 
     return metrics
