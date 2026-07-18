@@ -42,5 +42,47 @@
       "metadata_file": "metadata.json"
     },
     "description": "Initial reproducible 80/20 split for baseline model comparison."
+  },
+  "cic_attack_holdout_ddos_v1": {
+    "enabled": true,
+    "dataset_id": "cic_collection",
+    "feature_set_id": "cic_common_v1",
+    "label_column": "label",
+    "split_method": {
+      "type": "attack_family_holdout",
+      "group_column": "class",
+      "holdout_value": "DDoS",
+      "benign_test_size": 0.2,
+      "seed": 42
+    },
+    "drop_columns": [],
+    "use_dataset_drop_columns": true,
+    "output": {
+      "output_dir": "data/prepared",
+      "format": "parquet",
+      "train_file": "train.parquet",
+      "test_file": "test.parquet",
+      "metadata_file": "metadata.json"
+    },
+    "description": "Train on benign traffic and non-DDoS attacks, test on held-out DDoS attacks and unseen benign traffic."
+  },
+  "realworld_external_full_v1": {
+    "enabled": true,
+    "dataset_id": "realworld",
+    "feature_set_id": "cic_common_v1",
+    "label_column": "label",
+    "split_method": {
+      "type": "external_full"
+    },
+    "drop_columns": [],
+    "use_dataset_drop_columns": true,
+    "output": {
+      "output_dir": "data/prepared",
+      "format": "parquet",
+      "train_file": "train.parquet",
+      "test_file": "test.parquet",
+      "metadata_file": "metadata.json"
+    },
+    "description": "The complete real-world dataset used only for external evaluation."
   }
 }
