@@ -2,6 +2,7 @@ import re
 
 import numpy as np
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 
 def clean_column_name(column: str) -> str:
@@ -34,9 +35,9 @@ def clean_dataframe_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def split_xy(
-    df: pd.DataFrame,
-    label_column: str,
-    feature_columns: list[str],
+        df: pd.DataFrame,
+        label_column: str,
+        feature_columns: list[str],
 ) -> tuple[pd.DataFrame, pd.Series]:
     df = clean_dataframe_columns(df)
 
@@ -57,3 +58,31 @@ def split_xy(
     x = x.fillna(0)
 
     return x, y
+
+
+def cap_training_dataframe(
+        df: pd.DataFrame,
+        label_column: str,
+        cap: int | None,
+        seed: int,
+) -> pd.DataFrame:
+    if cap is None or cap >= len(df):
+        return df.reset_index(drop=True)
+
+    if cap <= 0:
+        raise ValueError("--cap must be greater than 0.")
+
+    stratify = None
+
+    if df[label_column].nunique() > 1:
+        stratify = df[label_column]
+
+    capped_df, _ = train_test_split(
+        df,
+        train_size=cap,
+        random_state=seed,
+        shuffle=True,
+        stratify=stratify,
+    )
+
+    return capped_df.reset_index(drop=True)

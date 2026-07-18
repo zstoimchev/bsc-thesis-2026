@@ -6,7 +6,7 @@ import torch
 from torch.utils.data import TensorDataset, random_split, DataLoader
 
 from src.common.data_loader import load_dataset
-from src.common.preprocessing import split_xy
+from src.common.preprocessing import split_xy, cap_training_dataframe
 from src.libraries.torch_common import TorchBinaryTrainingConfig, DEFAULT_TORCH_BINARY_CONFIG, get_device, \
     check_numeric_features
 
@@ -14,39 +14,6 @@ from src.libraries.torch_common import TorchBinaryTrainingConfig, DEFAULT_TORCH_
 def set_seed(seed: int) -> None:
     np.random.seed(seed)
     torch.manual_seed(seed)
-
-
-def sample_training_data(
-        x_train: pd.DataFrame,
-        y_train: pd.Series,
-        seed: int,
-        config: TorchBinaryTrainingConfig,
-) -> tuple[pd.DataFrame, pd.Series]:
-    max_per_class = config.max_train_rows // 2
-    rng = np.random.default_rng(seed)
-
-    sampled_indices = []
-
-    for label in [0, 1]:
-        label_indices = y_train[y_train == label].index.to_numpy()
-        sample_size = min(len(label_indices), max_per_class)
-
-        if sample_size == 0:
-            continue
-
-        selected = rng.choice(label_indices, size=sample_size, replace=False)
-
-        sampled_indices.extend(selected.tolist())
-
-    if not sampled_indices:
-        raise ValueError("No rows sampled for PyTorch MLP training.")
-
-    sampled_indices = rng.permutation(sampled_indices)
-
-    x_sample = x_train.loc[sampled_indices].reset_index(drop=True)
-    y_sample = y_train.loc[sampled_indices].reset_index(drop=True)
-
-    return x_sample, y_sample
 
 
 def standardize_training_data(
@@ -77,6 +44,7 @@ def train_pytorch_binary_classifier(
         build_model_fn,
         architecture: dict,
         config: TorchBinaryTrainingConfig = DEFAULT_TORCH_BINARY_CONFIG,
+        cap: int | None = None,
 ) -> None:
     print(f"{model_id} Training {model_name}")
     print(f"{model_id} split_id={split_id}")
@@ -95,6 +63,15 @@ def train_pytorch_binary_classifier(
         project_root=project_root,
     )
 
+    full_training_rows = len(train_df)
+
+    train_df = cap_training_dataframe(
+        df=train_df,
+        label_column=split_metadata["label_column"],
+        cap=cap,
+        seed=seed,
+    )
+
     x_train, y_train = split_xy(
         df=train_df,
         label_column=split_metadata["label_column"],
@@ -103,18 +80,9 @@ def train_pytorch_binary_classifier(
 
     check_numeric_features(model_name, x_train)
 
-    print(f"{model_id} full train shape={x_train.shape}")
-    print(f"{model_id} full label counts={y_train.value_counts().sort_index().to_dict()}")
-
-    x_train, y_train = sample_training_data(
-        x_train=x_train,
-        y_train=y_train,
-        seed=seed,
-        config=config,
-    )
-
-    print(f"{model_id} sampled train shape={x_train.shape}")
-    print(f"{model_id} sampled label counts={y_train.value_counts().sort_index().to_dict()}")
+    print(f"{model_id} available training rows={full_training_rows}")
+    print(f"{model_id} used train shape={x_train.shape}")
+    print(f"{model_id} used label counts={y_train.value_counts().sort_index().to_dict()}")
 
     feature_columns = list(x_train.columns)
 
@@ -233,10 +201,10 @@ def train_pytorch_binary_classifier(
         "feature_std": feature_std,
         "split_id": split_id,
         "seed": seed,
-        "max_train_rows": config.max_train_rows,
-        "full_training_rows": int(len(train_df)),
-        "sampled_training_rows": int(len(y_train)),
-        "sampled_label_counts": {
+        "train_row_cap": cap,
+        "full_training_rows": int(full_training_rows),
+        "training_rows": int(len(y_train)),
+        "training_label_counts": {
             str(k): int(v)
             for k, v in y_train.value_counts().sort_index().items()
         },

@@ -18,6 +18,7 @@ def train(
         seed: int,
         split_id: str,
         split_metadata: dict,
+        cap: int | None = None,
 ) -> None:
     train_pytorch_binary_classifier(
         output_dir=output_dir,
@@ -39,4 +40,5 @@ def train(
             "activation": "relu",
             "dropout": DROPOUT,
         },
+        cap=cap,
     )

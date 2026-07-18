@@ -6,7 +6,6 @@ import torch
 
 @dataclass(frozen=True)
 class TorchBinaryTrainingConfig:
-    max_train_rows: int = 500_000
     batch_size: int = 4096
     eval_batch_size: int = 4096
     epochs: int = 10

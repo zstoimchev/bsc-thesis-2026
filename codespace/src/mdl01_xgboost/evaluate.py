@@ -79,8 +79,10 @@ def evaluate(
     metrics["model_type"] = "xgboost_classifier"
     metrics["split_id"] = split_id
     metrics["seed"] = seed
-    metrics["training_sample_rows"] = artifact["sampled_training_rows"]
-    metrics["training_sample_label_counts"] = artifact["sampled_label_counts"]
+    metrics["training_rows"] = artifact["training_rows"]
+    metrics["training_label_counts"] = artifact["training_label_counts"]
+    metrics["train_row_cap"] = artifact["train_row_cap"]
+    metrics["full_training_rows"] = artifact["full_training_rows"]
     metrics["evaluation_rows"] = int(len(y_test))
     metrics["feature_columns"] = expected_features
     metrics["params"] = artifact["params"]

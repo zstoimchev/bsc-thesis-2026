@@ -2,14 +2,11 @@ import json
 from pathlib import Path
 
 import joblib
-import numpy as np
 import pandas as pd
 
 from src.common.data_loader import load_dataset
-from src.common.preprocessing import split_xy
+from src.common.preprocessing import split_xy, cap_training_dataframe
 from src.mdl01_xgboost.model import build_xgboost_classifier
-
-MAX_TRAIN_ROWS = 500_000
 
 
 def _check_numeric_features(x: pd.DataFrame) -> None:
@@ -20,46 +17,7 @@ def _check_numeric_features(x: pd.DataFrame) -> None:
     ]
 
     if non_numeric:
-        raise ValueError(
-            "XGBoost expects numeric features only. "
-            f"Non-numeric columns found: {non_numeric}"
-        )
-
-
-def _sample_training_data(
-        x_train: pd.DataFrame,
-        y_train: pd.Series,
-        seed: int,
-) -> tuple[pd.DataFrame, pd.Series]:
-    max_per_class = MAX_TRAIN_ROWS // 2
-    rng = np.random.default_rng(seed)
-
-    sampled_indices = []
-
-    for label in [0, 1]:
-        label_indices = y_train[y_train == label].index.to_numpy()
-        sample_size = min(len(label_indices), max_per_class)
-
-        if sample_size == 0:
-            continue
-
-        selected = rng.choice(
-            label_indices,
-            size=sample_size,
-            replace=False,
-        )
-
-        sampled_indices.extend(selected.tolist())
-
-    if not sampled_indices:
-        raise ValueError("No rows sampled for XGBoost training.")
-
-    sampled_indices = rng.permutation(sampled_indices)
-
-    x_sample = x_train.loc[sampled_indices].reset_index(drop=True)
-    y_sample = y_train.loc[sampled_indices].reset_index(drop=True)
-
-    return x_sample, y_sample
+        raise ValueError("XGBoost expects numeric features only. Non-numeric columns found: {non_numeric}")
 
 
 def train(
@@ -69,6 +27,7 @@ def train(
         seed: int,
         split_id: str,
         split_metadata: dict,
+        cap: int | None = None,
 ) -> None:
     print("[mdl01_xgboost] Training XGBoost")
     print(f"[mdl01_xgboost] split_id={split_id}")
@@ -82,6 +41,14 @@ def train(
         project_root=project_root,
     )
 
+    full_training_rows = len(train_df)
+    train_df = cap_training_dataframe(
+        df=train_df,
+        label_column=split_metadata["label_column"],
+        cap=cap,
+        seed=seed,
+    )
+
     x_train, y_train = split_xy(
         df=train_df,
         label_column=split_metadata["label_column"],
@@ -90,19 +57,11 @@ def train(
 
     _check_numeric_features(x_train)
 
-    print(f"[mdl01_xgboost] full train shape={x_train.shape}")
-    print(f"[mdl01_xgboost] full label counts={y_train.value_counts().sort_index().to_dict()}")
-
-    x_train, y_train = _sample_training_data(
-        x_train=x_train,
-        y_train=y_train,
-        seed=seed,
-    )
-
     x_train = x_train.astype("float32")
 
-    print(f"[mdl01_xgboost] sampled train shape={x_train.shape}")
-    print(f"[mdl01_xgboost] sampled label counts={y_train.value_counts().sort_index().to_dict()}")
+    print(f"[mdl01_xgboost] available training rows={full_training_rows}")
+    print(f"[mdl01_xgboost] used train shape={x_train.shape}")
+    print(f"[mdl01_xgboost] used label counts={y_train.value_counts().sort_index().to_dict()}")
 
     model = build_xgboost_classifier(seed=seed)
     model.fit(x_train, y_train)
@@ -113,12 +72,16 @@ def train(
         "feature_columns": list(x_train.columns),
         "split_id": split_id,
         "seed": seed,
-        "max_train_rows": MAX_TRAIN_ROWS,
-        "full_training_rows": int(len(train_df)),
-        "sampled_training_rows": int(len(y_train)),
-        "sampled_label_counts": {
+        "train_row_cap": cap,
+        "full_training_rows": int(full_training_rows),
+        "training_rows": int(len(y_train)),
+        "training_label_counts": {
             str(k): int(v)
-            for k, v in y_train.value_counts().sort_index().items()
+            for k, v in (
+                y_train.value_counts()
+                .sort_index()
+                .items()
+            )
         },
         "params": model.get_params(),
     }

@@ -238,6 +238,7 @@ def run_one_experiment(
         "model_path": str(model_path),
         "output_dir": str(output_dir),
         "seed": args.seed,
+        "train_row_cap": args.cap,
         "train_file": split_metadata["train_file"],
         "test_file": split_metadata["test_file"],
         "label_column": split_metadata["label_column"],
@@ -256,6 +257,7 @@ def run_one_experiment(
             seed=args.seed,
             split_id=split_id,
             split_metadata=split_metadata,
+            cap=args.cap,
         )
 
     if mode in {"evaluate", "train-evaluate"}:
@@ -295,6 +297,9 @@ def run_one_experiment(
 
 
 def run_experiments(args, mode: str) -> None:
+    if args.cap is not None and args.cap <= 0:
+        raise ValueError("--cap must be greater than 0.")
+
     model_registry = load_model_registry()
 
     split_id = args.split_id
@@ -375,6 +380,16 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
         "--include-disabled",
         action="store_true",
         help="Allow running models/datasets marked as enabled=false.",
+    )
+
+    parser.add_argument(
+        "--cap",
+        type=int,
+        default=None,
+        help=(
+            "Maximum number of training rows. "
+            "Omit this argument to use the complete training split."
+        ),
     )
 
 
