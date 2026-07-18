@@ -85,16 +85,14 @@ def run_prepare_split(args) -> None:
 
     df = clean_dataframe_columns(df)
 
-    label_column = clean_column_name(
-        split_cfg.get("label_column") or dataset_cfg["label_column"]
-    )
+    label_column = clean_column_name(split_cfg.get("label_column") or dataset_cfg["label_column"])
 
     if label_column not in df.columns:
         raise ValueError(f"Label column not found after cleaning: {label_column}")
 
     df[label_column] = normalize_binary_labels(df[label_column])
 
-    final_df, final_features, dropped_columns = select_final_columns(
+    final_df, final_features, dropped_columns, split_columns = select_final_columns(
         df=df,
         dataset_cfg=dataset_cfg,
         split_cfg=split_cfg,
@@ -107,6 +105,11 @@ def run_prepare_split(args) -> None:
         label_column=label_column,
         split_cfg=split_cfg,
     )
+
+    # Split-only columns are needed to create the split, but must not be used for training and evaluation.
+    if split_columns:
+        train_df = train_df.drop(columns=split_columns, errors="ignore")
+        test_df = test_df.drop(columns=split_columns, errors="ignore")
 
     train_df.to_parquet(train_path, index=False)
     test_df.to_parquet(test_path, index=False)
@@ -125,6 +128,7 @@ def run_prepare_split(args) -> None:
         "label_column": label_column,
         "split_method": split_cfg["split_method"],
         "feature_columns": final_features,
+        "split_columns": split_columns,
         "dropped_columns": dropped_columns,
         "source_rows": source_rows,
         "prepared_rows": int(len(final_df)),
@@ -158,7 +162,7 @@ def select_final_columns(
         split_cfg: dict,
         feature_cfg: dict,
         label_column: str,
-) -> tuple[pd.DataFrame, list[str], list[str]]:
+) -> tuple[pd.DataFrame, list[str], list[str], list[str]]:
     df = df.copy()
 
     dataset_drop_columns = [
@@ -201,15 +205,37 @@ def select_final_columns(
     else:
         raise ValueError(f"Unsupported feature definition: {feature_definition}")
 
-    final_columns = selected_features + [label_column]
-    final_df = df[final_columns].copy()
+    # Some split methods require an additional column that is not a model
+    # feature. For the DDoS holdout this is the "class" column.
+    split_columns = []
 
+    group_column = split_cfg["split_method"].get("group_column")
+
+    if group_column:
+        group_column = clean_column_name(group_column)
+
+        if group_column not in df.columns:
+            raise ValueError(f"Split group column not found: {group_column}")
+
+        split_columns.append(group_column)
+
+    final_columns = list(
+        dict.fromkeys(
+            selected_features
+            + split_columns
+            + [label_column]
+        )
+    )
+
+    final_df = df[final_columns].copy()
     final_df = final_df.replace([np.inf, -np.inf], np.nan)
 
     for column in selected_features:
         final_df[column] = pd.to_numeric(final_df[column], errors="coerce")
 
-    final_df = final_df.dropna()
-    final_df[label_column] = final_df[label_column].astype(int)
+    # Only model features and the label must be complete.
+    # Missing unrelated metadata must not remove valid records.
+    final_df = final_df.dropna(subset=selected_features + [label_column])
+    final_df[label_column] = (final_df[label_column].astype(int))
 
-    return final_df.reset_index(drop=True), selected_features, dropped_columns
+    return final_df.reset_index(drop=True), selected_features, dropped_columns, split_columns
