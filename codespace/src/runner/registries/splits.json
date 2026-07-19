@@ -84,5 +84,28 @@
       "metadata_file": "metadata.json"
     },
     "description": "The complete real-world dataset used only for external evaluation."
+  },
+  "cic_ddos_subtype_holdout_loic_http_v1": {
+    "enabled": true,
+    "dataset_id": "cic_collection",
+    "feature_set_id": "cic_common_v1",
+    "label_column": "label",
+    "split_method": {
+      "type": "attack_family_holdout",
+      "group_column": "original_label",
+      "holdout_value": "DDoS-LOIC-HTTP",
+      "benign_test_size": 0.2,
+      "seed": 42
+    },
+    "drop_columns": [],
+    "use_dataset_drop_columns": true,
+    "output": {
+      "output_dir": "data/prepared",
+      "format": "parquet",
+      "train_file": "train.parquet",
+      "test_file": "test.parquet",
+      "metadata_file": "metadata.json"
+    },
+    "description": "Train on benign traffic and all attack types except DDoS-LOIC-HTTP, evaluate on held-out DDoS-LOIC-HTTP and unseen benign traffic."
   }
 }

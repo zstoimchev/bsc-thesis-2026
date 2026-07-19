@@ -90,6 +90,10 @@ def run_prepare_split(args) -> None:
     if label_column not in df.columns:
         raise ValueError(f"Label column not found after cleaning: {label_column}")
 
+    group_column = split_cfg["split_method"].get("group_column")
+    if group_column and clean_column_name(group_column) == "original_label":
+        df["original_label"] = df[label_column]
+
     df[label_column] = normalize_binary_labels(df[label_column])
 
     final_df, final_features, dropped_columns, split_columns = select_final_columns(
