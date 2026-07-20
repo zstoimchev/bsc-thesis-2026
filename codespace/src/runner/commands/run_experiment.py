@@ -4,11 +4,21 @@ import json
 from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
+from time import perf_counter
+from typing import Any, cast
 
 from src.common.metrics import save_json
 from src.common.shared import load_split_context
 from src.runner.constants import PROJECT_ROOT
 from src.common.registry import load_model_registry
+
+
+def format_duration(seconds: float) -> str:
+    total_seconds = int(round(seconds))
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 
 def get_model_modules(model_cfg: dict):
@@ -202,6 +212,11 @@ def run_one_experiment(
         model_id: str,
         model_cfg: dict,
 ) -> None:
+    total_start = perf_counter()
+    training_seconds: float | None = None
+    evaluation_seconds: float | None = None
+    metrics: dict[str, Any] | None = None
+
     print("\n[orchestrate] Starting experiment")
     print(f"[orchestrate] Mode: {mode}")
     print(f"[orchestrate] Split: {split_id}")
@@ -238,7 +253,7 @@ def run_one_experiment(
         "model_path": str(model_path),
         "output_dir": str(output_dir),
         "seed": args.seed,
-        "train_row_cap": args.cap,
+        "train_row_cap": (args.cap if mode in {"train", "train-evaluate"} else None),
         "train_file": split_metadata["train_file"],
         "test_file": split_metadata["test_file"],
         "label_column": split_metadata["label_column"],
@@ -250,6 +265,8 @@ def run_one_experiment(
     train_module, evaluate_module = get_model_modules(model_cfg)
 
     if mode in {"train", "train-evaluate"}:
+        training_start = perf_counter()
+
         train_module.train(
             output_dir=output_dir,
             model_path=model_path,
@@ -260,39 +277,80 @@ def run_one_experiment(
             cap=args.cap,
         )
 
+        elapsed_training = perf_counter() - training_start
+        training_seconds = elapsed_training
+
+        print(f"[orchestrate] Training time: {format_duration(elapsed_training)}")
+
     if mode in {"evaluate", "train-evaluate"}:
         if not model_path.exists():
             raise FileNotFoundError(
                 f"Cannot evaluate because model file does not exist: {model_path}"
             )
 
-        metrics = evaluate_module.evaluate(
-            model_path=model_path,
-            project_root=PROJECT_ROOT,
-            seed=args.seed,
-            split_id=split_id,
-            split_cfg=split_cfg,
-            split_metadata=split_metadata,
+        evaluation_start = perf_counter()
+
+        current_metrics = cast(
+            dict[str, Any],
+            evaluate_module.evaluate(
+                model_path=model_path,
+                project_root=PROJECT_ROOT,
+                seed=args.seed,
+                split_id=split_id,
+                split_cfg=split_cfg,
+                split_metadata=split_metadata,
+            ),
         )
 
-        save_json(metrics, metrics_path)
+        elapsed_evaluation = perf_counter() - evaluation_start
+        evaluation_seconds = elapsed_evaluation
+        metrics = current_metrics
+
+        print(f"[orchestrate] Evaluation time: {format_duration(elapsed_evaluation)}")
         print("\n[orchestrate] Evaluation summary")
         print("-" * 40)
-        print(f"Accuracy:          {metrics.get('accuracy', 0):.4f}")
-        print(f"Balanced accuracy: {metrics.get('balanced_accuracy', 0):.4f}")
-        print(f"Precision:         {metrics.get('precision', 0):.4f}")
-        print(f"Recall:            {metrics.get('recall', 0):.4f}")
-        print(f"F1:                {metrics.get('f1', 0):.4f}")
-        print(f"F1 macro:          {metrics.get('f1_macro', 0):.4f}")
-        cm = metrics.get("confusion_matrix")
-        if cm:
+        print(f"Accuracy:          {current_metrics.get('accuracy', 0):.4f}")
+        print(f"Balanced accuracy: {current_metrics.get('balanced_accuracy', 0):.4f}")
+        print(f"Precision:         {current_metrics.get('precision', 0):.4f}")
+        print(f"Recall:            {current_metrics.get('recall', 0):.4f}")
+        print(f"F1:                {current_metrics.get('f1', 0):.4f}")
+        print(f"F1 macro:          {current_metrics.get('f1_macro', 0):.4f}")
+        cm = current_metrics.get("confusion_matrix")
+
+        if (
+                isinstance(cm, list)
+                and len(cm) == 2
+                and isinstance(cm[0], list)
+                and isinstance(cm[1], list)
+                and len(cm[0]) == 2
+                and len(cm[1]) == 2
+        ):
+            tn, fp = cm[0]
+            fn, tp = cm[1]
             print("\nConfusion matrix:")
             print("               predicted_0  predicted_1")
-            print(f"actual_0       {cm[0][0]:>11}  {cm[0][1]:>11}")
-            print(f"actual_1       {cm[1][0]:>11}  {cm[1][1]:>11}")
+            print(f"actual_0       {tn:>11}  {fp:>11}")
+            print(f"actual_1       {fn:>11}  {tp:>11}")
         print("-" * 40)
+
+    total_seconds = perf_counter() - total_start
+
+    run_info["completed_at"] = datetime.now().isoformat(timespec="seconds")
+    run_info["training_seconds"] = training_seconds
+    run_info["evaluation_seconds"] = evaluation_seconds
+    run_info["total_seconds"] = total_seconds
+
+    save_json(run_info, run_info_path)
+
+    if metrics is not None:
+        metrics["training_seconds"] = training_seconds
+        metrics["evaluation_seconds"] = evaluation_seconds
+        metrics["total_seconds"] = total_seconds
+
+        save_json(metrics, metrics_path)
         print(f"[orchestrate] Saved metrics to: {metrics_path}")
 
+    print(f"[orchestrate] Total experiment time: {format_duration(total_seconds)}")
     print("[orchestrate] Done")
 
 
