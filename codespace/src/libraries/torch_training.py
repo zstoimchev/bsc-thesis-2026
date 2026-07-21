@@ -65,6 +65,7 @@ def train_pytorch_binary_classifier(
         config: TorchBinaryTrainingConfig = DEFAULT_TORCH_BINARY_CONFIG,
         cap: int | None = None,
         tune_threshold: bool = False,
+        use_class_weight: bool = False,
 ) -> None:
     print(f"{model_id} Training {model_name}")
     print(f"{model_id} split_id={split_id}")
@@ -141,7 +142,26 @@ def train_pytorch_binary_classifier(
 
     model = build_model_fn(len(feature_columns)).to(device)
 
-    criterion = torch.nn.BCEWithLogitsLoss()
+    positive_weight = 1.0
+
+    if use_class_weight:
+        label_counts = y_train.value_counts()
+        negative_count = int(label_counts.get(0, 0))
+        positive_count = int(label_counts.get(1, 0))
+
+        if negative_count == 0 or positive_count == 0:
+            raise ValueError("Class weighting requires both benign and malicious training records.")
+
+        positive_weight = negative_count / positive_count
+        print(f"{model_id} positive class weight={positive_weight:.4f}")
+
+    criterion = torch.nn.BCEWithLogitsLoss(
+        pos_weight=torch.tensor(
+            positive_weight,
+            dtype=torch.float32,
+            device=device,
+        )
+    )
 
     optimizer = torch.optim.AdamW(
         model.parameters(),
@@ -293,6 +313,8 @@ def train_pytorch_binary_classifier(
         "batch_size": config.batch_size,
         "learning_rate": config.learning_rate,
         "weight_decay": config.weight_decay,
+        "use_class_weight": bool(use_class_weight),
+        "positive_class_weight": float(positive_weight),
         "validation_fraction": config.validation_fraction,
         "default_threshold": float(config.threshold),
         "default_threshold_validation_metrics": default_threshold_metrics,
