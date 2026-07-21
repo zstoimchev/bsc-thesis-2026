@@ -128,31 +128,24 @@ def train_pytorch_binary_classifier(
         generator=torch.Generator().manual_seed(seed),
     )
 
-    train_loader = DataLoader(
-        train_dataset,
-        batch_size=config.batch_size,
-        shuffle=True,
-    )
-
-    val_loader = DataLoader(
-        val_dataset,
-        batch_size=config.batch_size,
-        shuffle=False,
-    )
-
+    train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=False)
     model = build_model_fn(len(feature_columns)).to(device)
 
     positive_weight = 1.0
 
     if use_class_weight:
-        label_counts = y_train.value_counts()
-        negative_count = int(label_counts.get(0, 0))
-        positive_count = int(label_counts.get(1, 0))
+        fitting_indices = np.asarray(train_dataset.indices, dtype=np.int64)
+        fitting_labels = y_np[fitting_indices].astype(np.int64)
+        negative_count = int(np.count_nonzero(fitting_labels == 0))
+        positive_count = int(np.count_nonzero(fitting_labels == 1))
 
         if negative_count == 0 or positive_count == 0:
-            raise ValueError("Class weighting requires both benign and malicious training records.")
+            raise ValueError("Class weighting requires both benign and malicious records in the fitting partition.")
 
         positive_weight = negative_count / positive_count
+
+        print(f"{model_id} fitting label counts={{0: {negative_count}, 1: {positive_count}}}")
         print(f"{model_id} positive class weight={positive_weight:.4f}")
 
     criterion = torch.nn.BCEWithLogitsLoss(
