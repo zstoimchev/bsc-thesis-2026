@@ -122,9 +122,7 @@ def evaluate_pytorch_binary_classifier(
     model.load_state_dict(artifact["model_state_dict"])
     model.eval()
 
-    threshold = artifact.get("threshold", config.threshold)
-
-    predictions = []
+    probabilities = []
 
     with torch.no_grad():
         for (batch_x,) in loader:
@@ -132,13 +130,33 @@ def evaluate_pytorch_binary_classifier(
 
             logits = model(batch_x)
             probs = torch.sigmoid(logits)
-            preds = (probs >= threshold).long()
 
-            predictions.append(preds.cpu().numpy())
+            probabilities.append(probs.cpu().numpy())
 
-    y_pred = np.concatenate(predictions)
+    y_prob = np.concatenate(probabilities)
 
-    metrics = compute_metrics(y_np, y_pred)
+    selected_threshold = float(artifact.get("threshold", config.threshold))
+    default_threshold = float(artifact.get("default_threshold", config.threshold))
+    selected_predictions = (y_prob >= selected_threshold).astype(np.int64)
+    default_predictions = (y_prob >= default_threshold).astype(np.int64)
+    metrics = compute_metrics(y_np, selected_predictions)
+    default_threshold_test_metrics = compute_metrics(y_np, default_predictions)
+
+    print(
+        f"{model_id} default test threshold="
+        f"{default_threshold:.2f} "
+        f"f1={default_threshold_test_metrics['f1']:.4f} "
+        f"balanced_accuracy="
+        f"{default_threshold_test_metrics['balanced_accuracy']:.4f}"
+    )
+
+    print(
+        f"{model_id} selected test threshold="
+        f"{selected_threshold:.2f} "
+        f"f1={metrics['f1']:.4f} "
+        f"balanced_accuracy="
+        f"{metrics['balanced_accuracy']:.4f}"
+    )
 
     metrics["model_type"] = artifact["model_type"]
     metrics["training_split_id"] = artifact["split_id"]
@@ -162,7 +180,13 @@ def evaluate_pytorch_binary_classifier(
     metrics["learning_rate"] = artifact["learning_rate"]
     metrics["weight_decay"] = artifact["weight_decay"]
     metrics["validation_fraction"] = artifact["validation_fraction"]
-    metrics["threshold"] = artifact["threshold"]
+    metrics["default_threshold"] = default_threshold
+    metrics["default_threshold_validation_metrics"] = artifact.get("default_threshold_validation_metrics")
+    metrics["default_threshold_test_metrics"] = default_threshold_test_metrics
+    metrics["threshold"] = selected_threshold
+    metrics["threshold_tuned"] = artifact.get("threshold_tuned", False)
+    metrics["threshold_selection_metric"] = artifact.get("threshold_selection_metric")
+    metrics["threshold_validation_metrics"] = artifact.get("threshold_validation_metrics")
     metrics["architecture"] = artifact["architecture"]
     metrics["history"] = artifact["history"]
 
