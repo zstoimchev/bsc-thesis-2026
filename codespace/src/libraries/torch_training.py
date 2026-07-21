@@ -6,6 +6,7 @@ import torch
 from torch.utils.data import TensorDataset, random_split, DataLoader
 
 from src.common.data_loader import load_dataset
+from src.common.metrics import compute_metrics
 from src.common.preprocessing import split_xy, cap_training_dataframe
 from src.libraries.torch_common import TorchBinaryTrainingConfig, DEFAULT_TORCH_BINARY_CONFIG, get_device, \
     check_numeric_features
@@ -16,9 +17,7 @@ def set_seed(seed: int) -> None:
     torch.manual_seed(seed)
 
 
-def standardize_training_data(
-        x_train: pd.DataFrame
-) -> tuple[np.ndarray, list[float], list[float]]:
+def standardize_training_data(x_train: pd.DataFrame) -> tuple[np.ndarray, list[float], list[float]]:
     x_np = x_train.to_numpy(dtype=np.float32)
 
     mean = x_np.mean(axis=0)
@@ -29,6 +28,26 @@ def standardize_training_data(
     x_np = (x_np - mean) / std
 
     return x_np.astype(np.float32), mean.tolist(), std.tolist()
+
+
+def select_validation_threshold(y_true: np.ndarray, probabilities: np.ndarray) -> tuple[float, dict]:
+    best_threshold = 0.5
+    best_metrics = compute_metrics(y_true, (probabilities >= best_threshold).astype(np.int64))
+
+    for value in range(5, 96):
+        threshold = value / 100
+
+        predictions = (probabilities >= threshold).astype(np.int64)
+        metrics = compute_metrics(y_true, predictions)
+
+        current_score = (metrics["f1"], metrics["balanced_accuracy"])
+        best_score = (best_metrics["f1"], best_metrics["balanced_accuracy"])
+
+        if current_score > best_score:
+            best_threshold = threshold
+            best_metrics = metrics
+
+    return best_threshold, best_metrics
 
 
 def train_pytorch_binary_classifier(
@@ -45,6 +64,7 @@ def train_pytorch_binary_classifier(
         architecture: dict,
         config: TorchBinaryTrainingConfig = DEFAULT_TORCH_BINARY_CONFIG,
         cap: int | None = None,
+        tune_threshold: bool = False,
 ) -> None:
     print(f"{model_id} Training {model_name}")
     print(f"{model_id} split_id={split_id}")
@@ -98,7 +118,7 @@ def train_pytorch_binary_classifier(
         raise ValueError("PyTorch training requires at least 2 rows.")
 
     val_size = max(1, int(len(dataset) * config.validation_fraction))
-    val_size = min(val_size, len(dataset) - 1,)
+    val_size = min(val_size, len(dataset) - 1, )
     train_size = len(dataset) - val_size
 
     train_dataset, val_dataset = random_split(
@@ -196,6 +216,61 @@ def train_pytorch_binary_classifier(
             f"val_accuracy={val_accuracy:.4f}"
         )
 
+    selected_threshold = config.threshold
+    default_threshold_metrics: dict | None = None
+    threshold_validation_metrics: dict | None = None
+
+    if tune_threshold:
+        validation_probabilities = []
+        validation_labels = []
+
+        model.eval()
+
+        with torch.no_grad():
+            for batch_x, batch_y in val_loader:
+                batch_x = batch_x.to(device)
+
+                logits = model(batch_x)
+                probabilities = torch.sigmoid(logits)
+
+                validation_probabilities.append(probabilities.cpu().numpy())
+                validation_labels.append(batch_y.cpu().numpy().astype(np.int64))
+
+        validation_probabilities_np = np.concatenate(validation_probabilities)
+        validation_labels_np = np.concatenate(validation_labels)
+
+        default_threshold_metrics = compute_metrics(
+            validation_labels_np,
+            (
+                    validation_probabilities_np >= config.threshold
+            ).astype(np.int64),
+        )
+
+        selected_threshold, threshold_validation_metrics = (
+            select_validation_threshold(
+                y_true=validation_labels_np,
+                probabilities=validation_probabilities_np,
+            )
+        )
+
+        print(
+            f"{model_id} default validation threshold="
+            f"{config.threshold:.2f} "
+            f"validation_f1="
+            f"{default_threshold_metrics['f1']:.4f} "
+            f"validation_balanced_accuracy="
+            f"{default_threshold_metrics['balanced_accuracy']:.4f}"
+        )
+
+        print(
+            f"{model_id} selected validation threshold="
+            f"{selected_threshold:.2f} "
+            f"validation_f1="
+            f"{threshold_validation_metrics['f1']:.4f} "
+            f"validation_balanced_accuracy="
+            f"{threshold_validation_metrics['balanced_accuracy']:.4f}"
+        )
+
     artifact = {
         "model_state_dict": model.state_dict(),
         "model_type": model_type,
@@ -219,7 +294,13 @@ def train_pytorch_binary_classifier(
         "learning_rate": config.learning_rate,
         "weight_decay": config.weight_decay,
         "validation_fraction": config.validation_fraction,
-        "threshold": config.threshold,
+        "default_threshold": float(config.threshold),
+        "default_threshold_validation_metrics": default_threshold_metrics,
+        "threshold": float(selected_threshold),
+        "threshold_tuned": bool(tune_threshold),
+        "threshold_selection_metric": "f1" if tune_threshold else None,
+        "threshold_validation_metrics": threshold_validation_metrics,
+
         "architecture": architecture,
         "history": history,
     }

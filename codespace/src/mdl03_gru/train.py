@@ -50,4 +50,5 @@ def train(
             "classifier": "layer_norm_dropout_linear",
         },
         cap=cap,
+        tune_threshold=True
     )
