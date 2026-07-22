@@ -158,28 +158,39 @@ def evaluate_pytorch_binary_classifier(
         f"{metrics['balanced_accuracy']:.4f}"
     )
 
-    metrics["model_type"] = artifact["model_type"]
-    metrics["training_split_id"] = artifact["split_id"]
+    metrics["model_type"] = artifact.get("model_type", model_type)
+    metrics["training_split_id"] = artifact.get("split_id")
     metrics["evaluation_split_id"] = split_id
-    metrics["training_seed"] = artifact["seed"]
-    metrics["train_row_cap"] = artifact["train_row_cap"]
-    metrics["full_training_rows"] = artifact["full_training_rows"]
-    metrics["training_rows"] = artifact["training_rows"]
-    metrics["fitting_rows"] = artifact["fitting_rows"]
-    metrics["validation_rows"] = artifact["validation_rows"]
-    metrics["training_label_counts"] = artifact["training_label_counts"]
+    metrics["training_seed"] = artifact.get("seed")
+    metrics["train_row_cap"] = artifact.get("train_row_cap", artifact.get("max_train_rows"))
+    metrics["full_training_rows"] = artifact.get("full_training_rows")
+    metrics["training_rows"] = artifact.get(
+        "training_rows",
+        artifact.get(
+            "sampled_training_rows",
+            artifact.get("sampled_rows"),
+        ),
+    )
+    metrics["fitting_rows"] = artifact.get("fitting_rows")
+    metrics["validation_rows"] = artifact.get("validation_rows")
+    metrics["training_label_counts"] = (
+            artifact.get("training_label_counts")
+            or artifact.get("sampled_label_counts")
+            or artifact.get("label_counts")
+            or {}
+    )
     metrics["evaluation_rows"] = int(len(y_test))
     metrics["evaluation_label_counts"] = {
         str(k): int(v)
         for k, v in y_test.value_counts().sort_index().items()
     }
     metrics["feature_columns"] = expected_features
-    metrics["epochs"] = artifact["epochs"]
-    metrics["batch_size"] = artifact["batch_size"]
+    metrics["epochs"] = artifact.get("epochs")
+    metrics["batch_size"] = artifact.get("batch_size")
     metrics["evaluation_batch_size"] = config.eval_batch_size
-    metrics["learning_rate"] = artifact["learning_rate"]
-    metrics["weight_decay"] = artifact["weight_decay"]
-    metrics["validation_fraction"] = artifact["validation_fraction"]
+    metrics["learning_rate"] = artifact.get("learning_rate")
+    metrics["weight_decay"] = artifact.get("weight_decay")
+    metrics["validation_fraction"] = artifact.get("validation_fraction")
     metrics["default_threshold"] = default_threshold
     metrics["default_threshold_validation_metrics"] = artifact.get("default_threshold_validation_metrics")
     metrics["default_threshold_test_metrics"] = default_threshold_test_metrics
@@ -187,7 +198,9 @@ def evaluate_pytorch_binary_classifier(
     metrics["threshold_tuned"] = artifact.get("threshold_tuned", False)
     metrics["threshold_selection_metric"] = artifact.get("threshold_selection_metric")
     metrics["threshold_validation_metrics"] = artifact.get("threshold_validation_metrics")
-    metrics["architecture"] = artifact["architecture"]
-    metrics["history"] = artifact["history"]
+    metrics["use_class_weight"] = artifact.get("use_class_weight", False)
+    metrics["positive_class_weight"] = artifact.get("positive_class_weight", 1.0)
+    metrics["architecture"] = artifact.get("architecture", {})
+    metrics["history"] = artifact.get("history", [])
 
     return metrics
