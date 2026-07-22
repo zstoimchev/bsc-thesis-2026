@@ -130,5 +130,28 @@
       "metadata_file": "metadata.json"
     },
     "description": "DDoS-LOIC-HTTP subtype holdout using the full numeric CIC feature set."
+  },
+  "cic_ddos_subtype_holdout_hoic_v1": {
+    "enabled": true,
+    "dataset_id": "cic_collection",
+    "feature_set_id": "cic_common_v1",
+    "label_column": "label",
+    "split_method": {
+      "type": "attack_family_holdout",
+      "group_column": "original_label",
+      "holdout_value": "DDoS-HOIC",
+      "benign_test_size": 0.2,
+      "seed": 42
+    },
+    "drop_columns": [],
+    "use_dataset_drop_columns": true,
+    "output": {
+      "output_dir": "data/prepared",
+      "format": "parquet",
+      "train_file": "train.parquet",
+      "test_file": "test.parquet",
+      "metadata_file": "metadata.json"
+    },
+    "description": "Train on benign traffic and all attack types except DDoS-HOIC, evaluate on held-out DDoS-HOIC and unseen benign traffic."
   }
 }
