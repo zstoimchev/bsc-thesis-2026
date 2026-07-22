@@ -51,5 +51,5 @@ def train(
         },
         cap=cap,
         tune_threshold=False,
-        use_class_weight=True,
+        use_class_weight=False,
     )
