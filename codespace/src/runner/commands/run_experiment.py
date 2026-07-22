@@ -138,6 +138,7 @@ def prepare_output_dir(
 def find_latest_trained_model_path(
         model_id: str,
         seed: int,
+        trained_split_id: str | None = None,
 ) -> Path:
     runs_root = PROJECT_ROOT / "results" / "runs"
 
@@ -153,10 +154,7 @@ def find_latest_trained_model_path(
         model_path = run_dir / "model.joblib"
         run_info_path = run_dir / "run_info.json"
 
-        if not model_path.exists():
-            continue
-
-        if not run_info_path.exists():
+        if not model_path.exists() or not run_info_path.exists():
             continue
 
         with run_info_path.open("r", encoding="utf-8") as f:
@@ -168,6 +166,9 @@ def find_latest_trained_model_path(
         if run_info.get("seed") != seed:
             continue
 
+        if trained_split_id is not None and run_info.get("split_id") != trained_split_id:
+            continue
+
         candidates.append(
             {
                 "model_path": model_path,
@@ -177,13 +178,15 @@ def find_latest_trained_model_path(
         )
 
     if not candidates:
-        raise FileNotFoundError(
-            f"No trained model found for model={model_id}, seed={seed}. "
-            "Run train or train-evaluate first."
-        )
+        criteria = f"model={model_id}, seed={seed}"
+
+        if trained_split_id is not None:
+            criteria += f", trained_split={trained_split_id}"
+
+        raise FileNotFoundError(f"No trained model found for {criteria}. Run train or train-evaluate first.")
 
     latest = max(candidates, key=lambda item: item["modified_time"])
-
+    print(f"[orchestrate] Selected trained artifact: {latest['model_path']}")
     return latest["model_path"]
 
 
@@ -192,12 +195,13 @@ def resolve_model_path_for_mode(
         output_dir: Path,
         model_id: str,
         seed: int,
+        trained_split_id: str | None,
 ) -> Path:
     if mode in {"train", "train-evaluate"}:
         return output_dir / "model.joblib"
 
     if mode == "evaluate":
-        return find_latest_trained_model_path(model_id=model_id, seed=seed)
+        return find_latest_trained_model_path(model_id=model_id, seed=seed, trained_split_id=trained_split_id)
 
     raise ValueError(f"Unknown experiment mode: {mode}")
 
@@ -236,6 +240,7 @@ def run_one_experiment(
         output_dir=output_dir,
         model_id=model_id,
         seed=args.seed,
+        trained_split_id=args.trained_split_id,
     )
     metrics_path = output_dir / "metrics.json"
     run_info_path = output_dir / "run_info.json"
@@ -245,6 +250,7 @@ def run_one_experiment(
         "mode": mode,
         "pipeline": "prepared_split",
         "split_id": split_id,
+        "source_training_split_id": (args.trained_split_id if mode == "evaluate" else split_id),
         "dataset_id": split_cfg["dataset_id"],
         "dataset_name": dataset_cfg.get("name", ""),
         "feature_set_id": split_cfg["feature_set_id"],
@@ -364,8 +370,17 @@ def run_experiments(args, mode: str) -> None:
     split_cfg, dataset_cfg, _ = load_split_context(split_id=split_id, require_feature=False)
 
     split_type = split_cfg["split_method"]["type"]
-    if split_type == "external_full" and mode != "evaluate":
-        raise ValueError("An external_full split can only be used with the evaluate command.")
+
+    if mode != "evaluate" and args.trained_split_id is not None:
+        raise ValueError("--trained-split-id can only be used with evaluate.")
+
+    if split_type == "external_full":
+        if mode != "evaluate":
+            raise ValueError("An external_full split can only be used with the evaluate command.")
+
+        if args.trained_split_id is None:
+            raise ValueError(
+                "External evaluation requires --trained-split-id so the source model artifact is selected explicitly.")
 
     split_metadata = load_prepared_metadata(split_id, split_cfg)
 
@@ -444,10 +459,13 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
         "--cap",
         type=int,
         default=None,
-        help=(
-            "Maximum number of training rows. "
-            "Omit this argument to use the complete training split."
-        ),
+        help="Maximum number of training rows. Omit this argument to use the complete training split."
+    )
+
+    parser.add_argument(
+        "--trained-split-id",
+        default=None,
+        help="Training split of the saved model artifact used during evaluation.",
     )
 
 
