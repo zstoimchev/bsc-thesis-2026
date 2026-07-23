@@ -1,0 +1,82 @@
+{
+  "experiments": {
+    "random_common": {
+      "name": "Random 80/20 split",
+      "evaluation_split_id": "cic_random_80_20_v1",
+      "feature_set_id": "cic_common_v1",
+      "order": 1,
+      "runs": {
+        "mdl00_baseline": "20260716-213554_cic_random_80_20_v1_mdl00_baseline_seed42",
+        "mdl01_xgboost": "20260718-194234_cic_random_80_20_v1_mdl01_xgboost_seed42",
+        "mdl02_mlp": "20260716-213603_cic_random_80_20_v1_mdl02_mlp_seed42",
+        "mdl03_gru": "20260716-213657_cic_random_80_20_v1_mdl03_gru_seed42",
+        "mdl04_transformer": "20260716-214000_cic_random_80_20_v1_mdl04_transformer_seed42"
+      }
+    },
+    "ddos_family_holdout": {
+      "name": "Complete DDoS-family holdout",
+      "evaluation_split_id": "cic_attack_holdout_ddos_v1",
+      "feature_set_id": "cic_common_v1",
+      "order": 2,
+      "runs": {
+        "mdl00_baseline": "20260718-194542_cic_attack_holdout_ddos_v1_mdl00_baseline_seed42",
+        "mdl01_xgboost": "20260718-194544_cic_attack_holdout_ddos_v1_mdl01_xgboost_seed42",
+        "mdl02_mlp": "20260718-194638_cic_attack_holdout_ddos_v1_mdl02_mlp_seed42",
+        "mdl03_gru": "20260718-200104_cic_attack_holdout_ddos_v1_mdl03_gru_seed42",
+        "mdl04_transformer": "20260718-202611_cic_attack_holdout_ddos_v1_mdl04_transformer_seed42"
+      }
+    },
+    "loic_http_common": {
+      "name": "DDoS-LOIC-HTTP subtype holdout",
+      "evaluation_split_id": "cic_ddos_subtype_holdout_loic_http_v1",
+      "feature_set_id": "cic_common_v1",
+      "order": 3,
+      "runs": {
+        "mdl00_baseline": "20260719-143447_cic_ddos_subtype_holdout_loic_http_v1_mdl00_baseline_seed42",
+        "mdl01_xgboost": "20260719-143453_cic_ddos_subtype_holdout_loic_http_v1_mdl01_xgboost_seed42",
+        "mdl02_mlp": "20260719-143614_cic_ddos_subtype_holdout_loic_http_v1_mdl02_mlp_seed42",
+        "mdl03_gru": "20260719-145243_cic_ddos_subtype_holdout_loic_http_v1_mdl03_gru_seed42",
+        "mdl04_transformer": "20260719-152134_cic_ddos_subtype_holdout_loic_http_v1_mdl04_transformer_seed42"
+      }
+    },
+    "hoic_common": {
+      "name": "DDoS-HOIC subtype holdout",
+      "evaluation_split_id": "cic_ddos_subtype_holdout_hoic_v1",
+      "feature_set_id": "cic_common_v1",
+      "order": 4,
+      "runs": {
+        "mdl00_baseline": "20260722-191952_cic_ddos_subtype_holdout_hoic_v1_mdl00_baseline_seed42",
+        "mdl01_xgboost": "20260722-191956_cic_ddos_subtype_holdout_hoic_v1_mdl01_xgboost_seed42",
+        "mdl02_mlp": "20260722-192205_cic_ddos_subtype_holdout_hoic_v1_mdl02_mlp_seed42",
+        "mdl03_gru": "20260722-193809_cic_ddos_subtype_holdout_hoic_v1_mdl03_gru_seed42",
+        "mdl04_transformer": "20260722-201225_cic_ddos_subtype_holdout_hoic_v1_mdl04_transformer_seed42"
+      }
+    },
+    "external": {
+      "name": "External real-world evaluation",
+      "evaluation_split_id": "realworld_external_full_v1",
+      "feature_set_id": "cic_common_v1",
+      "order": 5,
+      "runs": {
+        "mdl00_baseline": "20260722-231036_realworld_external_full_v1_mdl00_baseline_seed42",
+        "mdl01_xgboost": "20260722-231037_realworld_external_full_v1_mdl01_xgboost_seed42",
+        "mdl02_mlp": "20260722-231546_realworld_external_full_v1_mdl02_mlp_seed42",
+        "mdl03_gru": "20260722-231604_realworld_external_full_v1_mdl03_gru_seed42",
+        "mdl04_transformer": "20260722-231645_realworld_external_full_v1_mdl04_transformer_seed42"
+      }
+    },
+    "loic_http_full": {
+      "name": "DDoS-LOIC-HTTP holdout with full feature set",
+      "evaluation_split_id": "cic_ddos_subtype_holdout_loic_http_full_v1",
+      "feature_set_id": "cic_full_v1",
+      "order": 6,
+      "runs": {
+        "mdl00_baseline": "20260719-190410_cic_ddos_subtype_holdout_loic_http_full_v1_mdl00_baseline_seed42",
+        "mdl01_xgboost": "20260719-190429_cic_ddos_subtype_holdout_loic_http_full_v1_mdl01_xgboost_seed42",
+        "mdl02_mlp": "20260719-190613_cic_ddos_subtype_holdout_loic_http_full_v1_mdl02_mlp_seed42",
+        "mdl03_gru": "20260719-192103_cic_ddos_subtype_holdout_loic_http_full_v1_mdl03_gru_seed42",
+        "mdl04_transformer": "20260719-210349_cic_ddos_subtype_holdout_loic_http_full_v1_mdl04_transformer_seed42"
+      }
+    }
+  }
+}
