@@ -35,8 +35,10 @@ src/libraries/torch_training.py
 src/libraries/torch_evaluating.py
 ```
 
-The model uses the same standardisation, validation fraction, optimiser, batch size, epoch count, and evaluation
+The model uses the same standardization, validation fraction, optimiser, batch size, epoch count, and evaluation
 threshold as the other PyTorch models.
+
+## Usage
 
 ```bash
 python run.py train-evaluate --model mdl04_transformer --split-id cic_random_80_20_v1
