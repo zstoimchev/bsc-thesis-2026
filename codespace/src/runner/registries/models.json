@@ -1,7 +1,7 @@
 {
   "mdl00_baseline": {
     "name": "Model 00: Majority Class Baseline",
-    "type": "decision_tree",
+    "type": "baseline",
     "module": "src.mdl00_baseline",
     "ready": true,
     "enabled": true,
@@ -24,12 +24,12 @@
     "description": "Feedforward neural network baseline for comparison with classical models."
   },
   "mdl03_gru": {
-    "name": "[Optional] Model 03: GRU",
+    "name": "Model 03: PyTorch GRU",
     "type": "recurrent_neural_network",
     "module": "src.mdl03_gru",
     "ready": true,
     "enabled": true,
-    "description": "Optional recurrent model used only if a meaningful sequence representation is created."
+    "description": "GRU classifier that processes the numerical features of each flow as sequence positions."
   },
   "mdl04_transformer": {
     "name": "Model 04: PyTorch Tabular Transformer",

@@ -1,24 +1,50 @@
 # Model 04: PyTorch Tabular Transformer
 
-This model implements a custom Transformer-based binary classifier for tabular IDS/DDoS flow features.
+## Overview
 
-Each input feature is treated as a token. The Transformer encoder applies attention across feature representations, and
-the final pooled representation is used for binary classification.
+This model implements a Transformer-style binary classifier for tabular network-flow data using PyTorch.
 
-## Purpose
+Each numerical feature is represented as a separate token. Self-attention is then applied across the feature
+representations of one flow.
 
-The Transformer is included as the advanced neural model. It is used to compare a more expressive attention-based
-architecture against XGBoost and the MLP baseline.
+## Role in the Comparison
 
-## Training
+The Transformer is included as the most computationally complex neural architecture in the comparison.
+
+It is used to examine whether attention across tabular feature representations provides an advantage over the MLP, GRU,
+and XGBoost models.
+
+## Implementation
+
+The architecture contains:
+
+- one value projection for each numerical feature;
+- learned feature-position embeddings;
+- token dimension of 32;
+- two Transformer encoder layers;
+- four attention heads;
+- GELU activation;
+- dropout of 0.1;
+- mean pooling across feature tokens;
+- one binary output logit.
+
+Training and evaluation are handled by the shared components in:
+
+```text
+src/libraries/torch_training.py
+src/libraries/torch_evaluating.py
+```
+
+The model uses the same standardization, validation fraction, optimiser, batch size, epoch count, and evaluation
+threshold as the other PyTorch models.
+
+## Usage
 
 ```bash
-python run.py train-evaluate --split-id cic_random_80_20_v1 --model mdl04_transformer
+python run.py train-evaluate --model mdl04_transformer --split-id cic_random_80_20_v1
 ```
 
 ## Notes
 
-Training, sampling, standardization, validation, artifact saving, and prediction are handled by the shared PyTorch
-trainer in `src/common/torch_training.py`.
-
-Only the Transformer architecture is defined inside this model folder.
+The Transformer applies attention between the features of an individual flow. It does not process a temporal sequence of
+multiple network flows.

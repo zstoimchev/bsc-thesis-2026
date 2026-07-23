@@ -1,22 +1,39 @@
-# Model 00: Majority Class Baseline
+# Model 00: Majority-Class Baseline
 
-This model is a simple majority-class baseline.
+## Overview
 
-It does not learn attack patterns. During training, it counts the labels in the training split and always predicts the
-most common class.
+This model implements a majority-class baseline for binary network-intrusion detection.
 
-## Purpose
+During training, it counts the labels in the selected training split. During evaluation, every record is assigned to the
+most frequent training class, independently of its feature values.
 
-The baseline is used to expose the accuracy trap in imbalanced IDS/DDoS datasets. A model can achieve high accuracy by
-predicting only the majority class, while still having zero attack detection capability.
+## Role in the Comparison
 
-## Training
+The baseline demonstrates how misleading accuracy can be on an imbalanced dataset. A model may achieve relatively high
+accuracy by predicting only benign traffic while detecting no attacks.
+
+It also provides a simple validation that dataset loading, split preparation, model saving, evaluation, and metric
+calculation work correctly.
+
+## Implementation
+
+The model stores:
+
+- the majority class;
+- the training-label distribution;
+- the selected feature order;
+- the training split and random seed;
+- the number of available and used training rows.
+
+No feature values are used to determine the predictions.
+
+## Usage
 
 ```bash
-python run.py train-evaluate --split-id cic_random_80_20_v1 --model mdl00_baseline
+python run.py train-evaluate --model mdl00_baseline --split-id cic_random_80_20_v1
 ```
 
 ## Notes
 
-This model is not intended to be competitive. It is included only as a reference point for comparison with real
-classifiers.
+This model is not intended to detect attacks competitively. It is included only as a reference for interpreting the
+results of the learned classifiers.
