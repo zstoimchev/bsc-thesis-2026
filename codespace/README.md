@@ -99,7 +99,7 @@ python run.py list-splits
 python run.py list-models
 ```
 
-- Inspect a dataset: `python run.py inspect-dataset --dataset cic_collection
+- Inspect a dataset: `python run.py inspect-dataset --dataset cic_collection`
 - Prepare a registered split: `python run.py prepare-split --split-id cic_random_80_20_v1`
 - Train and evaluate one model: `python run.py train-evaluate --model mdl01_xgboost --split-id cic_random_80_20_v1`
 - Omitting `--model` runs all enabled and ready models: `python run.py train-evaluate --split-id cic_random_80_20_v1`
@@ -145,4 +145,4 @@ misleading on imbalanced datasets.
 
 # Contact
 
-[zstoimchev@gmail.com](mailto:zstoimchev@outlook.com)
+[zstoimchev@gmail.com](mailto:zstoimchev@gmail.com)
