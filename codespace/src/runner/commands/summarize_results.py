@@ -376,21 +376,33 @@ def run_summarize_results(args) -> None:
         print(f"[summary] No canonical results found{split_message}.")
         return
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    should_save = args.split_id is None
 
-    with OUTPUT_JSON.open("w", encoding="utf-8") as file:
-        json.dump(rows, file, indent=2, ensure_ascii=False)
+    if should_save:
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    with OUTPUT_CSV.open("w", encoding="utf-8", newline="") as file:
-        writer = csv.DictWriter(file, fieldnames=list(rows[0].keys()))
-        writer.writeheader()
+        with OUTPUT_JSON.open("w", encoding="utf-8") as file:
+            json.dump(rows, file, indent=2, ensure_ascii=False)
 
-        for row in rows:
-            writer.writerow({key: csv_value(value) for key, value in row.items()})
+        with OUTPUT_CSV.open("w", encoding="utf-8", newline="") as file:
+            writer = csv.DictWriter(file, fieldnames=list(rows[0].keys()))
+            writer.writeheader()
+
+            for row in rows:
+                writer.writerow(
+                    {
+                        key: csv_value(value)
+                        for key, value in row.items()
+                    }
+                )
 
     print_summary(rows)
 
     print()
     print(f"[summary] Rows: {len(rows)}")
-    print(f"[summary] CSV:  {OUTPUT_CSV}")
-    print(f"[summary] JSON: {OUTPUT_JSON}")
+
+    if should_save:
+        print(f"[summary] CSV:  {OUTPUT_CSV}")
+        print(f"[summary] JSON: {OUTPUT_JSON}")
+    else:
+        print("[summary] Filtered display only; final result files were not modified.")
