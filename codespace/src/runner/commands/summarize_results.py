@@ -123,39 +123,25 @@ def build_row(model_id: str, model_cfg: dict, run_dir: Path) -> dict:
         "model": model_id,
         "model_name": model_cfg.get("name", ""),
         "seed": run_info.get("seed"),
-
         "trained_on_split": trained_split,
         "trained_on_dataset": training_metadata.get("dataset_id", ""),
         "evaluated_on_split": evaluated_split,
         "evaluated_on_dataset": run_info.get("dataset_id", ""),
         "feature_set": run_info.get("feature_set_id", ""),
-        "split_method": (
-            evaluation_metadata.get("split_method", {}).get("type", "")
-        ),
-
+        "split_method": (evaluation_metadata.get("split_method", {}).get("type", "")),
         "source_rows": evaluation_metadata.get("source_rows"),
         "prepared_rows": evaluation_metadata.get("prepared_rows"),
         "split_train_rows": evaluation_metadata.get("train_rows"),
         "split_test_rows": evaluation_metadata.get("test_rows"),
-
-        "full_training_rows": (
-                training_summary.get("full_training_rows")
-                or training_summary.get("training_rows")
-        ),
-        "training_rows_used": (
-                training_summary.get("sampled_training_rows")
-                or training_summary.get("training_rows")
-        ),
+        "full_training_rows": (training_summary.get("full_training_rows") or training_summary.get("training_rows")),
+        "training_rows_used": (training_summary.get("sampled_training_rows") or training_summary.get("training_rows")),
         "training_label_0": label_count(training_distribution, 0),
         "training_label_1": label_count(training_distribution, 1),
-
         "evaluation_rows": metrics.get("evaluation_rows"),
         "evaluation_label_0": label_count(test_distribution, 0),
         "evaluation_label_1": label_count(test_distribution, 1),
-
         "num_features": len(feature_columns),
         "feature_columns": feature_columns,
-
         "accuracy": metrics.get("accuracy"),
         "balanced_accuracy": metrics.get("balanced_accuracy"),
         "precision": metrics.get("precision"),
@@ -163,23 +149,15 @@ def build_row(model_id: str, model_cfg: dict, run_dir: Path) -> dict:
         "f1": metrics.get("f1"),
         "f1_macro": metrics.get("f1_macro"),
         "f1_weighted": metrics.get("f1_weighted"),
-
         "tn": confusion_matrix[0][0],
         "fp": confusion_matrix[0][1],
         "fn": confusion_matrix[1][0],
         "tp": confusion_matrix[1][1],
-
         "epochs": training_summary.get("epochs"),
         "batch_size": training_summary.get("batch_size"),
         "learning_rate": training_summary.get("learning_rate"),
         "threshold": training_summary.get("threshold"),
-
-        "model_configuration": (
-                training_summary.get("architecture")
-                or training_summary.get("params")
-                or {}
-        ),
-
+        "model_configuration": (training_summary.get("architecture") or training_summary.get("params") or {}),
         "training_run": training_run.name,
         "evaluation_run": run_dir.name,
     }
@@ -251,10 +229,7 @@ def run_summarize_results(args) -> None:
         writer.writeheader()
 
         for row in rows:
-            writer.writerow({
-                key: csv_value(value)
-                for key, value in row.items()
-            })
+            writer.writerow({key: csv_value(value) for key, value in row.items()})
 
     print_summary(rows)
 
