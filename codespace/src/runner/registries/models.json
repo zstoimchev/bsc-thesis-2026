@@ -38,5 +38,13 @@
     "ready": true,
     "enabled": true,
     "description": "Custom transformer model proposed and evaluated as an extension."
+  },
+  "mdl05_rule_based": {
+    "name": "Model 05: Rule-Based Detector",
+    "type": "rule_based",
+    "module": "src.mdl05_rule_based",
+    "ready": true,
+    "enabled": true,
+    "description": "Deterministic flow-level detector using thresholds calibrated from benign training traffic."
   }
 }
