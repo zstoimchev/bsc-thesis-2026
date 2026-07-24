@@ -1,5 +1,6 @@
 import argparse
 
+from src.runner.commands.generate_figures import add_generate_figures_parser, run_generate_figures
 from src.runner.commands.inspect_dataset import add_inspect_dataset_parser, run_inspect_dataset
 from src.runner.commands.inspect_model import add_inspect_model_parser, run_inspect_model
 from src.runner.commands.prepare_split import add_prepare_split_parser, run_prepare_split
@@ -27,6 +28,7 @@ def build_parser() -> argparse.ArgumentParser:
     add_prepare_split_parser(subparsers)
     add_experiment_parsers(subparsers)
     add_summarize_results_parser(subparsers)
+    add_generate_figures_parser(subparsers)
 
     return parser
 
@@ -69,6 +71,10 @@ def main() -> None:
 
     if args.command == "summarize-results":
         run_summarize_results(args)
+        return
+
+    if args.command == "generate-figures":
+        run_generate_figures(args)
         return
 
     raise ValueError(f"Unknown command: {args.command}")
