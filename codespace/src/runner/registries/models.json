@@ -44,7 +44,7 @@
     "type": "rule_based",
     "module": "src.mdl05_rule_based",
     "ready": true,
-    "enabled": true,
+    "enabled": false,
     "description": "Deterministic flow-level detector using fixed hardcoded traffic rules."
   }
 }
