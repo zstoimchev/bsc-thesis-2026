@@ -20,5 +20,30 @@
     "dataset_family": "cic",
     "features": "all_numeric_except_dropped",
     "description": "Full numeric CIC feature set after dataset-level drop columns."
+  },
+  "realworld_safe_full_v1": {
+    "dataset_family": "cic",
+    "features": [
+      "src_port",
+      "dst_port",
+      "flow_duration",
+      "total_fwd_packets",
+      "total_bwd_packets",
+      "total_fwd_bytes",
+      "total_bwd_bytes",
+      "total_packets",
+      "total_bytes",
+      "fwd_packet_length_mean",
+      "bwd_packet_length_mean",
+      "flow_bytes_s",
+      "flow_packets_s",
+      "syn_flag_count",
+      "ack_flag_count",
+      "rst_flag_count",
+      "psh_flag_count",
+      "fin_flag_count",
+      "urg_flag_count"
+    ],
+    "description": "All safe numerical traffic fields from the external dataset, excluding provenance and leakage-prone columns."
   }
 }
