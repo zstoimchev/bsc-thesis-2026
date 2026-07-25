@@ -153,5 +153,46 @@
       "metadata_file": "metadata.json"
     },
     "description": "Train on benign traffic and all attack types except DDoS-HOIC, evaluate on held-out DDoS-HOIC and unseen benign traffic."
+  },
+  "cic_random_80_20_full_v1": {
+    "enabled": true,
+    "dataset_id": "cic_collection",
+    "feature_set_id": "cic_full_v1",
+    "label_column": "label",
+    "split_method": {
+      "type": "random",
+      "test_size": 0.2,
+      "seed": 42,
+      "stratify": true
+    },
+    "drop_columns": [],
+    "use_dataset_drop_columns": true,
+    "output": {
+      "output_dir": "data/prepared",
+      "format": "parquet",
+      "train_file": "train.parquet",
+      "test_file": "test.parquet",
+      "metadata_file": "metadata.json"
+    },
+    "description": "Random 80/20 CIC split containing all 57 usable numerical flow features."
+  },
+  "realworld_external_safe_full_v1": {
+    "enabled": true,
+    "dataset_id": "realworld",
+    "feature_set_id": "realworld_safe_full_v1",
+    "label_column": "label",
+    "split_method": {
+      "type": "external_full"
+    },
+    "drop_columns": [],
+    "use_dataset_drop_columns": true,
+    "output": {
+      "output_dir": "data/prepared",
+      "format": "parquet",
+      "train_file": "train.parquet",
+      "test_file": "test.parquet",
+      "metadata_file": "metadata.json"
+    },
+    "description": "Complete external dataset using all safe numerical traffic fields."
   }
 }

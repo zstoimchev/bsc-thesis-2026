@@ -44,7 +44,7 @@
     "type": "rule_based",
     "module": "src.mdl05_rule_based",
     "ready": true,
-    "enabled": true,
-    "description": "Deterministic flow-level detector using thresholds calibrated from benign training traffic."
+    "enabled": false,
+    "description": "Deterministic flow-level detector using fixed hardcoded traffic rules."
   }
 }

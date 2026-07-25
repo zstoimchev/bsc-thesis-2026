@@ -3,82 +3,57 @@ from pathlib import Path
 
 import joblib
 
-from src.common.data_loader import load_dataset
-from src.common.preprocessing import cap_training_dataframe, split_xy
 from src.mdl05_rule_based.model import RuleBasedDetector
 
 
 def train(
-        output_dir: Path,
-        model_path: Path,
-        project_root: Path,
-        seed: int,
-        split_id: str,
-        split_metadata: dict,
-        cap: int | None = None,
+    output_dir: Path,
+    model_path: Path,
+    project_root: Path,
+    seed: int,
+    split_id: str,
+    split_metadata: dict,
+    cap: int | None = None,
 ) -> None:
-    print("[mdl05_rule_based] Calibrating rule-based detector")
+    print(
+        "[mdl05_rule_based] Initializing fixed "
+        "rule-based detector"
+    )
     print(f"[mdl05_rule_based] split_id={split_id}")
 
-    train_df = load_dataset(
-        dataset_cfg={
-            "path": split_metadata["train_file"],
-            "format": "parquet",
-        },
-        project_root=project_root,
-    )
+    feature_columns = split_metadata["feature_columns"]
 
-    full_training_rows = len(train_df)
+    missing = [
+        feature
+        for feature in RuleBasedDetector.CORE_FEATURES
+        if feature not in feature_columns
+    ]
 
-    train_df = cap_training_dataframe(
-        df=train_df,
-        label_column=split_metadata["label_column"],
-        cap=cap,
-        seed=seed,
-    )
-
-    x_train, y_train = split_xy(
-        df=train_df,
-        label_column=split_metadata["label_column"],
-        feature_columns=split_metadata["feature_columns"],
-    )
+    if missing:
+        raise ValueError(f"The selected split is missing core rule features: {missing}")
 
     model = RuleBasedDetector()
-    model.fit(x_train, y_train)
-
-    label_counts = {
-        str(label): int(count)
-        for label, count in y_train.value_counts().sort_index().items()
-    }
 
     artifact = {
         "model": model,
-        "model_type": "rule_based_detector",
-        "feature_columns": model.feature_columns,
+        "model_type": "fixed_rule_based_detector",
         "split_id": split_id,
         "seed": seed,
-        "train_row_cap": cap,
-        "full_training_rows": int(full_training_rows),
-        "training_rows": int(len(y_train)),
-        "training_label_counts": label_counts,
-        "benign_calibration_rows": int((y_train == 0).sum()),
+        "train_row_cap": None,
+        "full_training_rows": 0,
+        "training_rows": 0,
+        "training_label_counts": {},
+        "source_feature_columns": list(feature_columns),
         "params": {
-            "required_votes": 2,
-            "packet_rate_quantile": 0.995,
-            "byte_rate_quantile": 0.995,
-            "syn_count_quantile": 0.99,
-            "backward_packets_quantile": 0.10,
-            "short_duration_quantile": 0.10,
-            "forward_packets_quantile": 0.99,
-            "thresholds": model.thresholds,
+            "method": "fixed_hardcoded_rules",
+            "training_data_used": False,
+            "thresholds": RuleBasedDetector.THRESHOLDS,
         },
     }
 
     joblib.dump(artifact, model_path)
 
-    summary_path = output_dir / "training_summary.json"
-
-    with summary_path.open("w", encoding="utf-8") as file:
+    with (output_dir / "training_summary.json").open("w", encoding="utf-8") as file:
         json.dump(
             {
                 key: value
@@ -89,8 +64,7 @@ def train(
             indent=2,
         )
 
-    print(f"[mdl05_rule_based] available training rows={full_training_rows}")
-    print(f"[mdl05_rule_based] used training rows={len(y_train)}")
-    print(f"[mdl05_rule_based] benign calibration rows={artifact['benign_calibration_rows']}")
-    print(f"[mdl05_rule_based] thresholds={model.thresholds}")
-    print(f"[mdl05_rule_based] saved model to: {model_path}")
+    print("[mdl05_rule_based] training data used=0")
+    print(f"[mdl05_rule_based] source features={len(feature_columns)}")
+    print(f"[mdl05_rule_based] fixed thresholds={RuleBasedDetector.THRESHOLDS}")
+    print(f"[mdl05_rule_based] saved detector to: {model_path}")
