@@ -60,9 +60,9 @@
       "runs": {
         "mdl00_baseline": "20260722-231036_realworld_external_full_v1_mdl00_baseline_seed42",
         "mdl01_xgboost": "20260722-231037_realworld_external_full_v1_mdl01_xgboost_seed42",
-        "mdl02_mlp": "20260722-231546_realworld_external_full_v1_mdl02_mlp_seed42",
-        "mdl03_gru": "20260722-231604_realworld_external_full_v1_mdl03_gru_seed42",
-        "mdl04_transformer": "20260722-231645_realworld_external_full_v1_mdl04_transformer_seed42"
+        "mdl02_mlp": "20260726-013516_realworld_external_full_v1_mdl02_mlp_seed42",
+        "mdl03_gru": "20260726-013535_realworld_external_full_v1_mdl03_gru_seed42",
+        "mdl04_transformer": "20260726-113826_realworld_external_full_v1_mdl04_transformer_seed42"
       }
     },
     "loic_http_full": {
