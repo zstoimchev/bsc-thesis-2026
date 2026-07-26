@@ -8,9 +8,9 @@
       "runs": {
         "mdl00_baseline": "20260716-213554_cic_random_80_20_v1_mdl00_baseline_seed42",
         "mdl01_xgboost": "20260718-194234_cic_random_80_20_v1_mdl01_xgboost_seed42",
-        "mdl02_mlp": "20260716-213603_cic_random_80_20_v1_mdl02_mlp_seed42",
-        "mdl03_gru": "20260716-213657_cic_random_80_20_v1_mdl03_gru_seed42",
-        "mdl04_transformer": "20260716-214000_cic_random_80_20_v1_mdl04_transformer_seed42"
+        "mdl02_mlp": "20260726-004055_cic_random_80_20_v1_mdl02_mlp_seed42",
+        "mdl03_gru": "20260726-005833_cic_random_80_20_v1_mdl03_gru_seed42",
+        "mdl04_transformer": "20260726-013622_cic_random_80_20_v1_mdl04_transformer_seed42"
       }
     },
     "ddos_family_holdout": {
